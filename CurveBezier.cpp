@@ -24,9 +24,6 @@ void CurveBezier::init() {
 	//std::vector<GLushort> indices = { 0, 1, 2, 3 };
 
 
-	// Unbind vertex array object (back to default).
-	glBindVertexArray(0);
-
 
 }
 void CurveBezier::draw(glm::mat4x4 mvp) {

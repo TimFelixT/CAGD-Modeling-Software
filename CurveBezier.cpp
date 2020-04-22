@@ -4,12 +4,15 @@
 #include <iostream>
 
 
-CurveBezier::CurveBezier(cg::GLSLProgram* prog) {
+CurveBezier::CurveBezier(cg::GLSLProgram* prog) : program(prog) {
 
 }
 
 CurveBezier::~CurveBezier() {
-
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &indexBuffer);
+	glDeleteBuffers(1, &colorBuffer);
+	glDeleteBuffers(1, &positionBuffer);
 }
 
 
@@ -21,6 +24,8 @@ void CurveBezier::init() {
 	//std::vector<GLushort> indices = { 0, 1, 2, 3 };
 
 
+	// Unbind vertex array object (back to default).
+	glBindVertexArray(0);
 
 
 }

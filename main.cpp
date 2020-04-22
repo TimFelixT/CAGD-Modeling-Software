@@ -30,10 +30,10 @@ glm::mat4x4 projection;
 ViewPanel *viewPanel = new ViewPanel(&program);
 
 float zNear = 0.1f;
-float zFar  = 100.0f;
+float zFar  = 40.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
-float eyeZ = 11.0f; // for view matrix (zoom)
+float eyeZ = 30.0f; // for view matrix (zoom)
 
 glm::vec3 eye(eyeX, eyeY, eyeZ);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
@@ -103,8 +103,8 @@ void glutResize (int width, int height)
   glViewport(0, 0, width, height);
   
   // Construct projection matrix.
-  //projection = glm::perspective(45.0f, (float) width / height, zNear, zFar);
-  projection = glm::ortho(-5.0F * width / height, 5.0F * width / height, -5.0F, 5.0F, zNear, zFar);
+  projection = glm::perspective(45.0f, (float) width / height, zNear, zFar);
+  //projection = glm::ortho(-5.0F * width / height, 5.0F * width / height, -5.0F, 5.0F, zNear, zFar);
 
   viewPanel->setProjection(projection);
 }
@@ -119,10 +119,22 @@ void glutKeyboard (unsigned char keycode, int x, int y)
     glutDestroyWindow ( glutID );
     return;
   case 'x':
+	  viewPanel->bezierRotX();
+	  init();
 	  break;
   case 'y':
+	  viewPanel->bezierRotY();
+	  init();
 	  break;
   case 'z':
+	  viewPanel->bezierRotZ();
+	  init();
+	  break;
+  case 'i':
+	  viewPanel->zoomIn();
+	  break;
+  case 'o':
+	  viewPanel->zoomOut();
 	  break;
   }
   glutPostRedisplay();

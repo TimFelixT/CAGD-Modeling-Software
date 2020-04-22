@@ -175,6 +175,8 @@
     <ClInclude Include="GLTools.h" />
     <ClInclude Include="header\Colors.h" />
     <ClInclude Include="header\CurveBezier.h" />
+    <ClInclude Include="header\GlobalConstants.h" />
+    <ClInclude Include="header\GlobalFunctions.h" />
     <ClInclude Include="header\ObjParser.h" />
     <ClInclude Include="header\ViewPanel.h" />
   </ItemGroup>

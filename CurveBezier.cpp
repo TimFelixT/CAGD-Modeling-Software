@@ -1,5 +1,6 @@
 #include "header/CurveBezier.h"
 #include "header/GlobalFunctions.h"
+#include "header/GlobalConstants.h"
 
 
 
@@ -44,7 +45,7 @@ void CurveBezier::calcCurve() {
 
 			curveVertices.push_back(point);
 
-			currentPoint += accuracy;
+			currentPoint += globalConstants.BEZIER_ACCURACY;
 		}
 
 

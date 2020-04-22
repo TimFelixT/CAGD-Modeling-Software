@@ -43,6 +43,4 @@ private:
 
 	bool drawControlPoints = false; //TODO
 
-	//Konstanten
-	const float accuracy = 0.01f;	//Die Genauigkeit der Kurve, je kleiner der Wert desto genauer
 };

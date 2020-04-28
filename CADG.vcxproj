@@ -168,17 +168,19 @@
     <ClCompile Include="CurveBezier.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PointVector.cpp" />
     <ClCompile Include="ViewPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GLSLProgram.h" />
-    <ClInclude Include="GLTools.h" />
     <ClInclude Include="header\Colors.h" />
     <ClInclude Include="header\CurveBezier.h" />
     <ClInclude Include="header\GlobalConstants.h" />
     <ClInclude Include="header\GlobalFunctions.h" />
     <ClInclude Include="header\ObjParser.h" />
+    <ClInclude Include="header\PointVector.h" />
     <ClInclude Include="header\ViewPanel.h" />
+    <ClInclude Include="include\GLSLProgram.h" />
+    <ClInclude Include="include\GLTools.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\simple.frag" />

@@ -168,6 +168,8 @@
     <ClCompile Include="CurveBezier.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjFileParser.cpp" />
+    <ClCompile Include="PolyObject.cpp" />
     <ClCompile Include="ViewPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +179,9 @@
     <ClInclude Include="header\CurveBezier.h" />
     <ClInclude Include="header\GlobalConstants.h" />
     <ClInclude Include="header\GlobalFunctions.h" />
+    <ClInclude Include="header\ObjFileParser.h" />
     <ClInclude Include="header\ObjParser.h" />
+    <ClInclude Include="header\PolyObject.h" />
     <ClInclude Include="header\ViewPanel.h" />
   </ItemGroup>
   <ItemGroup>

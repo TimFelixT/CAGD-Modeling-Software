@@ -115,6 +115,18 @@ glm::vec3 PointVector::getVec3() {
 glm::vec4 PointVector::getVec4() {
 	return glm::vec4(this->xCoor, this->yCoor, this->zCoor, this->homoCoor);
 }
+void PointVector::setVec3(glm::vec3& vector, float homo) {
+	this->xCoor = vector.x;
+	this->yCoor = vector.y;
+	this->zCoor = vector.z;
+	this->homoCoor = homo;
+}
+void PointVector::setVec4(glm::vec4& vector) {
+	this->xCoor = vector.x;
+	this->yCoor = vector.y;
+	this->zCoor = vector.z;
+	this->homoCoor = vector.w;
+}
 
 
 

@@ -26,8 +26,10 @@ private:
 	GLuint indexBuffer;
 
 	std::vector<PointVector> curveVertices;
+	std::vector<glm::vec3> curveBuffer;
+
 	std::vector<GLushort> curveIndices;
-	std::vector<PointVector> curveColors;
+	std::vector<glm::vec3> curveColors;
 
 
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
@@ -38,5 +40,6 @@ private:
 	int factorial(int);
 
 	bool drawControlPoints = false; //TODO
+	void updateCurveBuffer();
 
 };

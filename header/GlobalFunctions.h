@@ -11,19 +11,19 @@
 
 struct GlobalFunctions {
 	
-	void rotateXVec3(std::vector<glm::vec3>& vector) {
+	void rotateXPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {
-			vector[i] = glm::rotateX(vector[i], globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180));
+			vector[i].setVec3(glm::rotateX(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 0);
 		}
 	}
-	void rotateYVec3(std::vector<glm::vec3>& vector) {
+	void rotateYPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {
-			vector[i] = glm::rotateY(vector[i], globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180));
+			vector[i].setVec3(glm::rotateY(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 0);
 		}
 	}
-	void rotateZVec3(std::vector<glm::vec3>& vector) {
+	void rotateZPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {
-			vector[i] = glm::rotateZ(vector[i], globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180));
+			vector[i].setVec3(glm::rotateZ(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 0);
 		}
 	}
 

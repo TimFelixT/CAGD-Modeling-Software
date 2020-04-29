@@ -175,11 +175,9 @@
     <ClCompile Include="ViewPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CurveBezierTest.h" />
-    <ClInclude Include="GLSLProgram.h" />
-    <ClInclude Include="GLTools.h" />
     <ClInclude Include="header\Colors.h" />
     <ClInclude Include="header\CurveBezier.h" />
+    <ClInclude Include="header\CurveBezierTest.h" />
     <ClInclude Include="header\GlobalConstants.h" />
     <ClInclude Include="header\GlobalFunctions.h" />
     <ClInclude Include="header\ObjFileParser.h" />

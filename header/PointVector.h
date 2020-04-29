@@ -23,6 +23,9 @@ public:
 	glm::vec3 getVec3();										//GLM Vec3
 	glm::vec4 getVec4();										//GLM Vec4
 
+	void setVec3(glm::vec3&, float);
+	void setVec4(glm::vec4&);
+
 	float xCoor;
 	float yCoor;
 	float zCoor;

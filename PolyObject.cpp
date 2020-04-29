@@ -1,7 +1,19 @@
 #include "header/PolyObject.h"
+#include "header/ObjFileParser.h"
+//#include "header/GlobalFunctions.h"
+
+PolyObject::PolyObject()
+{
+}
 
 PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog)
 {
+}
+
+PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog)
+{
+	ObjFileParser parser;
+	parser.parseObjectFile(filename, this);
 }
 
 PolyObject::~PolyObject()
@@ -43,7 +55,7 @@ void PolyObject::init() {
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces.size() * sizeof(GLushort), faces.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), indices.data(), GL_STATIC_DRAW);
 
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
@@ -64,15 +76,15 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	glBindVertexArray(0);
 }
 
-void PolyObject::rotateX() {
-	//globalFunctions.rotateXVec3(vertices);
-}
-void PolyObject::rotateY() {
-	//globalFunctions.rotateYVec3(vertices);
-}
-void PolyObject::rotateZ() {
-	//globalFunctions.rotateZVec3(vertices);
-}
+//void PolyObject::rotateX() {
+//	globalFunctions.rotateXVec3(vertices);
+//}
+//void PolyObject::rotateY() {
+//	globalFunctions.rotateYVec3(vertices);
+//}
+//void PolyObject::rotateZ() {
+//	globalFunctions.rotateZVec3(vertices);
+//}
 
 std::vector<std::vector<glm::vec2>> PolyObject::triangulatePolygon(std::vector<glm::vec2> face) {
 	std::vector<std::vector<glm::vec2>> new_faces;
@@ -109,9 +121,15 @@ void PolyObject::pushFace(std::vector<glm::vec2> face)
 	faces.push_back(face);
 }
 
+void PolyObject::pushIndex(GLushort index)
+{
+	indices.push_back(index);
+}
+
 void PolyObject::pushVertice(glm::vec3 vertice)
 {
 	vertices.push_back(vertice);
+	colors.push_back({ 0.0f, 1.0f, 0.0f });
 }
 
 void PolyObject::pushNormal(glm::vec3 normal)
@@ -119,17 +137,17 @@ void PolyObject::pushNormal(glm::vec3 normal)
 	normals.push_back(glm::normalize(normal));
 }
 
-std::vector<glm::vec3> PolyObject::getVertices()
+std::vector<glm::vec3>& PolyObject::getVertices()
 {
 	return vertices;
 }
 
-std::vector<glm::vec3> PolyObject::getNormals()
+std::vector<glm::vec3>& PolyObject::getNormals()
 {
 	return normals;
 }
 
-std::vector<std::vector<glm::vec2>> PolyObject::getFaces()
+std::vector<std::vector<glm::vec2>>& PolyObject::getFaces()
 {
 	return faces;
 }

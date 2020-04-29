@@ -9,10 +9,10 @@ bool isNormal(string line) {
 }
 
 bool isFace(string line) {
-	return regex_match(line, regex("(\\s*f\\s*(\\d+/\\d+/\\d+\\s*)+)\\s*"));
+	return regex_match(line, regex("(\\s*f\\s*((\\d+)+/\\d+\\s*)+)\\s*"));
 }
 
-bool ObjFileParser::parseObjectFile(const char* filename, PolyObject& polyObj)
+bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
 {
 	fstream file(filename);
 
@@ -26,6 +26,7 @@ bool ObjFileParser::parseObjectFile(const char* filename, PolyObject& polyObj)
 
 	while (getline(file, line))
 	{
+		cout << line << endl;
 		parseLine(line, polyObj);
 	}
 
@@ -33,20 +34,20 @@ bool ObjFileParser::parseObjectFile(const char* filename, PolyObject& polyObj)
 	return true;
 }
 
-void ObjFileParser::parseLine(std::string line, PolyObject& polyObj) {
+void ObjFileParser::parseLine(string line, PolyObject* polyObj) {
 	if (isFace(line)) {
-		polyObj.pushFace(parseFace(line));
+		parseFace(line, polyObj);
 	}
 	else if (isVertex(line)) {
-		polyObj.pushVertice(parseVertice(line));
+		polyObj->pushVertice(parseVertice(line));
 	}
 	else if (isNormal(line)) {
-		polyObj.pushNormal(parseVertice(line));
+		polyObj->pushNormal(parseVertice(line));
 	}
 }
 
-glm::vec3 ObjFileParser::parseVertice(std::string line) {
-	std::smatch m;
+glm::vec3 ObjFileParser::parseVertice(string line) {
+	smatch m;
 	glm::vec3 vertice;
 	vector<string> vals;
 
@@ -65,42 +66,54 @@ glm::vec3 ObjFileParser::parseVertice(std::string line) {
 	return vertice;
 }
 
-glm::vec2 ObjFileParser::parseFaceVertice(char* line) {
-	stringstream stream;
-	const char* delimiter = "/";
-	char* tok;
-	char* next_token;
-	glm::vec2 vertice;
-	unsigned c = 0;
+//glm::vec2 ObjFileParser::parseFaceVertice(char* line) {
+//	stringstream stream;
+//	const char* delimiter = "/";
+//	char* tok;
+//	char* next_token;
+//	glm::vec2 vertice;
+//	unsigned c = 0;
+//
+//	tok = strtok_s(line, delimiter, &next_token);
+//
+//	while (tok != 0) {
+//		int nr;
+//
+//		stream << tok;
+//		stream >> nr;
+//		vertice[c] = nr;
+//		c++;
+//		if (c == 2) {
+//			c = 1;
+//		}
+//		stream.str("");
+//		stream.clear();
+//		tok = strtok_s(0, delimiter, &next_token);
+//	}
+//	return vertice;
+//}
 
-	tok = strtok_s(line, delimiter, &next_token);
 
-	while (tok != 0) {
-		int nr;
-
-		stream << tok;
-		stream >> nr;
-		vertice[c] = nr;
-		c++;
-		if (c == 2) {
-			c = 1;
-		}
-		stream.str("");
-		stream.clear();
-		tok = strtok_s(0, delimiter, &next_token);
-	}
-	return vertice;
-}
-
-
-vector<glm::vec2> ObjFileParser::parseFace(string line)
+void ObjFileParser::parseFace(string line, PolyObject *obj)
 {
-	const char* delimiter = " ";
+	smatch m;
+	vector<string> vals;
+
+	//Extract all the values
+	while (regex_search(line, m, regex("(-?\\d+(\\.\\d+)*)"))) {
+		vals.push_back(m.str(1));
+		line = m.suffix().str();
+	}
+
+	for (auto val : vals) {
+		obj->pushIndex(stoi(val));
+	}
+	/*const char* delimiter = " ";
 	char* tok;
 	char* next_token;
 	vector<glm::vec2> faces;
 
-	std::vector<char> cstr(line.c_str(), line.c_str() + line.size() + 1);
+	vector<char> cstr(line.c_str(), line.c_str() + line.size() + 1);
 
 	tok = strtok_s(cstr.data(), delimiter, &next_token);
 
@@ -110,5 +123,5 @@ vector<glm::vec2> ObjFileParser::parseFace(string line)
 			faces.push_back(parseFaceVertice(tok));
 		}
 	}
-	return faces;
+	return faces;*/
 }

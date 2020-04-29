@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CurveBezier.cpp" />
+    <ClCompile Include="CurveBezierTest.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjFileParser.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="ViewPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CurveBezierTest.h" />
     <ClInclude Include="GLSLProgram.h" />
     <ClInclude Include="GLTools.h" />
     <ClInclude Include="header\Colors.h" />

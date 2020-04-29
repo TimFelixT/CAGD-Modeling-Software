@@ -1,5 +1,6 @@
-#pragma once
+#ifndef GLOBAL_FUNCTIONS
 
+#define GLOBAL_FUNCTIONS
 #define _USE_MATH_DEFINES
 
 #include <math.h>
@@ -29,3 +30,4 @@ struct GlobalFunctions {
 
 
 } globalFunctions;
+#endif // !GLOBAL_FUNCTIONS

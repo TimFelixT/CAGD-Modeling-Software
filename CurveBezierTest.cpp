@@ -1,13 +1,13 @@
-#include "header/CurveBezier.h"
-//#include "header/GlobalFunctions.h"
-//#include "header/GlobalConstants.h"
+#include "header/CurveBezierTest.h"
+#include "header/GlobalFunctions.h"
+#include "header/GlobalConstants.h"
 
 
 
-CurveBezier::CurveBezier(cg::GLSLProgram* prog) : program(prog) {
+CurveBezierTest::CurveBezierTest(PolyObject& pobj, cg::GLSLProgram* prog) : program(prog), obj(pobj) {
 }
 
-CurveBezier::~CurveBezier() {
+CurveBezierTest::~CurveBezierTest() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &indexBuffer);
 	glDeleteBuffers(1, &colorBuffer);
@@ -16,8 +16,8 @@ CurveBezier::~CurveBezier() {
 
 
 
-void CurveBezier::calcCurve() {
-
+void CurveBezierTest::calcCurve() {
+	std::vector<glm::vec3> controlVertices = obj.getVertices();
 	float curveStart = controlVertices[0].x;
 
 	float curveLength = 0.0f;
@@ -45,7 +45,7 @@ void CurveBezier::calcCurve() {
 
 		curveVertices.push_back(point);
 
-		//currentPoint += globalConstants.BEZIER_ACCURACY;
+		currentPoint += globalConstants.BEZIER_ACCURACY;
 	}
 
 
@@ -62,21 +62,21 @@ void CurveBezier::calcCurve() {
 
 }
 
-int CurveBezier::factorial(int x) {
+int CurveBezierTest::factorial(int x) {
 	if (x > 1)
 		return x * factorial(x - 1);
 	else
 		return 1;
 }
 
-int CurveBezier::binomialCoefficiant(int n, int k)
+int CurveBezierTest::binomialCoefficiant(int n, int k)
 {
 	return factorial(n) / (factorial(k) * factorial(n - k));
 }
 
 
 
-void CurveBezier::init() {
+void CurveBezierTest::init() {
 	if (!initialized) {
 		calcCurve();
 		initialized = true;
@@ -119,7 +119,7 @@ void CurveBezier::init() {
 
 
 }
-void CurveBezier::draw(glm::mat4x4 mvp) {
+void CurveBezierTest::draw(glm::mat4x4 mvp) {
 
 	program->use();
 	program->setUniform("mvp", mvp);
@@ -134,28 +134,12 @@ void CurveBezier::draw(glm::mat4x4 mvp) {
 }
 
 
-int factorial(int n)
-{
-	if (n <= 1)
-		return(1);
-	else
-		n = n * factorial(n - 1);
-	return n;
+void CurveBezierTest::rotateX() {
+	globalFunctions.rotateXVec3(curveVertices);
 }
-
-float binomial_coff(float n, float k)
-{
-	float ans;
-	ans = factorial(n) / (factorial(k) * factorial(n - k));
-	return ans;
+void CurveBezierTest::rotateY() {
+	globalFunctions.rotateYVec3(curveVertices);
 }
-
-//void CurveBezier::rotateX() {
-//	globalFunctions.rotateXVec3(curveVertices);
-//}
-//void CurveBezier::rotateY() {
-//	globalFunctions.rotateYVec3(curveVertices);
-//}
-//void CurveBezier::rotateZ() {
-//	globalFunctions.rotateZVec3(curveVertices);
-//}
+void CurveBezierTest::rotateZ() {
+	globalFunctions.rotateZVec3(curveVertices);
+}

@@ -1,12 +1,12 @@
 #pragma once
 #include "include/GLSLProgram.h"
 
-#include "PolyObject.h"
+#include "header/PolyObject.h"
 
-class CurveBezier : public PolyObject {
+class CurveBezierTest {
 public:
-	CurveBezier(cg::GLSLProgram*);
-	~CurveBezier();
+	CurveBezierTest(PolyObject& pobj, cg::GLSLProgram*);
+	~CurveBezierTest();
 	void init();
 	void draw(glm::mat4x4);
 
@@ -17,17 +17,13 @@ public:
 	void rotateZ();
 
 private:
+	PolyObject& obj;
+
 	cg::GLSLProgram* program;
 	GLuint vao;
 	GLuint positionBuffer;
 	GLuint colorBuffer;
 	GLuint indexBuffer;
-
-
-	std::vector<glm::vec3> controlVertices = { {0.0f, 5.0f, 0.0f}, { 5.0f, 5.0f, 0.0f }, { 5.0f, -5.0f, 0.0f }, { 0.0f, -5.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { -5.0f, -5.0f, 0.0f } };
-	std::vector<glm::vec3> colors = { { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } };
-	std::vector<GLushort> controlIndices = { 0, 1, 2, 3, 4, 5 };
-
 
 	std::vector<glm::vec3> curveVertices;
 	std::vector<GLushort> curveIndices;

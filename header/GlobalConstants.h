@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GLOBAL_CONSTANTS
+#define GLOBAL_CONSTANTS
 
 struct GlobalConstants {
 
@@ -7,3 +8,4 @@ struct GlobalConstants {
 
 
 } globalConstants;
+#endif // !GLOBAL_CONSTANTS

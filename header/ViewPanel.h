@@ -2,7 +2,7 @@
 #include <stack>
 #include "include/GLSLProgram.h"
 
-#include "CurveBezier.h"
+#include "CurveBezierTest.h"
 
 class ViewPanel {
 public:
@@ -31,5 +31,6 @@ private:
 
 	float zoom = 1.0f;
 
-	CurveBezier *bezier;
+	CurveBezierTest* bezier;
+	PolyObject* obj;
 };

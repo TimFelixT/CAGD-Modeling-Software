@@ -18,9 +18,9 @@ private:
 
 	void parseLine(string line, PolyObject* polyObj);
 
-	glm::vec3 parseVertice(string line);
+	PointVector parseVertice(string line);
 
-	glm::vec2 parseFaceVertice(char* line);
+	PointVector parseFaceVertice(char* line);
 
 	void parseFace(string line, PolyObject*);
 };

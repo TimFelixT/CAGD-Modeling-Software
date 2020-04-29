@@ -4,9 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
-
 #include "include/GLSLProgram.h"
 
+#include "PointVector.h"
 
 class PolyObject {
 public:
@@ -24,14 +24,14 @@ public:
 	~PolyObject();
 
 	// Getters
-	std::vector<glm::vec3>& getVertices();
-	std::vector<glm::vec3>& getNormals();
-	std::vector<std::vector<glm::vec2>>& getFaces();
+	vector<PointVector> getVertices();
+	vector<PointVector> getNormals();
+	vector<vector<PointVector>> getFaces();
 
 	// Push functions
-	void pushFace(std::vector<glm::vec2>);
-	void pushVertice(glm::vec3);
-	void pushNormal(glm::vec3);
+	void pushFace(std::vector<PointVector>);
+	void pushVertice(PointVector);
+	void pushNormal(PointVector);
 	void pushIndex(GLushort index);
 
 	void triangulatePolyNet();
@@ -46,12 +46,12 @@ public:
 	void rotateZ();
 
 private:
-	std::vector<std::vector<glm::vec2>> triangulatePolygon(std::vector<glm::vec2> face);
+	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
 
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normals;
-	std::vector<glm::vec3> colors;
-	std::vector<std::vector<glm::vec2>> faces;
+	vector<PointVector> vertices;
+	vector<PointVector> normals;
+	vector<PointVector> colors;
+	vector<vector<PointVector>> faces;
 	std::vector<GLushort> indices;
 
 	cg::GLSLProgram* program;

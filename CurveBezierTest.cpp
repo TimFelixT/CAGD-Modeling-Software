@@ -17,14 +17,15 @@ CurveBezierTest::~CurveBezierTest() {
 
 
 void CurveBezierTest::calcCurve() {
-	std::vector<glm::vec3> controlVertices = obj.getVertices();
-	float curveStart = controlVertices[0].x;
+	std::vector<PointVector> controlVertices = obj.getVertices();
+	float curveStart = controlVertices[0].xCoor;
 
 	float curveLength = 0.0f;
 
 	for (int i = 0; i < controlVertices.size() - 1; i++)
 	{
-		curveLength += abs(sqrt(pow(controlVertices[i + 1].x - controlVertices[i].x, 2) + pow(controlVertices[i + 1].y - controlVertices[i].y, 2) + pow(controlVertices[i + 1].z - controlVertices[i].z, 2)));
+		curveLength += abs(sqrt(pow(controlVertices[i + 1].xCoor - controlVertices[i].xCoor, 2) + pow(controlVertices[i + 1].yCoor 
+			- controlVertices[i].yCoor, 2) + pow(controlVertices[i + 1].zCoor - controlVertices[i].zCoor, 2)));
 	}
 
 
@@ -36,11 +37,11 @@ void CurveBezierTest::calcCurve() {
 		float t = currentPoint / curveLength;
 
 		int n = controlVertices.size() - 1;
-		glm::vec3 point(0.0f, 0.0f, 0.0f);
+		PointVector point(0.0f, 0.0f, 0.0f, 0.0f);
 
 		for (int i = 0; i <= n; i++)
 		{
-			point += (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i];
+			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i];
 		}
 
 		curveVertices.push_back(point);
@@ -53,10 +54,10 @@ void CurveBezierTest::calcCurve() {
 	{
 		if (i != curveVertices.size() - 1) {
 			curveIndices.push_back(i);
-			curveColors.push_back({ 1.0f, 0.0f, 0.0f });
+			curveColors.push_back(PointVector(1.0f, 0.0f, 0.0f, 0.0f ));
 			if (i < curveIndices.size())
 				curveIndices.push_back(i + 1);
-			curveColors.push_back({ 1.0f, 0.0f, 0.0f });
+			curveColors.push_back(PointVector(1.0f, 0.0f, 0.0f, 0.0f ));
 		}
 	}
 
@@ -92,7 +93,7 @@ void CurveBezierTest::init() {
 	// Step 1: Create vertex buffer object for position attribute and bind it to the associated "shader attribute".
 	glGenBuffers(1, &positionBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
-	glBufferData(GL_ARRAY_BUFFER, curveVertices.size() * sizeof(glm::vec3), curveVertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, curveVertices.size() * sizeof(PointVector), curveVertices.data(), GL_STATIC_DRAW);
 
 	// Bind it to position.
 	pos = glGetAttribLocation(programId, "position");
@@ -102,7 +103,7 @@ void CurveBezierTest::init() {
 	// Step 2: Create vertex buffer object for color attribute and bind it to...
 	glGenBuffers(1, &colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, curveColors.size() * sizeof(glm::vec3), curveColors.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, curveColors.size() * sizeof(PointVector), curveColors.data(), GL_STATIC_DRAW);
 
 	// Bind it to color.
 	pos = glGetAttribLocation(programId, "color");
@@ -135,11 +136,38 @@ void CurveBezierTest::draw(glm::mat4x4 mvp) {
 
 
 void CurveBezierTest::rotateX() {
-	globalFunctions.rotateXVec3(curveVertices);
+	vector<glm::vec3> verts;
+	for (auto vert : curveVertices) {
+		verts.push_back(vert.getVec3());
+	}
+	globalFunctions.rotateXVec3(verts);
+
+	curveVertices.clear();
+	for (auto vert : verts) {
+		curveVertices.push_back(PointVector(vert, 0));
+	}
 }
 void CurveBezierTest::rotateY() {
-	globalFunctions.rotateYVec3(curveVertices);
+	vector<glm::vec3> verts;
+	for (auto vert : curveVertices) {
+		verts.push_back(vert.getVec3());
+	}
+	globalFunctions.rotateYVec3(verts);
+
+	curveVertices.clear();
+	for (auto vert : verts) {
+		curveVertices.push_back(PointVector(vert, 0));
+	}
 }
 void CurveBezierTest::rotateZ() {
-	globalFunctions.rotateZVec3(curveVertices);
+	vector<glm::vec3> verts;
+	for (auto vert : curveVertices) {
+		verts.push_back(vert.getVec3());
+	}
+	globalFunctions.rotateZVec3(verts);
+	
+	curveVertices.clear();
+	for (auto vert : verts) {
+		curveVertices.push_back(PointVector(vert, 0));
+	}
 }

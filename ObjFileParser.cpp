@@ -46,9 +46,9 @@ void ObjFileParser::parseLine(string line, PolyObject* polyObj) {
 	}
 }
 
-glm::vec3 ObjFileParser::parseVertice(string line) {
+PointVector ObjFileParser::parseVertice(string line) {
 	smatch m;
-	glm::vec3 vertice;
+	PointVector vertice;
 	vector<string> vals;
 
 	//Extract all the values
@@ -58,20 +58,21 @@ glm::vec3 ObjFileParser::parseVertice(string line) {
 	}
 
 	if (vals.size() == 3) {
-		vertice.x = stod(vals.at(0));
-		vertice.y = stod(vals.at(1));
-		vertice.z = stod(vals.at(2));
+		vertice.xCoor = stod(vals.at(0));
+		vertice.yCoor = stod(vals.at(1));
+		vertice.zCoor = stod(vals.at(2));
+		vertice.homoCoor = 0;
 	}
 	
 	return vertice;
 }
 
-//glm::vec2 ObjFileParser::parseFaceVertice(char* line) {
+//PointVector ObjFileParser::parseFaceVertice(char* line) {
 //	stringstream stream;
 //	const char* delimiter = "/";
 //	char* tok;
 //	char* next_token;
-//	glm::vec2 vertice;
+//	PointVector vertice;
 //	unsigned c = 0;
 //
 //	tok = strtok_s(line, delimiter, &next_token);
@@ -111,7 +112,7 @@ void ObjFileParser::parseFace(string line, PolyObject *obj)
 	/*const char* delimiter = " ";
 	char* tok;
 	char* next_token;
-	vector<glm::vec2> faces;
+	vector<PointVector> faces;
 
 	vector<char> cstr(line.c_str(), line.c_str() + line.size() + 1);
 

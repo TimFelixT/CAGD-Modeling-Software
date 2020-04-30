@@ -1,5 +1,6 @@
 #include "header/PolyObject.h"
 #include "header/ObjFileParser.h"
+#include "header/GlobalFunctions.h"
 #include <algorithm>
 //#include "header/GlobalFunctions.h"
 
@@ -26,8 +27,9 @@ PolyObject::~PolyObject()
 }
 
 void PolyObject::init() {
-	vector<glm::vec3> verts;
-	vector<glm::vec3> cols;
+
+	this->verts.clear();
+	this->cols.clear();
 
 	for (auto vert : vertices) {
 		verts.push_back(vert.getVec3());
@@ -87,15 +89,24 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	glBindVertexArray(0);
 }
 
-//void PolyObject::rotateX() {
-//	globalFunctions.rotateXVec3(vertices);
-//}
-//void PolyObject::rotateY() {
-//	globalFunctions.rotateYVec3(vertices);
-//}
-//void PolyObject::rotateZ() {
-//	globalFunctions.rotateZVec3(vertices);
-//}
+void PolyObject::rotateX() {
+	globalFunctions.rotateXPointVector(vertices);
+	updateCurveBuffer();
+}
+void PolyObject::rotateY() {
+	globalFunctions.rotateYPointVector(vertices);
+	updateCurveBuffer();
+}
+void PolyObject::rotateZ() {
+	globalFunctions.rotateZPointVector(vertices);
+	updateCurveBuffer();
+}
+void PolyObject::updateCurveBuffer() {
+	this->verts.clear();
+	for (auto& ptvector : vertices) {
+		verts.push_back(ptvector.getVec3());
+	}
+}
 
 std::vector<std::vector<PointVector>> PolyObject::triangulatePolygon(std::vector<PointVector> face) {
 	std::vector<std::vector<PointVector>> new_faces;
@@ -127,40 +138,40 @@ void PolyObject::triangulatePolyNet() {
 	faces = new_faces;
 }
 
-void PolyObject::pushFace(vector<PointVector> face)
-{
+void PolyObject::pushFace(vector<PointVector> face) {
 	faces.push_back(face);
 }
 
-void PolyObject::pushIndex(GLushort index)
-{
+void PolyObject::pushIndex(GLushort index) {
 	indices.push_back(index);
 }
 
-void PolyObject::pushVertice(PointVector vertice)
-{
+void PolyObject::pushVertice(PointVector vertice) {
 	vertices.push_back(vertice);
 	colors.push_back(PointVector(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-void PolyObject::pushNormal(PointVector normal)
-{
+void PolyObject::pushNormal(PointVector normal) {
 	glm::vec3 norm = glm::normalize(normal.getVec3());
 
 	normals.push_back(PointVector(norm.x, norm.y, norm.z, 0));
 }
 
-std::vector<PointVector> PolyObject::getVertices()
-{
+std::vector<PointVector> PolyObject::getVertices() {
 	return vertices;
 }
 
-std::vector<PointVector> PolyObject::getNormals()
-{
+std::vector<PointVector> PolyObject::getNormals() {
 	return normals;
 }
 
-std::vector<std::vector<PointVector>> PolyObject::getFaces()
-{
+std::vector<std::vector<PointVector>> PolyObject::getFaces() {
 	return faces;
+}
+std::vector<GLushort> PolyObject::getIndices() {
+	return indices;
+}
+
+void PolyObject::setVertices(std::vector<PointVector> in) {
+	vertices = in;
 }

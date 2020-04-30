@@ -27,6 +27,8 @@ public:
 	vector<PointVector> getVertices();
 	vector<PointVector> getNormals();
 	vector<vector<PointVector>> getFaces();
+	std::vector<GLushort> getIndices();
+	void setVertices(std::vector<PointVector> in);
 
 	// Push functions
 	void pushFace(std::vector<PointVector>);
@@ -59,6 +61,11 @@ private:
 	GLuint positionBuffer;
 	GLuint colorBuffer;
 	GLuint indexBuffer;
+
+	vector<glm::vec3> verts;
+	vector<glm::vec3> cols;
+
+	void updateCurveBuffer();
 };
 
 #endif // !POLY_OBJ

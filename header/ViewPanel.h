@@ -18,9 +18,16 @@ public:
 	void bezierRotX();
 	void bezierRotY();
 	void bezierRotZ();
+	void polyObjRotX();
+	void polyObjRotY();
+	void polyObjRotZ();
 
 	void zoomIn();
 	void zoomOut();
+
+	void addPoint(PointVector point);
+	void deletePoint(int position);
+	void translate(PointVector direction, int position);
 
 private:
 	std::stack <glm::mat4x4> matrixStack;

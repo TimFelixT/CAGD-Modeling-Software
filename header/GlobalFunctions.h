@@ -9,7 +9,7 @@
 #include "../libs/glm/glm/gtx/rotate_vector.hpp"
 #include "GlobalConstants.h"
 
-struct GlobalFunctions {
+static struct GlobalFunctions {
 	
 	void rotateXPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {

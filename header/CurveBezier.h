@@ -16,6 +16,11 @@ public:
 	void rotateY();
 	void rotateZ();
 
+
+	void translate(PointVector direction, int position);
+	void addPointEnd(PointVector point);
+	void deletePointAt(int position);
+
 private:
 	PolyObject& obj;
 
@@ -36,8 +41,8 @@ private:
 
 	//Berechnungsmethoden
 	void calcCurve();
-	int binomialCoefficiant(int, int);
-	int factorial(int);
+	long long binomialCoefficiant(long long, long long);
+	long long factorial(long long);
 
 	bool drawControlPoints = false; //TODO
 	void updateCurveBuffer();

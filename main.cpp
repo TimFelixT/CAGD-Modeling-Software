@@ -40,6 +40,14 @@ glm::vec3 center(0.0f, 0.0f, 0.0f);
 glm::vec3 up(0.0f, 1.0f, 0.0f);
 
 
+/** Temporary PointVectors **/
+PointVector pushx(0.25f, 0.0f, 0.0f, 0);
+PointVector pushy(0.0f, 0.25f, 0.0f, 0);
+PointVector pushz(0.0f, 0.0f, 0.25f, 0);
+PointVector add(-5.0f, -5.0f, 2.0f, 0);
+PointVector add2(-1.0f, 0.0f, 0.0f, 0);
+/*************************/
+
 /*
  Initialization. Should return true if everything is ok and false if something went wrong.
  */
@@ -120,14 +128,17 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         return;
     case 'x':
         viewPanel->bezierRotX();
+		viewPanel->polyObjRotX();
         init();
         break;
     case 'y':
         viewPanel->bezierRotY();
+		viewPanel->polyObjRotY();
         init();
         break;
     case 'z':
         viewPanel->bezierRotZ();
+		viewPanel->polyObjRotZ();
         init();
         break;
     case 'i':
@@ -136,6 +147,27 @@ void glutKeyboard(unsigned char keycode, int x, int y)
     case 'o':
         viewPanel->zoomOut();
         break;
+	case '1':
+		viewPanel->translate(pushx, 2);
+		init();
+		break;
+	case '2':
+		viewPanel->translate(pushy, 2);
+		init();
+		break;
+	case '3':
+		viewPanel->translate(pushz, 2);
+		init();
+		break;
+	case 'a':
+		viewPanel->addPoint(add);
+		add = add + add2;
+		init();
+		break;
+	case 'd':
+		viewPanel->deletePoint(2);
+		init();
+		break;
     }
     glutPostRedisplay();
 }

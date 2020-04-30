@@ -164,3 +164,13 @@ std::vector<std::vector<PointVector>> PolyObject::getFaces()
 {
 	return faces;
 }
+
+std::vector<GLushort> PolyObject::getIndices()
+{
+	return indices;
+}
+
+void PolyObject::setVertices(std::vector<PointVector> in) {
+	vertices = in;
+}
+

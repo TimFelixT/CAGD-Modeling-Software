@@ -19,6 +19,10 @@ public:
 	void bezierRotY();
 	void bezierRotZ();
 
+	void addPoint(PointVector point);
+	void deletePoint(int position);
+	void translate(PointVector direction, int position);
+
 	void zoomIn();
 	void zoomOut();
 

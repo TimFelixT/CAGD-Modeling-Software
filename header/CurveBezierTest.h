@@ -16,6 +16,10 @@ public:
 	void rotateY();
 	void rotateZ();
 
+	void translate(PointVector direction, int position);
+	void addPointEnd(PointVector point);
+	void deletePointAt(int position);
+
 private:
 	PolyObject& obj;
 
@@ -41,5 +45,6 @@ private:
 
 	bool drawControlPoints = false; //TODO
 	void updateCurveBuffer();
+	
 
 };

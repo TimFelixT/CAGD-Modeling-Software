@@ -19,6 +19,11 @@ CurveBezierTest::~CurveBezierTest() {
 void CurveBezierTest::calcCurve() {
 	std::vector<PointVector> controlVertices = obj.getVertices();
 
+	curveIndices.clear();
+	curveVertices.clear();
+	curveColors.clear();
+	curveBuffer.clear();
+
 	float curveLength = 0.0f;
 
 	for (int i = 0; i < controlVertices.size() - 1; i++)
@@ -62,6 +67,10 @@ void CurveBezierTest::calcCurve() {
 		}
 	}
 
+	for (int i = 0; i < curveVertices.size(); i++)
+	{
+		
+	}
 }
 
 int CurveBezierTest::factorial(int x) {
@@ -153,4 +162,26 @@ void CurveBezierTest::updateCurveBuffer() {
 	for (auto& ptvector : curveVertices) {
 		curveBuffer.push_back(ptvector.getVec3());
 	}
+}
+void CurveBezierTest::translate(PointVector direction, int position) {
+	std::vector<PointVector> vertices = obj.getVertices();
+	vertices.at(position) = vertices.at(position) + direction;
+	obj.setVertices(vertices);
+	initialized = false;
+}
+void CurveBezierTest::addPointEnd(PointVector point) {
+	obj.pushVertice(point);
+	std::vector<GLushort> indicesobj = obj.getIndices();
+	GLushort index = indicesobj.at(indicesobj.size() - 1);
+
+	obj.pushIndex(index);
+	obj.pushIndex(index + 1);
+	initialized = false;
+}
+void CurveBezierTest::deletePointAt(int position) {
+	std::vector<PointVector> vertices = obj.getVertices();
+	if (vertices.size() <= position || position < 0) return;
+	vertices.erase(vertices.cbegin() + position);
+	obj.setVertices(vertices);
+	initialized = false;
 }

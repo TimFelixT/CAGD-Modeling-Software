@@ -49,10 +49,6 @@ void ViewPanel::zoomOut() {
 	}
 }
 
-
-
-
-
 void ViewPanel::bezierRotX() {
 	bezier->rotateX();
 }
@@ -61,4 +57,13 @@ void ViewPanel::bezierRotY() {
 }
 void ViewPanel::bezierRotZ() {
 	bezier->rotateZ();
+}
+void ViewPanel::addPoint(PointVector point) {
+	bezier->addPointEnd(point);
+}
+void ViewPanel::deletePoint(int position) {
+	bezier->deletePointAt(position);
+}
+void ViewPanel::translate(PointVector direction, int position) {
+	bezier->translate(direction, position);
 }

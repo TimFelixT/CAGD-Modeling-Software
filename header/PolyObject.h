@@ -27,6 +27,9 @@ public:
 	vector<PointVector> getVertices();
 	vector<PointVector> getNormals();
 	vector<vector<PointVector>> getFaces();
+	std::vector<GLushort> getIndices();
+
+	void setVertices(std::vector<PointVector> in);
 
 	// Push functions
 	void pushFace(std::vector<PointVector>);

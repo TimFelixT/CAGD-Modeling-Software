@@ -3,7 +3,7 @@
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 	obj = new PolyObject("testObject.obj", prog);
-	bezier = new CurveBezierTest(*obj, prog);
+	bezier = new CurveBezier(*obj, prog);
 }
 
 ViewPanel::~ViewPanel() {

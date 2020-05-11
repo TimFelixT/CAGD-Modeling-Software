@@ -29,6 +29,8 @@ public:
 	void deletePoint(int position);
 	void translate(PointVector direction, int position);
 
+	void selectPoint(glm::vec3&, glm::vec3&);
+
 private:
 	std::stack <glm::mat4x4> matrixStack;
 	cg::GLSLProgram* program;

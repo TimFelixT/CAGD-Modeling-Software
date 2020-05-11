@@ -81,3 +81,7 @@ void ViewPanel::polyObjRotY() {
 void ViewPanel::polyObjRotZ() {
 	obj->rotateZ();
 }
+
+void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
+	obj->selectPoint(cameraPos, rayVector);
+}

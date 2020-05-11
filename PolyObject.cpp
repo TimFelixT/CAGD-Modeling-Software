@@ -2,6 +2,9 @@
 #include "header/ObjFileParser.h"
 #include "header/GlobalFunctions.h"
 #include <algorithm>
+#include <limits>
+
+
 //#include "header/GlobalFunctions.h"
 
 PolyObject::PolyObject()
@@ -174,4 +177,31 @@ std::vector<GLushort> PolyObject::getIndices() {
 
 void PolyObject::setVertices(std::vector<PointVector> in) {
 	vertices = in;
+}
+
+void PolyObject::selectPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
+
+	double distance = INFINITY;
+
+	//For each funktioniert in diesem Fall nicht
+	for (int i = 0; i < vertices.size(); i++) {
+
+		double numerator = glm::length(glm::cross((vertices.at(i).getVec3() - cameraPos), rayVector));
+		double denumerator = glm::length(rayVector);
+		double d = numerator / denumerator;
+
+		if (d < distance) {
+			distance = d;
+			selectedPointVector = &(vertices.at(i));
+		}
+	}
+
+	if (distance < globalConstants.SELECTION_OFFSET) {
+		cout << "Selected: " << selectedPointVector->xCoor << "   " << selectedPointVector->yCoor << "   " << selectedPointVector->zCoor << endl;
+	}
+	else {
+		selectedPointVector = nullptr;
+		cout << "No point Selected" << endl;
+	}
+
 }

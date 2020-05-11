@@ -47,6 +47,8 @@ public:
 	void rotateY();
 	void rotateZ();
 
+	void selectPoint(glm::vec3&, glm::vec3&);
+
 private:
 	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
 
@@ -66,6 +68,9 @@ private:
 	vector<glm::vec3> cols;
 
 	void updateCurveBuffer();
+
+
+	PointVector *selectedPointVector = nullptr;
 };
 
 #endif // !POLY_OBJ

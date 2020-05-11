@@ -131,7 +131,6 @@ void CurveBezier::draw(glm::mat4x4 mvp) {
 	program->use();
 	program->setUniform("mvp", mvp);
 
-
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	int size;

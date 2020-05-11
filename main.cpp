@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <vector>
 
@@ -13,12 +15,15 @@
 #include "include/GLTools.h"
 
 #include "header/ViewPanel.h"
+#include <math.h>
 
 
 // Standard window width
 const int WINDOW_WIDTH = 640;
+int windowWidth = WINDOW_WIDTH;
 // Standard window height
 const int WINDOW_HEIGHT = 480;
+int windowHeight = WINDOW_WIDTH;
 // GLUT window id/handle
 int glutID = 0;
 
@@ -34,6 +39,7 @@ float zFar = 40.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)
+float lookAtAngle = 45.0f;
 
 glm::vec3 eye(eyeX, eyeY, eyeZ);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
@@ -104,14 +110,16 @@ void glutDisplay()
 /*
  Resize callback.
  */
-void glutResize(int width, int height)
-{
+void glutResize(int width, int height) {
+	windowHeight = height;
+	windowWidth = width;
+
     // Division by zero is bad...
     height = height < 1 ? 1 : height;
     glViewport(0, 0, width, height);
 
     // Construct projection matrix.
-    projection = glm::perspective(45.0f, (float)width / height, zNear, zFar);
+    projection = glm::perspective(lookAtAngle, (float)width / height, zNear, zFar);
     //projection = glm::ortho(-5.0F * width / height, 5.0F * width / height, -5.0F, 5.0F, zNear, zFar);
 
     viewPanel->setProjection(projection);
@@ -172,6 +180,29 @@ void glutKeyboard(unsigned char keycode, int x, int y)
     glutPostRedisplay();
 }
 
+/*
+ Callback for mouse input.
+ */
+void glutMouse(int button, int state, int mousex, int mousey) {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+
+        //Tutorial http://antongerdelan.net/opengl/raycasting.html
+        float x = (2.0f * mousex) / windowWidth - 1.0f;
+        float y = 1.0f - (2.0f * mousey) / windowHeight;
+        float z = 1.0f;
+        
+        glm::vec3 ray_nds = glm::vec3(x, y, z);
+        glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
+        glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+        ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+        glm::vec3 ray_wor = (glm::inverse(view) * ray_eye);
+
+
+        viewPanel->selectPoint(eye, ray_wor);
+	}
+	glutPostRedisplay();
+}
+
 void endProgram() {
     delete viewPanel;
 }
@@ -223,6 +254,7 @@ int main(int argc, char** argv)
     glutIdleFunc(glutDisplay); // redisplay when idle
 
     glutKeyboardFunc(glutKeyboard);
+	glutMouseFunc(glutMouse);
 
     // init vertex-array-objects.
     bool result = init();

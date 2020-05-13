@@ -28,6 +28,7 @@ public:
 	void translate(PointVector direction, int position);
 
 	void selectPoint(glm::vec3&, glm::vec3&);
+	void dragPoint(glm::vec3&, glm::vec3&);
 
 	void showPoints();
 

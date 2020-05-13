@@ -47,7 +47,9 @@ public:
 	void rotateY();
 	void rotateZ();
 
+	//Methods to select and move a Point
 	void selectPoint(glm::vec3&, glm::vec3&);
+	bool dragPoint(glm::vec3&, glm::vec3&);
 
 	void togglePoints();
 
@@ -71,8 +73,9 @@ private:
 
 	void updateCurveBuffer();
 
-
+	//Needed for moving and selection of a point
 	PointVector *selectedPointVector = nullptr;
+	glm::vec3 selectedPointNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	bool showPoints = false;
 

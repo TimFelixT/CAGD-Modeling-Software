@@ -158,6 +158,9 @@ void CurveBezier::updateCurveBuffer() {
 		curveBuffer.push_back(ptvector.getVec3());
 	}
 }
+void CurveBezier::setInitialized(bool s) {
+	this->initialized = s;
+}
 
 void CurveBezier::translate(PointVector direction, int position) {
 	std::vector<PointVector> vertices = obj.getVertices();

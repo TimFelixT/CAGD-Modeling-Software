@@ -21,6 +21,10 @@ public:
 	void addPointEnd(PointVector point);
 	void deletePointAt(int position);
 
+	void updateCurveBuffer();
+	
+	void setInitialized(bool);
+
 private:
 	PolyObject& obj;
 
@@ -45,6 +49,4 @@ private:
 	long long factorial(long long);
 
 	bool drawControlPoints = false; //TODO
-	void updateCurveBuffer();
-
 };

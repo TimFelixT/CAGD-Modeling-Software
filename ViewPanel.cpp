@@ -71,6 +71,12 @@ void ViewPanel::polyObjRotZ() {
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
 	obj->selectPoint(cameraPos, rayVector);
 }
+void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
+	if (obj->dragPoint(cameraPos, rayVector)) {
+		bezier->updateCurveBuffer();
+		bezier->setInitialized(false);
+	}
+}
 void ViewPanel::showPoints() {
 	obj->togglePoints();
 }

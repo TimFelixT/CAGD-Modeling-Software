@@ -34,8 +34,8 @@ glm::mat4x4 projection;
 
 ViewPanel* viewPanel = new ViewPanel(&program);
 
-float zNear = 0.1f;
-float zFar = 40.0f;
+float zNear = 0.001f;
+float zFar = 80.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)
@@ -191,22 +191,27 @@ void glutKeyboard(unsigned char keycode, int x, int y)
  Callback for mouse input.
  */
 void glutMouse(int button, int state, int mousex, int mousey) {
+    //Tutorial http://antongerdelan.net/opengl/raycasting.html
+    float x = (2.0f * mousex) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * mousey) / windowHeight;
+    float z = 1.0f;
+
+    glm::vec3 ray_nds = glm::vec3(x, y, z);
+    glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
+    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+    glm::vec3 ray_wor = (glm::inverse(view) * ray_eye);
+    ray_wor = glm::normalize(ray_wor);
+
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-
-        //Tutorial http://antongerdelan.net/opengl/raycasting.html
-        float x = (2.0f * mousex) / windowWidth - 1.0f;
-        float y = 1.0f - (2.0f * mousey) / windowHeight;
-        float z = 1.0f;
-        
-        glm::vec3 ray_nds = glm::vec3(x, y, z);
-        glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
-        glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-        ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
-        glm::vec3 ray_wor = (glm::inverse(view) * ray_eye);
-
-
         viewPanel->selectPoint(eye, ray_wor);
 	}
+
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        viewPanel->dragPoint(eye, ray_wor);
+        init();
+    }
+    
 	glutPostRedisplay();
 }
 

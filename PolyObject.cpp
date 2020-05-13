@@ -182,7 +182,7 @@ void PolyObject::selectPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 
 	double distance = INFINITY;
 
-	//For each funktioniert in diesem Fall nicht
+	//For each würde in diesem Fall nicht funktionieren
 	for (int i = 0; i < vertices.size(); i++) {
 
 		double numerator = glm::length(glm::cross((vertices.at(i).getVec3() - cameraPos), rayVector));
@@ -196,13 +196,32 @@ void PolyObject::selectPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 	}
 
 	if (distance < globalConstants.SELECTION_OFFSET) {
+		selectedPointNormal = rayVector;
 		cout << "Selected: " << selectedPointVector->xCoor << "   " << selectedPointVector->yCoor << "   " << selectedPointVector->zCoor << endl;
-	}
-	else {
+	} else {
 		selectedPointVector = nullptr;
+		selectedPointNormal = glm::vec3(0.0f, 0.0f, 0.0f);
 		cout << "No point Selected" << endl;
 	}
 
+}
+
+bool PolyObject::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
+	double denominator = glm::dot(selectedPointNormal, rayVector);
+
+	if (glm::abs(denominator) > 0.00001) {
+		glm::vec3 difference = selectedPointVector->getVec3() - cameraPos;
+		double t = glm::dot(difference, selectedPointNormal) / denominator;
+
+		if (t > 0.0001) {
+			glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+			glm::vec3 newPoint = cameraPos + newRay;
+			selectedPointVector->setVec3(newPoint, 1);
+
+			return true;
+		}
+	}
+	return false;
 }
 
 void PolyObject::togglePoints() {

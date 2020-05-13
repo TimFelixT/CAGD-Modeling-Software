@@ -22,14 +22,14 @@ public:
 	void polyObjRotY();
 	void polyObjRotZ();
 
-	void zoomIn();
-	void zoomOut();
 
 	void addPoint(PointVector point);
 	void deletePoint(int position);
 	void translate(PointVector direction, int position);
 
 	void selectPoint(glm::vec3&, glm::vec3&);
+
+	void showPoints();
 
 private:
 	std::stack <glm::mat4x4> matrixStack;
@@ -38,7 +38,6 @@ private:
 	glm::mat4x4 projection;
 	glm::mat4x4 model;
 
-	float zoom = 1.0f;
 
 	CurveBezier* bezier;
 	PolyObject* obj;

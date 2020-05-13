@@ -150,10 +150,17 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         init();
         break;
     case 'i':
-        viewPanel->zoomIn();
+        eyeZ--;
+        eye.z = eyeZ;
+        init();
         break;
     case 'o':
-        viewPanel->zoomOut();
+        eyeZ++;
+        eye.z = eyeZ;
+        init();
+        break;
+    case 'p':
+        viewPanel->showPoints();
         break;
 	case '1':
 		viewPanel->translate(pushx, 2);

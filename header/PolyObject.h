@@ -49,6 +49,8 @@ public:
 
 	void selectPoint(glm::vec3&, glm::vec3&);
 
+	void togglePoints();
+
 private:
 	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
 
@@ -71,6 +73,9 @@ private:
 
 
 	PointVector *selectedPointVector = nullptr;
+
+	bool showPoints = false;
+
 };
 
 #endif // !POLY_OBJ

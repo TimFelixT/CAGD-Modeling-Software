@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <limits>
 
-
 //#include "header/GlobalFunctions.h"
 
 PolyObject::PolyObject()
@@ -76,8 +75,8 @@ void PolyObject::init() {
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
 
-
 }
+
 void PolyObject::draw(glm::mat4x4 mvp) {
 
 	program->use();
@@ -204,4 +203,8 @@ void PolyObject::selectPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 		cout << "No point Selected" << endl;
 	}
 
+}
+
+void PolyObject::togglePoints() {
+	this->showPoints = !this->showPoints;
 }

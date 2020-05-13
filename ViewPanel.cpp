@@ -20,8 +20,6 @@ void ViewPanel::draw() {
 	matrixStack.push(model);
 	matrixStack.push(model);
 
-	model = glm::scale(model, glm::vec3(zoom));
-
 	bezier->draw(projection * view * model);
 	obj->draw(projection * view * model);
 
@@ -37,18 +35,6 @@ void ViewPanel::setProjection(glm::mat4x4 p) {
 void ViewPanel::setView(glm::mat4x4 v) {
 	view = v;
 }
-
-void ViewPanel::zoomIn() {
-	if (zoom < 2.0f) {
-		zoom += 0.1f;
-	}
-}
-void ViewPanel::zoomOut() {
-	if (zoom > 0.2f) {
-		zoom -= 0.1f;
-	}
-}
-
 
 void ViewPanel::addPoint(PointVector point) {
 	bezier->addPointEnd(point);
@@ -84,4 +70,7 @@ void ViewPanel::polyObjRotZ() {
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
 	obj->selectPoint(cameraPos, rayVector);
+}
+void ViewPanel::showPoints() {
+	obj->togglePoints();
 }

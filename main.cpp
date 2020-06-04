@@ -34,6 +34,8 @@ glm::mat4x4 projection;
 
 ViewPanel* viewPanel = new ViewPanel(&program);
 
+float t = 0.5;
+
 float zNear = 0.001f;
 float zFar = 80.0f;
 float eyeX = 0.0f;
@@ -183,6 +185,26 @@ void glutKeyboard(unsigned char keycode, int x, int y)
 		viewPanel->deletePoint(2);
 		init();
 		break;
+    case '+':
+        t += 0.02;
+        if (t > 1) {
+            t = 1;
+        }
+        else {
+            viewPanel->drawStructure(t);
+            init();
+        }
+        break;
+    case '-':
+        t -= 0.02;
+        if (t < 0) {
+            t = 0;
+        }
+        else {
+            viewPanel->drawStructure(t);
+            init();
+        }
+        break;
     }
     glutPostRedisplay();
 }

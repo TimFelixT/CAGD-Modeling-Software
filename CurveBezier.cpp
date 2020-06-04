@@ -28,8 +28,7 @@ void CurveBezier::calcCurve() {
 
 	for (int i = 0; i < controlVertices.size() - 1; i++)
 	{
-		curveLength += abs(sqrt(pow(controlVertices[i + 1].xCoor - controlVertices[i].xCoor, 2) + pow(controlVertices[i + 1].yCoor 
-			- controlVertices[i].yCoor, 2) + pow(controlVertices[i + 1].zCoor - controlVertices[i].zCoor, 2)));
+		curveLength += abs(sqrt(pow(controlVertices[i + 1].xCoor - controlVertices[i].xCoor, 2) + pow(controlVertices[i + 1].yCoor - controlVertices[i].yCoor, 2) + pow(controlVertices[i + 1].zCoor - controlVertices[i].zCoor, 2)));
 	}
 
 
@@ -81,11 +80,51 @@ long long CurveBezier::binomialCoefficiant(long long n, long long k)
 	return factorial(n) / (factorial(k) * factorial(n - k));
 }
 
+void CurveBezier::calcCurveDeCasteljau() {
+	std::vector<PointVector> controlVertices = obj.getVertices();
+	PointVector p;
 
+	curveIndices.clear();
+	curveVertices.clear();
+	curveColors.clear();
+	curveBuffer.clear();
+
+	for (double t = 0; t < 1; t += 0.01) {
+		p = deCasteljau(controlVertices.size() - 1, 0, t, controlVertices);
+		//if (!(p.yCoor < -1 || p.yCoor > 2)) {
+			curveVertices.push_back(p);
+			curveBuffer.push_back(p.getVec3());
+		//}
+	}
+	
+
+	for (int i = 0; i <= curveVertices.size(); i++)
+	{
+		if (i != curveVertices.size() - 1) {
+			curveIndices.push_back(i);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+			curveIndices.push_back(i + 1);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+	}
+}
+
+std::vector<PointVector> CurveBezier::getVertices()
+{
+	return obj.getVertices();
+}
+
+PointVector CurveBezier::deCasteljau(int k, int i, double t0, std::vector<PointVector> P)
+{
+	if (k == 0)	return P[i];
+	
+	return  deCasteljau(k - 1, i, t0, P) * (1 - t0) + deCasteljau(k - 1, i + 1, t0, P) * t0;
+}
 
 void CurveBezier::init() {
 	if (!initialized) {
-		calcCurve();
+		//calcCurve();
+		calcCurveDeCasteljau();
 		initialized = true;
 	}
 

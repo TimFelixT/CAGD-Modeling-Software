@@ -3,15 +3,18 @@
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 	obj = new PolyObject("testObject.obj", prog);
+	deCasteljauStructure = new PolyObject(prog);
 	bezier = new CurveBezier(*obj, prog);
 }
 
 ViewPanel::~ViewPanel() {
+	delete deCasteljauStructure;
 	delete obj;
 	delete bezier;
 }
 
 void ViewPanel::init() {
+	deCasteljauStructure->init();
 	obj->init();
 	bezier->init();
 }
@@ -22,6 +25,7 @@ void ViewPanel::draw() {
 
 	bezier->draw(projection * view * model);
 	obj->draw(projection * view * model);
+	deCasteljauStructure->draw(projection * view * model);
 
 	model = matrixStack.top();
 	matrixStack.pop();
@@ -59,12 +63,15 @@ void ViewPanel::bezierRotZ() {
 
 
 void ViewPanel::polyObjRotX() {
+	deCasteljauStructure->rotateX();
 	obj->rotateX();
 }
 void ViewPanel::polyObjRotY() {
+	deCasteljauStructure->rotateY();
 	obj->rotateY();
 }
 void ViewPanel::polyObjRotZ() {
+	deCasteljauStructure->rotateZ();
 	obj->rotateZ();
 }
 
@@ -79,4 +86,29 @@ void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 }
 void ViewPanel::showPoints() {
 	obj->togglePoints();
+}
+
+void ViewPanel::drawStructure(double t) {
+	std::vector<PointVector>vertices = obj->getVertices();
+	std::vector<PointVector>empty;
+	deCasteljauStructure->setVertices(empty);
+
+	for (int i = 0; i < vertices.size() - 1; i++) {
+		for (int j = 0; j < vertices.size() - 1 - i; j++) {
+			vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
+			deCasteljauStructure->pushVertice(vertices[j]);
+		}
+	}
+
+	int k = 0;
+
+	for (int i = obj->getVertices().size() - 2; i > 0; i--)
+	{
+		for (int j = 0; j < i; j++) {
+			deCasteljauStructure->pushIndex(k);
+			deCasteljauStructure->pushIndex(k + 1);
+			k++;
+		}
+		k++;
+	}
 }

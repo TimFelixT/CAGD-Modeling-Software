@@ -1,3 +1,4 @@
+#include <math.h>
 #include "header/PointVector.h"
 using namespace std;
 
@@ -51,8 +52,8 @@ PointVector& PointVector::operator=(const PointVector& d) {
 PointVector operator*(PointVector& ptVector, float scalar) {
 	PointVector result;
 	result.xCoor = ptVector.xCoor * scalar;
-	result.yCoor = ptVector.xCoor * scalar;
-	result.zCoor = ptVector.xCoor * scalar;
+	result.yCoor = ptVector.yCoor * scalar;
+	result.zCoor = ptVector.zCoor * scalar;
 	result.homoCoor = ptVector.homoCoor * scalar;
 	if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
 	return result;
@@ -60,8 +61,8 @@ PointVector operator*(PointVector& ptVector, float scalar) {
 PointVector operator*(float scalar, PointVector& ptVector) {
 	PointVector result;
 	result.xCoor = ptVector.xCoor * scalar;
-	result.yCoor = ptVector.xCoor * scalar;
-	result.zCoor = ptVector.xCoor * scalar;
+	result.yCoor = ptVector.yCoor * scalar;
+	result.zCoor = ptVector.zCoor * scalar;
 	result.homoCoor = ptVector.homoCoor * scalar;
 	if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
 	return result;
@@ -136,4 +137,16 @@ void PointVector::printHomoCoorWarning(string methode) {
 	cout << "Methode: " << methode << endl;
 	cout << "Warnung bei homogener Komponenten(" << this->homoCoor << ") der Koordinate X:" << this->xCoor << " Y:" << this->yCoor << " Z:" << this->zCoor << endl;
 	cout << "**********" << endl;
+}
+
+//Normalisieren
+void PointVector::normalize() {
+	if(homoCoor == 1){
+		printHomoCoorWarning("Punkt kann nicht normalisiert werden!");
+	}
+	double length = sqrt(pow(xCoor, 2) + pow(yCoor, 2) + pow(zCoor, 2));
+	
+	xCoor /= length;
+	yCoor /= length;
+	zCoor /= length;
 }

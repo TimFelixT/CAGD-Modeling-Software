@@ -32,6 +32,8 @@ public:
 
 	void showPoints();
 
+	void drawStructure(double t);
+
 private:
 	std::stack <glm::mat4x4> matrixStack;
 	cg::GLSLProgram* program;
@@ -42,4 +44,5 @@ private:
 
 	CurveBezier* bezier;
 	PolyObject* obj;
+	PolyObject* deCasteljauStructure;
 };

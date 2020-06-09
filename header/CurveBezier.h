@@ -46,6 +46,9 @@ private:
 	//Berechnungsmethoden
 	void calcCurve();
 	long long binomialCoefficiant(long long, long long);
+	void calcCurveDeCasteljau();
+	std::vector<PointVector> getVertices();
+	PointVector deCasteljau(int k, int i, double t0, std::vector<PointVector> P);
 	long long factorial(long long);
 
 	bool drawControlPoints = false; //TODO

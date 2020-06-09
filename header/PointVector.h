@@ -33,4 +33,5 @@ public:
 
 private:
 	void printHomoCoorWarning(string);
+	void normalize();
 };

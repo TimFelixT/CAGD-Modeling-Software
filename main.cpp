@@ -16,6 +16,7 @@
 
 #include "header/ViewPanel.h"
 #include <math.h>
+#include "main.h"
 
 
 // Standard window width

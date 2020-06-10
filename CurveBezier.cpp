@@ -35,9 +35,7 @@ void CurveBezier::calcCurve() {
 	float currentPoint = 0.0f;
 	float currentCurveLength = 0.0f;
 
-	while (currentPoint < curveLength)
-	{
-		float t = currentPoint / curveLength;
+	for (float t = 0; t < 1; t += globalConstants.BEZIER_ACCURACY) {
 
 		int n = controlVertices.size() - 1;
 		glm::vec3 point(0.0f, 0.0f, 0.0f);
@@ -50,8 +48,6 @@ void CurveBezier::calcCurve() {
 		PointVector p(point, 0);
 		curveVertices.push_back(p);
 		curveBuffer.push_back(p.getVec3());
-
-		currentPoint += globalConstants.BEZIER_ACCURACY;
 	}
 
 
@@ -123,8 +119,8 @@ PointVector CurveBezier::deCasteljau(int k, int i, double t0, std::vector<PointV
 
 void CurveBezier::init() {
 	if (!initialized) {
-		//calcCurve();
-		calcCurveDeCasteljau();
+		calcCurve();
+		//calcCurveDeCasteljau();
 		initialized = true;
 	}
 

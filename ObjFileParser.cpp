@@ -9,7 +9,7 @@ bool isNormal(string line) {
 }
 
 bool isFace(string line) {
-	return regex_match(line, regex("(\\s*f\\s*((\\d+)+/\\d+\\s*)+)\\s*"));
+	return regex_match(line, regex("(\\s*f\\s*((\\d+)((/\\d+\\s*)*)\\s*)+)"));
 }
 
 bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
@@ -67,62 +67,23 @@ PointVector ObjFileParser::parseVertice(string line) {
 	return vertice;
 }
 
-//PointVector ObjFileParser::parseFaceVertice(char* line) {
-//	stringstream stream;
-//	const char* delimiter = "/";
-//	char* tok;
-//	char* next_token;
-//	PointVector vertice;
-//	unsigned c = 0;
-//
-//	tok = strtok_s(line, delimiter, &next_token);
-//
-//	while (tok != 0) {
-//		int nr;
-//
-//		stream << tok;
-//		stream >> nr;
-//		vertice[c] = nr;
-//		c++;
-//		if (c == 2) {
-//			c = 1;
-//		}
-//		stream.str("");
-//		stream.clear();
-//		tok = strtok_s(0, delimiter, &next_token);
-//	}
-//	return vertice;
-//}
-
 
 void ObjFileParser::parseFace(string line, PolyObject *obj)
 {
 	smatch m;
-	vector<string> vals;
+	vector<char> verts;
+	vector<char> texture_verts;
+	vector<char> normal_verts;
+
+	regex face_reg = regex("(-?\\d+)((/(-?\\d+))*)");
 
 	//Extract all the values
-	while (regex_search(line, m, regex("(-?\\d+(\\.\\d+)*)"))) {
-		vals.push_back(m.str(1));
+	while (regex_search(line, m, face_reg)) {
+		verts.push_back(m.str(0)[0]);
 		line = m.suffix().str();
 	}
 
-	for (auto val : vals) {
-		obj->pushIndex(stoi(val));
+	for (auto val : verts) {
+		obj->pushIndex(val - '0');
 	}
-	/*const char* delimiter = " ";
-	char* tok;
-	char* next_token;
-	vector<PointVector> faces;
-
-	vector<char> cstr(line.c_str(), line.c_str() + line.size() + 1);
-
-	tok = strtok_s(cstr.data(), delimiter, &next_token);
-
-	while (tok != 0) {
-		tok = strtok_s(0, delimiter, &next_token);
-		if (tok != 0) {
-			faces.push_back(parseFaceVertice(tok));
-		}
-	}
-	return faces;*/
 }

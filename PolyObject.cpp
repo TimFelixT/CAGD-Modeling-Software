@@ -8,14 +8,29 @@
 
 PolyObject::PolyObject()
 {
+	color = PointVector();
+	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
 PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog)
 {
+	color = PointVector();
+
+	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
 PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog)
 {
+	color = PointVector();
+
+	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
 	ObjFileParser parser;
 	parser.parseObjectFile(filename, this);
 }
@@ -82,12 +97,16 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	program->use();
 	program->setUniform("mvp", mvp);
 
+	glPointSize(5.0f);
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	int size;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 	glDrawElements(GL_LINES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+	if(showPoints)
+		glDrawElements(GL_POINTS, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+
 	glBindVertexArray(0);
 }
 
@@ -148,15 +167,33 @@ void PolyObject::pushIndex(GLushort index) {
 	indices.push_back(index);
 }
 
+void PolyObject::clear()
+{
+	vertices.clear();
+	colors.clear();
+	indices.clear();
+	faces.clear();
+	normals.clear();
+}
+
 void PolyObject::pushVertice(PointVector vertice) {
 	vertices.push_back(vertice);
-	colors.push_back(PointVector(0.0f, 1.0f, 0.0f, 0.0f));
+}
+
+void PolyObject::pushColor()
+{
+	colors.push_back(color);
 }
 
 void PolyObject::pushNormal(PointVector normal) {
 	glm::vec3 norm = glm::normalize(normal.getVec3());
 
 	normals.push_back(PointVector(norm.x, norm.y, norm.z, 0));
+}
+
+PointVector PolyObject::getColor()
+{
+	return color;
 }
 
 std::vector<PointVector> PolyObject::getVertices() {
@@ -226,4 +263,9 @@ bool PolyObject::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 
 void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
+}
+
+void PolyObject::setPoints(bool show)
+{
+	showPoints = show;
 }

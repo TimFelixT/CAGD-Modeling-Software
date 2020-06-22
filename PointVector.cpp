@@ -15,18 +15,21 @@ PointVector::PointVector(float x, float y, float z, float homo) {
 	this->yCoor = y;
 	this->zCoor = z;
 	this->homoCoor = homo;
+	this->weight = 1;
 }
 PointVector::PointVector(glm::vec3& vec, float homo) {
 	this->xCoor = vec.x;
 	this->yCoor = vec.y;
 	this->zCoor = vec.z;
 	this->homoCoor = homo;
+	this->weight = 1;
 }
 PointVector::PointVector(glm::vec4& vec) {
 	this->xCoor = vec.x;
 	this->yCoor = vec.y;
 	this->zCoor = vec.z;
 	this->homoCoor = vec.w;
+	this->weight = 1;
 }
 
 //Copy-Konstruktor
@@ -35,6 +38,7 @@ PointVector::PointVector(const PointVector& cp) {
 	this->yCoor = cp.yCoor;
 	this->zCoor = cp.zCoor;
 	this->homoCoor = cp.homoCoor;
+	this->weight = cp.weight;
 }
 
 //Zuweisungsoperator
@@ -44,6 +48,7 @@ PointVector& PointVector::operator=(const PointVector& d) {
 		this->yCoor = d.yCoor;
 		this->zCoor = d.zCoor;
 		this->homoCoor = d.homoCoor;
+		this->weight = d.weight;
 	}
 	return *this;
 }
@@ -55,7 +60,7 @@ PointVector operator*(PointVector& ptVector, float scalar) {
 	result.yCoor = ptVector.yCoor * scalar;
 	result.zCoor = ptVector.zCoor * scalar;
 	result.homoCoor = ptVector.homoCoor * scalar;
-	if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
+	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
 	return result;
 }
 PointVector operator*(float scalar, PointVector& ptVector) {
@@ -64,7 +69,7 @@ PointVector operator*(float scalar, PointVector& ptVector) {
 	result.yCoor = ptVector.yCoor * scalar;
 	result.zCoor = ptVector.zCoor * scalar;
 	result.homoCoor = ptVector.homoCoor * scalar;
-	if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
+	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
 	return result;
 }
 
@@ -142,7 +147,7 @@ void PointVector::printHomoCoorWarning(string methode) {
 //Normalisieren
 void PointVector::normalize() {
 	if(homoCoor == 1){
-		printHomoCoorWarning("Punkt kann nicht normalisiert werden!");
+		//printHomoCoorWarning("Punkt kann nicht normalisiert werden!");
 	}
 	double length = sqrt(pow(xCoor, 2) + pow(yCoor, 2) + pow(zCoor, 2));
 	

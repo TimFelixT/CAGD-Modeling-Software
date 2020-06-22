@@ -206,6 +206,29 @@ void glutKeyboard(unsigned char keycode, int x, int y)
             init();
         }
         break;
+    case 'm':
+        viewPanel->degreeIncrease();
+        init();
+        break;    
+    case 'n':
+        viewPanel->derivative();
+        init();
+        break;    
+    case 'b':
+        viewPanel->toggleBezierCurve();
+        //init();
+        break;    
+    case 'r':
+        viewPanel->toggleBezierCurve();
+        //init();
+        break;
+    //case 'k':
+    //    vector<double> ts;
+    //    ts.push_back(0.25f);
+    //    ts.push_back(0.75f);
+    //    viewPanel->drawStructures(ts);
+    //    init();
+    //    break;
     }
     glutPostRedisplay();
 }
@@ -248,8 +271,6 @@ int main(int argc, char** argv)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(40, 40);
     glutInit(&argc, argv);
-
-
 
     // GLUT: Create a window and opengl context (version 4.3 core profile).
     glutInitContextVersion(4, 3);

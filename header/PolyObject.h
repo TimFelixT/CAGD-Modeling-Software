@@ -24,6 +24,7 @@ public:
 	~PolyObject();
 
 	// Getters
+	PointVector getColor();
 	vector<PointVector> getVertices();
 	vector<PointVector> getNormals();
 	vector<vector<PointVector>> getFaces();
@@ -33,8 +34,11 @@ public:
 	// Push functions
 	void pushFace(std::vector<PointVector>);
 	void pushVertice(PointVector);
+	void pushColor();
 	void pushNormal(PointVector);
 	void pushIndex(GLushort index);
+
+	void clear();
 
 	void triangulatePolyNet();
 
@@ -52,9 +56,13 @@ public:
 	bool dragPoint(glm::vec3&, glm::vec3&);
 
 	void togglePoints();
+	void setPoints(bool);
+
 
 private:
 	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
+	PointVector color;
+
 
 	vector<PointVector> vertices;
 	vector<PointVector> normals;
@@ -79,6 +87,7 @@ private:
 
 	bool showPoints = false;
 
+	friend class Gui;
 };
 
 #endif // !POLY_OBJ

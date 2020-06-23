@@ -73,7 +73,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)libs\glew-1.13.0\include;$(ProjectDir)libs\glm-0.9.7.2;$(ProjectDir)libs\glfw-3.1.2.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)libs\glew-1.13.0\include;$(ProjectDir)libs\glm-0.9.7.2;$(ProjectDir)libs\ultralight\include;$(ProjectDir)libs\glfw-3.1.2.bin.WIN64\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)libs\glfw-3.1.2.bin.WIN64\lib-vc2013;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,8 +112,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;libglew32d.lib;freeglut_staticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>libs/freeglut/lib/vs2015_x64/Debug;libs/glew/lib/vs2015_x64/Debug;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;libglew32d.lib;freeglut_staticd.lib;Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs/freeglut/lib/vs2015_x64/Debug;libs/ultralight/lib;libs/glew/lib/vs2015_x64/Debug</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -165,8 +165,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bernstein.cpp" />
     <ClCompile Include="CurveBezier.cpp" />
+    <ClCompile Include="DeCasteljau.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
+    <ClCompile Include="Gui.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjFileParser.cpp" />
     <ClCompile Include="PointVector.cpp" />
@@ -174,10 +177,14 @@
     <ClCompile Include="ViewPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\Bernstein.h" />
+    <ClInclude Include="header\Bezier_Operations.h" />
     <ClInclude Include="header\Colors.h" />
     <ClInclude Include="header\CurveBezier.h" />
+    <ClInclude Include="header\DeCasteljau.h" />
     <ClInclude Include="header\GlobalConstants.h" />
     <ClInclude Include="header\GlobalFunctions.h" />
+    <ClInclude Include="header\Gui.h" />
     <ClInclude Include="header\ObjFileParser.h" />
     <ClInclude Include="header\PointVector.h" />
     <ClInclude Include="header\PolyObject.h" />
@@ -186,6 +193,22 @@
     <ClInclude Include="include\GLTools.h" />
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="assets\gui.html">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)/assets</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="libs\ultralight\bin\AppCore.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="libs\ultralight\bin\Ultralight.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="libs\ultralight\bin\UltralightCore.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="libs\ultralight\bin\WebCore.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="shader\simple.frag" />
     <None Include="shader\simple.vert" />
   </ItemGroup>

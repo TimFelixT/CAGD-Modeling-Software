@@ -30,6 +30,7 @@ public:
 	float yCoor;
 	float zCoor;
 	float homoCoor;
+	float weight = 1;
 
 private:
 	void printHomoCoorWarning(string);

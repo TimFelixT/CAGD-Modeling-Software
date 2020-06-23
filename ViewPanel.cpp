@@ -2,30 +2,74 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	obj = new PolyObject("testObject.obj", prog);
-	deCasteljauStructure = new PolyObject(prog);
-	bezier = new CurveBezier(*obj, prog);
+	PolyObject* obj = new PolyObject("testObject.obj", prog);
+	bernstein_bezier = new Bernstein(obj, prog);
+	deCasteljau_bezier = new DeCasteljau(obj, prog);
+	bernstein_bezier->setControlStructure(new PolyObject(program));
+	deCasteljau_bezier->setControlStructure(new PolyObject(program));
 }
 
 ViewPanel::~ViewPanel() {
-	delete deCasteljauStructure;
-	delete obj;
-	delete bezier;
+	delete bernstein_bezier;
+	delete deCasteljau_bezier;
 }
 
 void ViewPanel::init() {
-	deCasteljauStructure->init();
-	obj->init();
-	bezier->init();
+	bernstein_bezier->init();
+	deCasteljau_bezier->init();
+	bernstein_bezier->getControlStructure()->init();
+	bernstein_bezier->getControlStructure()->setPoints(true);
+	bernstein_bezier->getDerativeStructure()->init();
+	bernstein_bezier->getDeCasteljauStructure()->init();
+	deCasteljau_bezier->getControlStructure()->init();
+	deCasteljau_bezier->getControlStructure()->setPoints(true);
+	deCasteljau_bezier->getDerativeStructure()->init();
+	deCasteljau_bezier->getDeCasteljauStructure()->init();
+}
+
+void ViewPanel::toggleBezierCurve() {
+	bezier_toggle = !bezier_toggle;
+}
+
+void ViewPanel::degreeIncrease() {
+	bernstein_bezier->degree_increase();
+}
+
+void ViewPanel::subdivision() {
+	vector<float> t_vec;
+	t_vec.push_back(0.25f);
+	t_vec.push_back(0.75f);
+
+	//bernstein_bezier->bezier_subdivision(t_vec);
+}
+
+void ViewPanel::derivative() {
+	deCasteljau_bezier->toggleDerivative();
+	bernstein_bezier->toggleDerivative();
 }
 
 void ViewPanel::draw() {
 	matrixStack.push(model);
 	matrixStack.push(model);
 
-	bezier->draw(projection * view * model);
-	obj->draw(projection * view * model);
-	deCasteljauStructure->draw(projection * view * model);
+	if (bezier_toggle) {
+		bernstein_bezier->draw(projection * view * model);
+		bernstein_bezier->getControlStructure()->draw(projection * view * model);
+		bernstein_bezier->getDeCasteljauStructure()->draw(projection * view * model);
+
+		if (bernstein_bezier->isDerivative() == 1) {
+			bernstein_bezier->getDerativeStructure()->draw(projection * view * model);
+		}
+	}
+	else {
+		deCasteljau_bezier->draw(projection * view * model);
+		deCasteljau_bezier->getControlStructure()->draw(projection * view * model);
+		deCasteljau_bezier->getDeCasteljauStructure()->draw(projection * view * model);
+
+		if (deCasteljau_bezier->isDerivative() == 1) {
+			deCasteljau_bezier->getDerativeStructure()->draw(projection * view * model);
+		}
+	}
 
 	model = matrixStack.top();
 	matrixStack.pop();
@@ -41,68 +85,117 @@ void ViewPanel::setView(glm::mat4x4 v) {
 }
 
 void ViewPanel::addPoint(PointVector point) {
-	bezier->addPointEnd(point);
+	bernstein_bezier->addPointEnd(point);
 }
 void ViewPanel::deletePoint(int position) {
-	bezier->deletePointAt(position);
+	bernstein_bezier->deletePointAt(position);
 }
 void ViewPanel::translate(PointVector direction, int position) {
-	bezier->translate(direction, position);
+	bernstein_bezier->translate(direction, position);
 }
 
 
 void ViewPanel::bezierRotX() {
-	bezier->rotateX();
+	bernstein_bezier->rotateX();
 }
 void ViewPanel::bezierRotY() {
-	bezier->rotateY();
+	bernstein_bezier->rotateY();
 }
 void ViewPanel::bezierRotZ() {
-	bezier->rotateZ();
+	bernstein_bezier->rotateZ();
 }
 
 
 void ViewPanel::polyObjRotX() {
-	deCasteljauStructure->rotateX();
-	obj->rotateX();
+	if (bezier_toggle) {
+		bernstein_bezier->rotateX();
+		bernstein_bezier->getControlStructure()->rotateX();
+		bernstein_bezier->getDeCasteljauStructure()->rotateX();
+		bernstein_bezier->getDerativeStructure()->rotateX();
+	}
+	else {
+		deCasteljau_bezier->rotateX();
+		deCasteljau_bezier->getControlStructure()->rotateX();
+		deCasteljau_bezier->getDeCasteljauStructure()->rotateX();
+		deCasteljau_bezier->getDerativeStructure()->rotateX();
+	}
 }
 void ViewPanel::polyObjRotY() {
-	deCasteljauStructure->rotateY();
-	obj->rotateY();
+	if (bezier_toggle) {
+		bernstein_bezier->rotateY();
+		bernstein_bezier->getControlStructure()->rotateY();
+		bernstein_bezier->getDeCasteljauStructure()->rotateY();
+		bernstein_bezier->getDerativeStructure()->rotateY();
+	}
+	else {
+		deCasteljau_bezier->rotateY();
+		deCasteljau_bezier->getControlStructure()->rotateY();
+		deCasteljau_bezier->getDeCasteljauStructure()->rotateY();
+		deCasteljau_bezier->getDerativeStructure()->rotateY();
+	}
 }
 void ViewPanel::polyObjRotZ() {
-	deCasteljauStructure->rotateZ();
-	obj->rotateZ();
+	if (bezier_toggle) {
+		bernstein_bezier->rotateZ();
+		bernstein_bezier->getControlStructure()->rotateZ();
+		bernstein_bezier->getDeCasteljauStructure()->rotateZ();
+		bernstein_bezier->getDerativeStructure()->rotateZ();
+	}
+	else {
+		deCasteljau_bezier->rotateZ();
+		deCasteljau_bezier->getControlStructure()->rotateZ();
+		deCasteljau_bezier->getDeCasteljauStructure()->rotateZ();
+		deCasteljau_bezier->getDerativeStructure()->rotateZ();
+	}
 }
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
-	obj->selectPoint(cameraPos, rayVector);
+	if (bezier_toggle)
+		bernstein_bezier->getControlStructure()->selectPoint(cameraPos, rayVector);
+	else
+		deCasteljau_bezier->getControlStructure()->selectPoint(cameraPos, rayVector);
 }
 void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
-	if (obj->dragPoint(cameraPos, rayVector)) {
-		bezier->updateCurveBuffer();
-		bezier->setInitialized(false);
+	if (bezier_toggle) {
+		if (bernstein_bezier->getControlStructure()->dragPoint(cameraPos, rayVector)) {
+			bernstein_bezier->updateCurveBuffer();
+			bernstein_bezier->setInitialized(false);
+		}
 	}
 }
 void ViewPanel::showPoints() {
-	obj->togglePoints();
+	if (bezier_toggle)
+		bernstein_bezier->getControlStructure()->togglePoints();
+	else
+		deCasteljau_bezier->getControlStructure()->togglePoints();
 }
 
 void ViewPanel::drawStructure(double t) {
-	std::vector<PointVector>vertices = obj->getVertices();
+	std::vector<PointVector>vertices;
 	std::vector<PointVector>empty;
+	PolyObject* deCasteljauStructure;
+	if (bezier_toggle) {
+		deCasteljauStructure = bernstein_bezier->getDeCasteljauStructure();
+		vertices = bernstein_bezier->getControlVertices();
+	}
+	else {
+		deCasteljauStructure = deCasteljau_bezier->getDeCasteljauStructure();
+		vertices = deCasteljau_bezier->getControlVertices();
+	}
+
 	deCasteljauStructure->setVertices(empty);
 
 	for (int i = 0; i < vertices.size() - 1; i++) {
 		for (int j = 0; j < vertices.size() - 1 - i; j++) {
 			vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
 			deCasteljauStructure->pushVertice(vertices[j]);
+			deCasteljauStructure->pushColor();
 		}
 	}
 
 	int k = 0;
 
-	for (int i = obj->getVertices().size() - 2; i > 0; i--)
+	for (int i = vertices.size() - 2; i > 0; i--)
 	{
 		for (int j = 0; j < i; j++) {
 			deCasteljauStructure->pushIndex(k);
@@ -112,3 +205,46 @@ void ViewPanel::drawStructure(double t) {
 		k++;
 	}
 }
+
+
+//void ViewPanel::drawStructures(vector<double> t_vec) {
+//	std::vector<PointVector>vertices = obj->getVertices();
+//	std::vector<PointVector>empty;
+//	PolyObject* deCasteljauStructure = bernstein_bezier->getControlStructure();
+//
+//	for (int r = 0; r < t_vec.size(); r++) {
+//		PolyObject* structure = new PolyObject(program);
+//		for (int i = 0; i < vertices.size() - 1; i++) {
+//			PointVector vertice;
+//			//for (int j = 0; j < vertices.size() - 1 - i; j++) {
+//			//	vertices[j] = (vertices[j] * (1 - t_vec.at(r))) + (vertices[j + 1] * t_vec.at(r));
+//			//	structure->pushVertice(vertices[j]);
+//			//	structure->pushColor();
+//			//}
+//
+//			for (int k = 0; k < vertices.size() - 1; k++) {
+//				//vertices[k] = vertices[k] * ();
+//				structure->pushVertice(vertices[k]);
+//
+//			}
+//
+//		}
+//		deCasteljauStructures.push_back(structure);
+//		vertices = obj->getVertices();
+//	}
+//
+//	int k = 0;
+//
+//	for (auto* structure : deCasteljauStructures) {
+//		for (int i = obj->getVertices().size() - 2; i > 0; i--)
+//		{
+//			for (int j = 0; j < i; j++) {
+//				structure->pushIndex(k);
+//				structure->pushIndex(k + 1);
+//				k++;
+//			}
+//			k++;
+//		}
+//		k = 0;
+//	}
+//}

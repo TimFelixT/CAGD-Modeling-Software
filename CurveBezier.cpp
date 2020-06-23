@@ -4,7 +4,8 @@
 
 
 
-CurveBezier::CurveBezier(PolyObject& pobj, cg::GLSLProgram* prog) : program(prog), obj(pobj) {
+CurveBezier::CurveBezier(PolyObject* pobj, cg::GLSLProgram* prog) : program(prog), obj(pobj) {
+	d_obj = new PolyObject(program);
 }
 
 CurveBezier::~CurveBezier() {
@@ -14,112 +15,33 @@ CurveBezier::~CurveBezier() {
 	glDeleteBuffers(1, &positionBuffer);
 }
 
-
-
-void CurveBezier::calcCurve() {
-	std::vector<PointVector> controlVertices = obj.getVertices();
-
-	curveIndices.clear();
-	curveVertices.clear();
-	curveColors.clear();
-	curveBuffer.clear();
-
-	float curveLength = 0.0f;
-
-	for (int i = 0; i < controlVertices.size() - 1; i++)
-	{
-		curveLength += abs(sqrt(pow(controlVertices[i + 1].xCoor - controlVertices[i].xCoor, 2) + pow(controlVertices[i + 1].yCoor - controlVertices[i].yCoor, 2) + pow(controlVertices[i + 1].zCoor - controlVertices[i].zCoor, 2)));
-	}
-
-
-	float currentPoint = 0.0f;
-	float currentCurveLength = 0.0f;
-
-	for (float t = 0; t < 1; t += globalConstants.BEZIER_ACCURACY) {
-
-		int n = controlVertices.size() - 1;
-		glm::vec3 point(0.0f, 0.0f, 0.0f);
-
-		for (int i = 0; i <= n; i++)
-		{
-			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i].getVec3();
-		}
-
-		PointVector p(point, 0);
-		curveVertices.push_back(p);
-		curveBuffer.push_back(p.getVec3());
-	}
-
-
-	for (int i = 0; i < curveVertices.size(); i++)
-	{
-		if (i != curveVertices.size() - 1) {
-			curveIndices.push_back(i);
-			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-			if (i < curveIndices.size())
-				curveIndices.push_back(i + 1);
-			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-		}
-	}
-
-}
-
-long long CurveBezier::factorial(long long x) {
-	if (x > 1)
-		return x * factorial(x - 1);
-	else
-		return 1;
-}
-
-long long CurveBezier::binomialCoefficiant(long long n, long long k)
+std::vector<PointVector> CurveBezier::getControlVertices()
 {
-	return factorial(n) / (factorial(k) * factorial(n - k));
+	return obj->getVertices();
 }
 
-void CurveBezier::calcCurveDeCasteljau() {
-	std::vector<PointVector> controlVertices = obj.getVertices();
-	PointVector p;
-
-	curveIndices.clear();
-	curveVertices.clear();
-	curveColors.clear();
-	curveBuffer.clear();
-
-	for (double t = 0; t < 1; t += 0.01) {
-		p = deCasteljau(controlVertices.size() - 1, 0, t, controlVertices);
-		//if (!(p.yCoor < -1 || p.yCoor > 2)) {
-			curveVertices.push_back(p);
-			curveBuffer.push_back(p.getVec3());
-		//}
-	}
-	
-
-	for (int i = 0; i <= curveVertices.size(); i++)
-	{
-		if (i != curveVertices.size() - 1) {
-			curveIndices.push_back(i);
-			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-			curveIndices.push_back(i + 1);
-			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-		}
-	}
-}
-
-std::vector<PointVector> CurveBezier::getVertices()
+PolyObject* CurveBezier::getDeCasteljauStructure()
 {
-	return obj.getVertices();
+	return deCasteljauStructure;
+}
+PolyObject* CurveBezier::getControlStructure()
+{
+	return obj;
+}
+PolyObject* CurveBezier::getDerativeStructure()
+{
+	return d_obj;
 }
 
-PointVector CurveBezier::deCasteljau(int k, int i, double t0, std::vector<PointVector> P)
+void CurveBezier::setControlStructure(PolyObject* obj)
 {
-	if (k == 0)	return P[i];
-	
-	return  deCasteljau(k - 1, i, t0, P) * (1 - t0) + deCasteljau(k - 1, i + 1, t0, P) * t0;
+	deCasteljauStructure = obj;
 }
 
 void CurveBezier::init() {
 	if (!initialized) {
 		calcCurve();
+		bezier_derivative();
 		//calcCurveDeCasteljau();
 		initialized = true;
 	}
@@ -161,7 +83,9 @@ void CurveBezier::init() {
 
 
 }
+
 void CurveBezier::draw(glm::mat4x4 mvp) {
+	//derivatives->draw(mvp);
 
 	program->use();
 	program->setUniform("mvp", mvp);
@@ -174,6 +98,21 @@ void CurveBezier::draw(glm::mat4x4 mvp) {
 	glBindVertexArray(0);
 }
 
+void CurveBezier::toggleDerivative()
+{
+	derivative ^= 1;
+}
+
+unsigned int CurveBezier::isDerivative()
+{
+	return derivative;
+}
+
+
+void divide(CurveBezier* bezier, vector<float> t_list) {
+	vector<PolyObject> curves(t_list.size() + 1);
+
+}
 
 void CurveBezier::rotateX() {
 	globalFunctions.rotateXPointVector(curveVertices);
@@ -198,23 +137,23 @@ void CurveBezier::setInitialized(bool s) {
 }
 
 void CurveBezier::translate(PointVector direction, int position) {
-	std::vector<PointVector> vertices = obj.getVertices();
+	std::vector<PointVector> vertices = obj->getVertices();
 	vertices.at(position) = vertices.at(position) + direction;
-	obj.setVertices(vertices);
+	obj->setVertices(vertices);
 	initialized = false;
 }
 void CurveBezier::addPointEnd(PointVector point) {
-	obj.pushVertice(point);
-	std::vector<GLushort> indicesobj = obj.getIndices();
+	obj->pushVertice(point);
+	std::vector<GLushort> indicesobj = obj->getIndices();
 	GLushort index = indicesobj.at(indicesobj.size() - 1);
-	obj.pushIndex(index);
-	obj.pushIndex(index + 1);
+	obj->pushIndex(index);
+	obj->pushIndex(index + 1);
 	initialized = false;
 }
 void CurveBezier::deletePointAt(int position) {
-	std::vector<PointVector> vertices = obj.getVertices();
+	std::vector<PointVector> vertices = obj->getVertices();
 	if (vertices.size() <= position || position < 0) return;
 	vertices.erase(vertices.cbegin() + position);
-	obj.setVertices(vertices);
+	obj->setVertices(vertices);
 	initialized = false;
 }

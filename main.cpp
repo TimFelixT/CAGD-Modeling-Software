@@ -18,6 +18,9 @@
 #include <math.h>
 #include "main.h"
 
+#include "header/Gui.h"
+#include <thread>
+
 
 // Standard window width
 const int WINDOW_WIDTH = 640;
@@ -34,6 +37,7 @@ glm::mat4x4 view;
 glm::mat4x4 projection;
 
 ViewPanel* viewPanel = new ViewPanel(&program);
+Gui* gui;
 
 float t = 0.5;
 
@@ -43,6 +47,8 @@ float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)
 float lookAtAngle = 45.0f;
+
+bool needInit = false;
 
 glm::vec3 eye(eyeX, eyeY, eyeZ);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
@@ -104,10 +110,13 @@ void render()
     viewPanel->draw();
 }
 
-void glutDisplay()
-{
+void glutDisplay() {
     render();
     glutSwapBuffers();
+    if (needInit) {
+        init();
+        needInit = false;
+    }
 }
 
 /*
@@ -206,6 +215,22 @@ void glutKeyboard(unsigned char keycode, int x, int y)
             init();
         }
         break;
+    case 'm':
+        viewPanel->degreeIncrease();
+        init();
+        break;
+    case 'n':
+        viewPanel->derivative();
+        init();
+        break;
+    case 'b':
+        viewPanel->toggleBezierCurve();
+        //init();
+        break;
+    case 'r':
+        viewPanel->toggleBezierCurve();
+        //init();
+        break;
     }
     glutPostRedisplay();
 }
@@ -234,16 +259,14 @@ void glutMouse(int button, int state, int mousex, int mousey) {
         viewPanel->dragPoint(eye, ray_wor);
         init();
     }
-    
+  
 	glutPostRedisplay();
 }
 
-void endProgram() {
-    delete viewPanel;
-}
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
+
+
     // GLUT: Initialize freeglut library (window toolkit).
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(40, 40);
@@ -287,7 +310,6 @@ int main(int argc, char** argv)
     glutReshapeFunc(glutResize);
     glutDisplayFunc(glutDisplay);
     glutIdleFunc(glutDisplay); // redisplay when idle
-
     glutKeyboardFunc(glutKeyboard);
 	glutMouseFunc(glutMouse);
 
@@ -299,13 +321,17 @@ int main(int argc, char** argv)
 
     // GLUT: Loop until the user closes the window
     // rendering & event handling
+    gui = new Gui(viewPanel, glutPostRedisplay, &needInit);
+    std::thread th(&Gui::run, gui);
     glutMainLoop();
+    th.join();
 
     // Cleanup in destructors:
     // Objects will be released in ~Object
     // Shader program will be released in ~GLSLProgram
 
-    endProgram();
+    delete gui;
+    delete viewPanel;
 
     return 0;
 }

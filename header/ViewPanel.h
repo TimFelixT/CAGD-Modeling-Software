@@ -2,7 +2,11 @@
 #include <stack>
 #include "include/GLSLProgram.h"
 
-#include "CurveBezier.h"
+#include "header/Bernstein.h"
+#include "header/Decasteljau.h"
+
+
+
 
 class ViewPanel {
 public:
@@ -14,6 +18,10 @@ public:
 	void setProjection(glm::mat4x4);
 
 
+	void toggleBezierCurve();
+	void degreeIncrease();
+	void subdivision();
+	void derivative();
 
 	void bezierRotX();
 	void bezierRotY();
@@ -33,6 +41,15 @@ public:
 	void showPoints();
 
 	void drawStructure(double t);
+	void drawStructures(vector<double> t);
+
+
+
+
+	bool bezier_toggle = false;
+	Bernstein* bernstein_bezier;
+	DeCasteljau* deCasteljau_bezier;
+
 
 private:
 	std::stack <glm::mat4x4> matrixStack;
@@ -41,8 +58,4 @@ private:
 	glm::mat4x4 projection;
 	glm::mat4x4 model;
 
-
-	CurveBezier* bezier;
-	PolyObject* obj;
-	PolyObject* deCasteljauStructure;
 };

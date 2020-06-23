@@ -40,6 +40,7 @@ void ObjFileParser::parseLine(string line, PolyObject* polyObj) {
 	}
 	else if (isVertex(line)) {
 		polyObj->pushVertice(parseVertice(line));
+		polyObj->pushColor();
 	}
 	else if (isNormal(line)) {
 		polyObj->pushNormal(parseVertice(line));
@@ -61,14 +62,14 @@ PointVector ObjFileParser::parseVertice(string line) {
 		vertice.xCoor = stod(vals.at(0));
 		vertice.yCoor = stod(vals.at(1));
 		vertice.zCoor = stod(vals.at(2));
-		vertice.homoCoor = 0;
+		vertice.homoCoor = 1;
 	}
-	
+
 	return vertice;
 }
 
 
-void ObjFileParser::parseFace(string line, PolyObject *obj)
+void ObjFileParser::parseFace(string line, PolyObject* obj)
 {
 	smatch m;
 	vector<char> verts;
@@ -83,7 +84,8 @@ void ObjFileParser::parseFace(string line, PolyObject *obj)
 		line = m.suffix().str();
 	}
 
-	for (auto val : verts) {
-		obj->pushIndex(val - '0');
+	for (int i = 0; i < verts.size() - 1; i++) {
+		obj->pushIndex(verts[i] - '0');
+		obj->pushIndex(verts[i + 1] - '0');
 	}
 }

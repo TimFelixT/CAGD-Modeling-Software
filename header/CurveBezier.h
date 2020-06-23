@@ -5,10 +5,22 @@
 
 class CurveBezier {
 public:
-	CurveBezier(PolyObject& pobj, cg::GLSLProgram*);
+	CurveBezier(PolyObject* pobj, cg::GLSLProgram*);
 	~CurveBezier();
 	void init();
 	void draw(glm::mat4x4);
+
+	void toggleDerivative();
+	unsigned int isDerivative();
+
+	std::vector<PointVector> getControlVertices();
+	PolyObject* getDeCasteljauStructure();
+	PolyObject* getControlStructure();
+	PolyObject* getDerativeStructure();
+
+	void setControlStructure(PolyObject* obj);
+
+	void degree_increase();
 
 
 	//Rotationsmethoden
@@ -25,8 +37,10 @@ public:
 	
 	void setInitialized(bool);
 
-private:
-	PolyObject& obj;
+protected:
+	PolyObject* obj;
+	PolyObject* d_obj;
+	PolyObject* deCasteljauStructure;
 
 	cg::GLSLProgram* program;
 	GLuint vao;
@@ -44,12 +58,11 @@ private:
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 
 	//Berechnungsmethoden
-	void calcCurve();
-	long long binomialCoefficiant(long long, long long);
-	void calcCurveDeCasteljau();
-	std::vector<PointVector> getVertices();
-	PointVector deCasteljau(int k, int i, double t0, std::vector<PointVector> P);
-	long long factorial(long long);
+	virtual void calcCurve() = 0;
+	virtual void bezier_derivative() = 0;
+	virtual void calcRationalCurve() = 0;
 
-	bool drawControlPoints = false; //TODO
+	friend class Gui;
+private:
+	unsigned int derivative = 0;
 };

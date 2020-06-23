@@ -6,14 +6,24 @@
 
 //#include "header/GlobalFunctions.h"
 
+<<<<<<< HEAD
 PolyObject::PolyObject() {
+=======
+PolyObject::PolyObject()
+{
+>>>>>>> 89280d5e9e9a27643a381268b8d6d3474c9f09ee
 	color = PointVector();
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
+<<<<<<< HEAD
 PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog) {
+=======
+PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog)
+{
+>>>>>>> 89280d5e9e9a27643a381268b8d6d3474c9f09ee
 	color = PointVector();
 
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -21,7 +31,12 @@ PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog) {
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
+<<<<<<< HEAD
 PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
+=======
+PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog)
+{
+>>>>>>> 89280d5e9e9a27643a381268b8d6d3474c9f09ee
 	color = PointVector();
 
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -100,7 +115,11 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	int size;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 	glDrawElements(GL_LINES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+<<<<<<< HEAD
 	if (showPoints)
+=======
+	if(showPoints)
+>>>>>>> 89280d5e9e9a27643a381268b8d6d3474c9f09ee
 		glDrawElements(GL_POINTS, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 
 	glBindVertexArray(0);
@@ -262,6 +281,13 @@ void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
 }
 
+<<<<<<< HEAD
 void PolyObject::setPoints(bool show) {
 	showPoints = show;
 }
+=======
+void PolyObject::setPoints(bool show)
+{
+	showPoints = show;
+}
+>>>>>>> 89280d5e9e9a27643a381268b8d6d3474c9f09ee

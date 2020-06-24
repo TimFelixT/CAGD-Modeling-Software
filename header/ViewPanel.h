@@ -1,11 +1,13 @@
 #pragma once
+
 #include <stack>
 #include "include/GLSLProgram.h"
 
-#include "header/Bernstein.h"
-#include "header/Decasteljau.h"
+#include "Bernstein.h"
+#include "Decasteljau.h"
 
 
+class Gui; //Vermeidet circular dependencies
 
 
 class ViewPanel {
@@ -23,17 +25,14 @@ public:
 	void subdivision();
 	void derivative();
 
-	void bezierRotX();
-	void bezierRotY();
-	void bezierRotZ();
 	void polyObjRotX();
 	void polyObjRotY();
 	void polyObjRotZ();
 
 
-	void addPoint(PointVector point);
-	void deletePoint(int position);
-	void translate(PointVector direction, int position);
+	void addPoint(PointVector);
+	void deletePoint(int);
+	void translate(PointVector, int);
 
 	void selectPoint(glm::vec3&, glm::vec3&);
 	void dragPoint(glm::vec3&, glm::vec3&);
@@ -43,12 +42,10 @@ public:
 	void drawStructure(double t);
 	void drawStructures(vector<double> t);
 
-
+	void setGui(Gui*);
 
 
 	bool bezier_toggle = false;
-
-
 
 private:
 	std::stack <glm::mat4x4> matrixStack;
@@ -59,5 +56,7 @@ private:
 
 	vector<CurveBezier*> allCurves;
 
-	friend Gui;
+	Gui* gui;
+
+	friend class Gui;
 };

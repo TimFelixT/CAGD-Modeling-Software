@@ -147,17 +147,14 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         glutDestroyWindow(glutID);
         return;
     case 'x':
-        viewPanel->bezierRotX();
 		viewPanel->polyObjRotX();
         init();
         break;
     case 'y':
-        viewPanel->bezierRotY();
 		viewPanel->polyObjRotY();
         init();
         break;
     case 'z':
-        viewPanel->bezierRotZ();
 		viewPanel->polyObjRotZ();
         init();
         break;
@@ -307,6 +304,7 @@ int main(int argc, char** argv) {
     // GLUT: Loop until the user closes the window
     // rendering & event handling
     gui = new Gui(viewPanel, glutPostRedisplay, &needInit);
+    viewPanel->setGui(gui);
     std::thread th(&Gui::run, gui);
     glutMainLoop();
     th.join();

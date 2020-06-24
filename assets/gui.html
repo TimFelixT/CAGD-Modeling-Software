@@ -144,6 +144,18 @@
         function deleteLastPoint(){
 
         }
+        function resetCurves(){
+            let kurven = document.querySelector("#kurve");
+            kurven.innerHTML = "";
+            let heading = document.createElement("h3");
+            heading.innerText = "Bezier - Kurve";
+            kurven.appendChild(heading);
+            let updateBtn = document.createElement("button");
+            updateBtn.innerText = "Aktualisiere Kontrollpunkte";
+            updateBtn.addEventListener("click", function(){ resetCurves() });
+            kurven.appendChild(updateBtn);
+            OnResetCurves();
+        }
 
 
 
@@ -158,11 +170,10 @@
     </div>
     <div id="kurve" class="tabcontent">
         <h3>Bezier - Kurve</h3>
-        <p>Hier werden Bezier Kurven angezeigt</p>
+        <button onclick='resetCurves()'>Aktualisiere Kontrollpunkte</button>
     </div>
     <div id="flaeche" class="tabcontent">
         <h3>Bezier - Fl&auml;che</h3>
-        <p>Hier werden Bezier Fl&auml;chen angezeigt</p>
     </div>
     <div id="einstellungen" class="tabcontent">
         <h3>Einstellungen</h3>

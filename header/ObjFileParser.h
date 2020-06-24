@@ -1,3 +1,4 @@
+
 #pragma once
 #include <iostream>
 #include <string>
@@ -11,7 +12,7 @@ using namespace std;
 
 class ObjFileParser {
 public:
-	
+
 	bool parseObjectFile(const char* filename, PolyObject* polyObj);
 
 private:

@@ -7,7 +7,6 @@ class CurveBezier {
 public:
 	CurveBezier(PolyObject* pobj, cg::GLSLProgram*);
 	~CurveBezier();
-
 	void init();
 	void draw(glm::mat4x4);
 
@@ -22,6 +21,7 @@ public:
 	void setControlStructure(PolyObject* obj);
 
 	void degree_increase();
+
 
 	//Rotationsmethoden
 	void rotateX();
@@ -48,20 +48,21 @@ protected:
 	GLuint colorBuffer;
 	GLuint indexBuffer;
 
-	std::vector<PointVector> controlVertices;
-
 	std::vector<PointVector> curveVertices;
 	std::vector<glm::vec3> curveBuffer;
 
 	std::vector<GLushort> curveIndices;
 	std::vector<glm::vec3> curveColors;
+
+
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 
-	virtual void calcCurve() = 0;
-	virtual void bezier_derivative() = 0;
-	virtual void calcRationalCurve() = 0;
+	//Berechnungsmethoden
+	virtual void calcCurve() {};
+	virtual void bezier_derivative() {};
+	virtual void calcRationalCurve() {};
 
+	friend class Gui;
 private:
 	unsigned int derivative = 0;
-	bool drawControlPoints = false; //TODO
 };

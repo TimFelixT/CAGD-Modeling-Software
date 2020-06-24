@@ -1,0 +1,184 @@
+<html>
+
+<head>
+    <style type="text/css">
+        /* Tab Style */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 20px 20px;
+            transition: 0.3s;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #ccc;
+        }
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+        /* Accordion Style */
+        .accordion {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 20px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+        }
+        .active,
+        .accordion:hover {
+            background-color: #ccc;
+        }
+        .panel {
+            padding: 20px 20px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        /* TabLayout Functions */
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        window.addEventListener('load', (event) => {
+            document.getElementById("defaultOpen").click();
+        });
+        /* Accordion Functions */
+        function toggleAccordion(accordion) {
+            accordion.classList.toggle("active");
+            var panel = accordion.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        }
+        /* Kurve hinzufügen */
+        function addCurve(){
+            let s = document.querySelector("#kurve");
+            let button = document.createElement("button");
+            button.classList.add("accordion");
+            button.innerText = "Bezier Kurve";
+            button.addEventListener("click", function(){ toggleAccordion(this); });
+            s.appendChild(button);
+            let panel = document.createElement("div");
+            panel.classList.add("panel");
+            s.appendChild(panel);
+
+            let btnPanel = document.createElement("div");
+            panel.appendChild(btnPanel);
+            let deleteBtn = document.createElement("button");
+            deleteBtn.innerText = "Letzten Punkt löschen";
+            let addBtn = document.createElement("button");
+            addBtn.innerText = "Neuen Punkt hinzufügen";
+            addBtn.addEventListener("click", function(){ addNewPoint(this) });
+            deleteBtn.addEventListener("click", function(){ deleteLastPoint(this) });
+            btnPanel.appendChild(addBtn);
+            btnPanel.appendChild(deleteBtn);
+
+            for (let i=0; i < arguments.length; i+=4) {
+                if (arguments[i+2] == undefined && arguments[i+3] == undefined) {
+                    /* Daten zu den Punkten - Kommt nur einmal pro Kurve vor */
+                    panel.setAttribute("data-index", arguments[i]);
+                    arguments[i+1] == 0 ? button.innerText+=" (Bernstein Kurve)" : button.innerText+=" (DeCasteljau Kurve)" ;
+                } else {
+                    /* Ein Kontrollpunkt */
+                    let pointcontainer = document.createElement("div");
+                    pointcontainer.style.display = "inline-block;"
+                    addPoint(pointcontainer, arguments[i], i);
+                    addPoint(pointcontainer, arguments[i+1], i+1);
+                    addPoint(pointcontainer, arguments[i+2], i+2);
+                    addPoint(pointcontainer, arguments[i+3], i+3);
+                    panel.appendChild(pointcontainer);
+                }
+
+
+            }
+        }
+        function addPoint(pointcontainer, value, index) {
+            let input = document.createElement("input");
+            input.setAttribute("type", "number");
+            input.setAttribute("step", "0.001");
+            input.setAttribute("data-index", index);
+            input.addEventListener("change", function(){ pointEdited(this); });
+            input.value = value;
+            pointcontainer.appendChild(input);
+        }
+        function pointEdited(input){
+            let dataIndex = input.getAttribute("data-index");
+            let value = input.value;
+            let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
+            OnPointChange(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex);
+                     
+        }
+        function addNewPoint(addBtn){
+            
+        }
+        function deleteLastPoint(){
+
+        }
+
+
+
+    </script>
+</head>
+
+<body>
+    <div class="tab">
+        <button class="tablinks" onclick='openTab(event, "kurve")' id="defaultOpen"> Bezier Kurve </button>
+        <button class="tablinks" onclick='openTab(event, "flaeche")'> Bezier Fl&auml;che </button>
+        <button class="tablinks" onclick='openTab(event, "einstellungen")'> Einstellungen </button>
+    </div>
+    <div id="kurve" class="tabcontent">
+        <h3>Bezier - Kurve</h3>
+        <p>Hier werden Bezier Kurven angezeigt</p>
+    </div>
+    <div id="flaeche" class="tabcontent">
+        <h3>Bezier - Fl&auml;che</h3>
+        <p>Hier werden Bezier Fl&auml;chen angezeigt</p>
+    </div>
+    <div id="einstellungen" class="tabcontent">
+        <h3>Einstellungen</h3>
+        <div>
+            <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
+            <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
+            <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
+            <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+        </div>
+        <div>
+            <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
+        </div>
+        <div>
+            <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen</button>
+        </div>
+    </div>
+</body>
+
+</html>

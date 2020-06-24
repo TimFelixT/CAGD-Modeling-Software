@@ -58,9 +58,11 @@ public:
 	void togglePoints();
 	void setPoints(bool);
 
+
 private:
 	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
 	PointVector color;
+
 
 	vector<PointVector> vertices;
 	vector<PointVector> normals;
@@ -85,6 +87,7 @@ private:
 
 	bool showPoints = false;
 
+	friend class Gui;
 };
 
 #endif // !POLY_OBJ

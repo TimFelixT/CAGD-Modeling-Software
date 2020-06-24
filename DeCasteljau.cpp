@@ -1,4 +1,4 @@
-#include "DeCasteljau.h"
+#include "header/DeCasteljau.h"
 
 
 DeCasteljau::DeCasteljau(PolyObject* pobj, cg::GLSLProgram* program) : CurveBezier(pobj, program)

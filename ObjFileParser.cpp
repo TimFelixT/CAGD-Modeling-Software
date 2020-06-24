@@ -98,12 +98,12 @@ PointVector ObjFileParser::parseVertice(string line) {
 		vertice.zCoor = stod(vals.at(2));
 		vertice.homoCoor = 1;
 	}
-	
+
 	return vertice;
 }
 
 
-void ObjFileParser::parseFace(string line, PolyObject *obj)
+void ObjFileParser::parseFace(string line, PolyObject* obj)
 {
 	smatch m;
 	vector<char> verts;

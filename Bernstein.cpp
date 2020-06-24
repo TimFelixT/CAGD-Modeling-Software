@@ -1,4 +1,4 @@
-#include "Bernstein.h"
+#include "header/Bernstein.h"
 #include "header/GlobalConstants.h"
 
 
@@ -18,6 +18,7 @@ Bernstein::~Bernstein()
 }
 
 void Bernstein::bezier_derivative() {
+
 	std::vector<PointVector> controlVertices = obj->getVertices();
 
 	d_obj->clear();

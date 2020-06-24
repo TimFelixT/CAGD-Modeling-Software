@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bernstein.cpp" />
+    <ClCompile Include="Bezier_Surface.cpp" />
     <ClCompile Include="CurveBezier.cpp" />
     <ClCompile Include="DeCasteljau.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
@@ -178,6 +179,7 @@
   <ItemGroup>
     <ClInclude Include="Bernstein.h" />
     <ClInclude Include="Bezier_Operations.h" />
+    <ClInclude Include="Bezier_Surface.h" />
     <ClInclude Include="DeCasteljau.h" />
     <ClInclude Include="header\Colors.h" />
     <ClInclude Include="header\CurveBezier.h" />

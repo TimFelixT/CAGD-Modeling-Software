@@ -12,6 +12,27 @@ bool isFace(string line) {
 	return regex_match(line, regex("(\\s*f\\s*((\\d+)((/\\d+\\s*)*)\\s*)+)"));
 }
 
+bool isCurveBezier(string line) {
+	return regex_match(line, regex("cstype bezier"));
+}
+
+bool isDegree(string line) {
+	return regex_match(line, regex("\\s*deg\\s+\\d+\\s+\\d+\\s*"));
+}
+
+bool isSurface(string line) {
+	return regex_match(line, regex("cstype bezier"));
+}
+
+
+void parseCurveBezier(fstream* file, PolyObject* polyObj) {
+	string line;
+
+	while (getline(*file, line))
+	{
+	}
+}
+
 bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
 {
 	fstream file(filename);
@@ -27,6 +48,11 @@ bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
 	while (getline(file, line))
 	{
 		cout << line << endl;
+		if (isCurveBezier(line)) {
+			parseCurveBezier(&file, polyObj);
+			file.close();
+			return true;
+		}
 		parseLine(line, polyObj);
 	}
 
@@ -34,8 +60,13 @@ bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
 	return true;
 }
 
+
 void ObjFileParser::parseLine(string line, PolyObject* polyObj) {
-	if (isFace(line)) {
+	static bool bezier = false;
+	if (bezier) {
+
+	}
+	else if (isFace(line)) {
 		parseFace(line, polyObj);
 	}
 	else if (isVertex(line)) {
@@ -44,6 +75,9 @@ void ObjFileParser::parseLine(string line, PolyObject* polyObj) {
 	}
 	else if (isNormal(line)) {
 		polyObj->pushNormal(parseVertice(line));
+	}
+	else if (isCurveBezier(line)) {
+		bezier = true;
 	}
 }
 

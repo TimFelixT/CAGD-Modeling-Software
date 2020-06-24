@@ -5,5 +5,6 @@ class Bezier_Surface
 public:
 private:
 	vector<CurveBezier> curves;
+	PolyObject* obj;
 };
 

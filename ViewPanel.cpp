@@ -2,8 +2,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	Bernstein *bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
-	DeCasteljau *deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
+	Bernstein *bernstein_bezier = new Bernstein(new PolyObject("UB1_1.obj", prog), prog);
+	DeCasteljau *deCasteljau_bezier = new DeCasteljau(new PolyObject("UB1_1.obj", prog), prog);
 
 
 	bernstein_bezier->setControlStructure(new PolyObject(program));

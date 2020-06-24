@@ -1,4 +1,5 @@
 #include "header/ObjFileParser.h"
+#include "Bezier_Surface.h"
 
 bool isVertex(string line) {
 	return regex_match(line, regex("(\\s*v\\s*(-?\\d+(\\.\\d+)*\\s*){3})\\s*"));
@@ -21,15 +22,39 @@ bool isDegree(string line) {
 }
 
 bool isSurface(string line) {
-	return regex_match(line, regex("cstype bezier"));
+	return regex_match(line, regex("\\s*surf\\s+(\\d+\\s*)+\\s*"));
 }
 
 
 void parseCurveBezier(fstream* file, PolyObject* polyObj) {
 	string line;
+	Bezier_Surface bezier_surf;
 
 	while (getline(*file, line))
 	{
+		if (isDegree(line)) {
+			cout << "is degree" << endl;
+		}
+		if (isSurface(line)) {
+			while (line != "end") {
+				smatch m;
+				vector<char> indices;
+
+				regex face_reg = regex("(\\d+)((/(\\d+))*)");
+				
+				//Extract all the values
+				while (regex_search(line, m, face_reg)) {
+					indices.push_back(m.str(0)[0]);
+					line = m.suffix().str();
+				}
+
+				for (int i = 0; i < indices.size() - 1; i++) {
+					polyObj->pushIndex(indices[i] - '0');
+					polyObj->pushIndex(indices[i + 1] - '0');
+				}
+				getline(*file, line);
+			}
+		}
 	}
 }
 

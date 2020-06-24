@@ -47,8 +47,7 @@ public:
 
 
 	bool bezier_toggle = false;
-	Bernstein* bernstein_bezier;
-	DeCasteljau* deCasteljau_bezier;
+
 
 
 private:
@@ -58,4 +57,7 @@ private:
 	glm::mat4x4 projection;
 	glm::mat4x4 model;
 
+	vector<CurveBezier*> allCurves;
+
+	friend Gui;
 };

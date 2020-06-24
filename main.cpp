@@ -171,9 +171,6 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         eye.z = eyeZ;
         init();
         break;
-    case 'p':
-        viewPanel->showPoints();
-        break;
 	case '1':
 		viewPanel->translate(pushx, 2);
 		init();
@@ -215,21 +212,9 @@ void glutKeyboard(unsigned char keycode, int x, int y)
             init();
         }
         break;
-    case 'm':
-        viewPanel->degreeIncrease();
-        init();
-        break;
     case 'n':
         viewPanel->derivative();
         init();
-        break;
-    case 'b':
-        viewPanel->toggleBezierCurve();
-        //init();
-        break;
-    case 'r':
-        viewPanel->toggleBezierCurve();
-        //init();
         break;
     }
     glutPostRedisplay();

@@ -6,9 +6,9 @@ class Bernstein : public CurveBezier
 public:
 	Bernstein(PolyObject* pobj, cg::GLSLProgram*);
 	~Bernstein();
-	void bezier_derivative();
-	void calcCurve();
-	void calcRationalCurve();
+	void bezier_derivative() override;
+	void calcCurve() override;
+	void calcRationalCurve() override;
 private:
 	long long binomialCoefficiant(long long, long long);
 	long long factorial(long long);

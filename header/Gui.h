@@ -25,8 +25,14 @@ private:
     ViewPanel* viewPanel;
 
     virtual void Gui::OnDOMReady(ultralight::View*);
+    
     /* JS Methods */
-    void OnPointChange(const JSObject& thisObject, const JSArgs& args);
+    void OnAddNewPoint(const JSObject&, const JSArgs&);
+    void OnDeleteLastPoint(const JSObject&, const JSArgs&);
+    void OnPointChange(const JSObject&, const JSArgs&);
+    void OnToggleBezier(const JSObject&, const JSArgs&);
+    void OnToggleHighlightControlpoints(const JSObject&, const JSArgs&);
+    void OnDegreeIncrease(const JSObject&, const JSArgs&);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

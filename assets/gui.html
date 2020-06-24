@@ -90,16 +90,36 @@
             s.appendChild(button);
             let panel = document.createElement("div");
             panel.classList.add("panel");
-            s.appendChild(panel);   
+            s.appendChild(panel);
+
+            let btnPanel = document.createElement("div");
+            panel.appendChild(btnPanel);
+            let deleteBtn = document.createElement("button");
+            deleteBtn.innerText = "Letzten Punkt löschen";
+            let addBtn = document.createElement("button");
+            addBtn.innerText = "Neuen Punkt hinzufügen";
+            addBtn.addEventListener("click", function(){ addNewPoint(this) });
+            deleteBtn.addEventListener("click", function(){ deleteLastPoint(this) });
+            btnPanel.appendChild(addBtn);
+            btnPanel.appendChild(deleteBtn);
+
             for (let i=0; i < arguments.length; i+=4) {
-                /* Ein Kontrollpunkt */
-                let pointcontainer = document.createElement("div");
-                pointcontainer.style.display = "inline-block;"
-                addPoint(pointcontainer, arguments[i], i);
-                addPoint(pointcontainer, arguments[i+1], i+1);
-                addPoint(pointcontainer, arguments[i+2], i+2);
-                addPoint(pointcontainer, arguments[i+3], i+3);
-                panel.appendChild(pointcontainer);
+                if (arguments[i+2] == undefined && arguments[i+3] == undefined) {
+                    /* Daten zu den Punkten - Kommt nur einmal pro Kurve vor */
+                    panel.setAttribute("data-index", arguments[i]);
+                    arguments[i+1] == 0 ? button.innerText+=" (Bernstein Kurve)" : button.innerText+=" (DeCasteljau Kurve)" ;
+                } else {
+                    /* Ein Kontrollpunkt */
+                    let pointcontainer = document.createElement("div");
+                    pointcontainer.style.display = "inline-block;"
+                    addPoint(pointcontainer, arguments[i], i);
+                    addPoint(pointcontainer, arguments[i+1], i+1);
+                    addPoint(pointcontainer, arguments[i+2], i+2);
+                    addPoint(pointcontainer, arguments[i+3], i+3);
+                    panel.appendChild(pointcontainer);
+                }
+
+
             }
         }
         function addPoint(pointcontainer, value, index) {
@@ -107,13 +127,25 @@
             input.setAttribute("type", "number");
             input.setAttribute("step", "0.001");
             input.setAttribute("data-index", index);
-            input.addEventListener("change", function(){ pointEdited(this.getAttribute("data-index"), this.value); });
+            input.addEventListener("change", function(){ pointEdited(this); });
             input.value = value;
             pointcontainer.appendChild(input);
         }
-        function pointEdited(dataIndex, value){
-            OnPointChange(Math.floor(dataIndex/4), dataIndex%4, value);           
+        function pointEdited(input){
+            let dataIndex = input.getAttribute("data-index");
+            let value = input.value;
+            let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
+            OnPointChange(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex);
+                     
         }
+        function addNewPoint(addBtn){
+            
+        }
+        function deleteLastPoint(){
+
+        }
+
+
 
     </script>
 </head>
@@ -134,8 +166,18 @@
     </div>
     <div id="einstellungen" class="tabcontent">
         <h3>Einstellungen</h3>
-        <input type="radio" id="bernstein" name="drawtype" value="bernstein">
-        <input type="radio" id="decasteljau" name="drawtype" value="decasteljau">
+        <div>
+            <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
+            <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
+            <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
+            <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+        </div>
+        <div>
+            <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
+        </div>
+        <div>
+            <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen</button>
+        </div>
     </div>
 </body>
 

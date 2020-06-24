@@ -5,9 +5,9 @@ class DeCasteljau : public CurveBezier
 public:
 	DeCasteljau(PolyObject* pobj, cg::GLSLProgram*);
 	~DeCasteljau();
-	void calcCurve();
-	void calcRationalCurve();
-	void bezier_derivative();
+	void calcCurve() override;
+	void calcRationalCurve() override;
+	void bezier_derivative() override;
 	void bezier_subdivision(vector<float> t_vec);
 
 private:

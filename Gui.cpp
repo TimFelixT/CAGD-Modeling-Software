@@ -28,7 +28,12 @@ void Gui::run() {
 void Gui::OnDOMReady(ultralight::View* caller) {
 	SetJSContext(caller->js_context());
 	JSObject global = JSGlobalObject();
+	global["OnAddNewPoint"] = BindJSCallback(&Gui::OnAddNewPoint);
+	global["OnDeleteLastPoint"] = BindJSCallback(&Gui::OnDeleteLastPoint);
 	global["OnPointChange"] = BindJSCallback(&Gui::OnPointChange);
+	global["OnToggleBezier"] = BindJSCallback(&Gui::OnToggleBezier);
+	global["OnToggleHighlightControlpoints"] = BindJSCallback(&Gui::OnToggleHighlightControlpoints);
+	global["OnDegreeIncrease"] = BindJSCallback(&Gui::OnDegreeIncrease);
 
 	loadData();
 }
@@ -42,42 +47,81 @@ void Gui::addCurves() {
 
 	if (addCurve.IsValid()) {
 		JSArgs args;
-		std::vector<PointVector> points = viewPanel->bernstein_bezier->obj->getVertices();
-		for (PointVector pv : points) {
-			args.push_back(pv.xCoor);
-			args.push_back(pv.yCoor);
-			args.push_back(pv.zCoor);
-			args.push_back(pv.homoCoor);
-		}
-		JSValue result = addCurve(args);
+
+		for (int i = 0; i < viewPanel->allCurves.size(); i++) {
+
+			CurveBezier& c = *(viewPanel->allCurves[i]);
+
+			std::vector<PointVector> points = c.obj->getVertices();
+			for (PointVector pv : points) {
+				args.push_back(pv.xCoor);
+				args.push_back(pv.yCoor);
+				args.push_back(pv.zCoor);
+				args.push_back(pv.homoCoor);
+
+			}
+			args.push_back(i);
+			if (dynamic_cast<Bernstein*>(&c)) {
+				args.push_back(0);
+			} else {
+				args.push_back(1);
+			}
+			JSValue result = addCurve(args);
+			args.clear();
+		}		
 	}
 }
 
+void Gui::OnAddNewPoint(const JSObject& thisObject, const JSArgs& args) {
+
+}
+void Gui::OnDeleteLastPoint(const JSObject& thisObject, const JSArgs& args) {
+
+}
 void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
-	int point = args[0].ToInteger();
-	int index = args[1].ToInteger();
+	int pointIndex = args[0].ToInteger();
+	int coorIndex = args[1].ToInteger();
 	double value = args[2].ToNumber();
+	int curveIndex = args[3].ToInteger();
 
-	cout << point << endl;
-	cout << index << endl;
-	cout << value << endl;
+	CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
 
-	switch (index) {
+
+	switch (coorIndex) {
 	case 0:
-		viewPanel->bernstein_bezier->obj->vertices.at(point).xCoor = value;
+		c.obj->vertices.at(pointIndex).xCoor = value;
 		break;
 	case 1:
-		viewPanel->bernstein_bezier->obj->vertices.at(point).yCoor = value;
+		c.obj->vertices.at(pointIndex).yCoor = value;
 		break;
 	case 2:
-		viewPanel->bernstein_bezier->obj->vertices.at(point).zCoor = value;
+		c.obj->vertices.at(pointIndex).zCoor = value;
 		break;
 	case 3:
-		viewPanel->bernstein_bezier->obj->vertices.at(point).homoCoor = value;
+		c.obj->vertices.at(pointIndex).homoCoor = value;
 		break;
 	}
-	viewPanel->bernstein_bezier->updateCurveBuffer();
-	viewPanel->bernstein_bezier->setInitialized(false);
+	c.updateCurveBuffer();
+	c.setInitialized(false);
+	updateDisplay();
+	
+}
+void Gui::OnToggleBezier(const JSObject& thisObject, const JSArgs& args) {
+	int type = args[0].ToInteger();
+	if (type == 0) {
+		viewPanel->toggleBezierCurve();
+	}
+	else {
+		viewPanel->toggleBezierCurve();
+	}
+	glutPostRedisplay();
+}
+void Gui::OnToggleHighlightControlpoints(const JSObject& thisObject, const JSArgs& args) {
+	viewPanel->showPoints();
+	glutPostRedisplay();
+}
+void Gui::OnDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {
+	viewPanel->degreeIncrease();
 	updateDisplay();
 }
 

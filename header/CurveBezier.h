@@ -58,9 +58,9 @@ protected:
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 
 	//Berechnungsmethoden
-	virtual void calcCurve() = 0;
-	virtual void bezier_derivative() = 0;
-	virtual void calcRationalCurve() = 0;
+	virtual void calcCurve() {};
+	virtual void bezier_derivative() {};
+	virtual void calcRationalCurve() {};
 
 	friend class Gui;
 private:

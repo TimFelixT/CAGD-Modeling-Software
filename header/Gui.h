@@ -1,22 +1,24 @@
+#pragma once
+
 #include <Ultralight/Ultralight.h>
 #include <AppCore/AppCore.h>
-#include "ViewPanel.h"
 
 using namespace ultralight;
+using namespace std;
+
+class ViewPanel; //Vermeidet circular dependencies
 
 class Gui : public LoadListener {
 
 public:
     Gui(ViewPanel*, void (*)(), bool*);
-    virtual ~Gui() {};
+    ~Gui();
     void loadData();
     void run();
 
-    void addCurves();
-    void refresh();
 
-    //virtual void OnClose() override {};
-    //virtual void OnResize(uint32_t width, uint32_t height) override {};
+    void addCurves();
+
 
 private:
 	RefPtr<App> app;
@@ -27,6 +29,7 @@ private:
     virtual void Gui::OnDOMReady(ultralight::View*);
     
     /* JS Methods */
+    void OnResetCurves(const JSObject&, const JSArgs&);
     void OnAddNewPoint(const JSObject&, const JSArgs&);
     void OnDeleteLastPoint(const JSObject&, const JSArgs&);
     void OnPointChange(const JSObject&, const JSArgs&);

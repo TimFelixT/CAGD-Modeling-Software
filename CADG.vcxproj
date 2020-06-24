@@ -191,6 +191,7 @@
     <ClInclude Include="header\ViewPanel.h" />
     <ClInclude Include="include\GLSLProgram.h" />
     <ClInclude Include="include\GLTools.h" />
+    <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="assets\gui.html">

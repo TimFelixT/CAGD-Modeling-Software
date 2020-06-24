@@ -1,10 +1,13 @@
-#include "header\Gui.h"
+#include "header/Gui.h"
+#include "header/ViewPanel.h" //Vermeidet circular dependencies
 
 Gui::Gui(ViewPanel* view, void (*glutRedisplay)(), bool *initNeeded) {
 	viewPanel = view;
 	glutPostRedisplay = glutRedisplay;
 	needInit = initNeeded;
 }
+
+Gui::~Gui() {}
 
 void Gui::loadData() {
 	addCurves();
@@ -34,6 +37,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnToggleBezier"] = BindJSCallback(&Gui::OnToggleBezier);
 	global["OnToggleHighlightControlpoints"] = BindJSCallback(&Gui::OnToggleHighlightControlpoints);
 	global["OnDegreeIncrease"] = BindJSCallback(&Gui::OnDegreeIncrease);
+	global["OnResetCurves"] = BindJSCallback(&Gui::OnResetCurves);
 
 	loadData();
 }
@@ -70,6 +74,9 @@ void Gui::addCurves() {
 			args.clear();
 		}		
 	}
+}
+void Gui::OnResetCurves(const JSObject& thisObject, const JSArgs& args) {
+	addCurves();
 }
 
 void Gui::OnAddNewPoint(const JSObject& thisObject, const JSArgs& args) {
@@ -132,9 +139,7 @@ void Gui::updateDisplay() {
 
 
 
-void Gui::refresh() {
 
-}
 
 
 

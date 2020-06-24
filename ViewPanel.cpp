@@ -1,5 +1,6 @@
 #include "header/ViewPanel.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "header/Gui.h" //Vermeidet circular dependencies
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 	Bernstein *bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
@@ -11,7 +12,10 @@ ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1
 
 	allCurves.push_back(bernstein_bezier);
 	allCurves.push_back(deCasteljau_bezier);
+
+
 }
+
 
 ViewPanel::~ViewPanel() {}
 
@@ -23,6 +27,10 @@ void ViewPanel::init() {
 		b->getDerativeStructure()->init();
 		b->getDeCasteljauStructure()->init();
 	}
+}
+
+void ViewPanel::setGui(Gui* g) {
+	gui = g;
 }
 
 void ViewPanel::toggleBezierCurve() {
@@ -102,58 +110,59 @@ void ViewPanel::translate(PointVector direction, int position) {
 }
 
 
-void ViewPanel::bezierRotX() {
-	//bernstein_bezier->rotateX();
-}
-void ViewPanel::bezierRotY() {
-	//bernstein_bezier->rotateY();
-}
-void ViewPanel::bezierRotZ() {
-	//bernstein_bezier->rotateZ();
-}
-
-
-void ViewPanel::polyObjRotX() { /*
-	if (bezier_toggle) {
-		bernstein_bezier->rotateX();
-		bernstein_bezier->getControlStructure()->rotateX();
-		bernstein_bezier->getDeCasteljauStructure()->rotateX();
-		bernstein_bezier->getDerativeStructure()->rotateX();
+void ViewPanel::polyObjRotX() {
+	for (CurveBezier* b : allCurves) {
+		if (bezier_toggle) {
+			if (dynamic_cast<Bernstein*>(b)) {
+				b->rotateX();
+				b->getControlStructure()->rotateX();
+				b->getDeCasteljauStructure()->rotateX();
+				b->getDerativeStructure()->rotateX();
+			}
+		}
+		else if (dynamic_cast<DeCasteljau*>(b)) {
+			b->rotateX();
+			b->getControlStructure()->rotateX();
+			b->getDeCasteljauStructure()->rotateX();
+			b->getDerativeStructure()->rotateX();
+		}
 	}
-	else {
-		deCasteljau_bezier->rotateX();
-		deCasteljau_bezier->getControlStructure()->rotateX();
-		deCasteljau_bezier->getDeCasteljauStructure()->rotateX();
-		deCasteljau_bezier->getDerativeStructure()->rotateX();
-	}*/
 }
-void ViewPanel::polyObjRotY() { /*
-	if (bezier_toggle) {
-		bernstein_bezier->rotateY();
-		bernstein_bezier->getControlStructure()->rotateY();
-		bernstein_bezier->getDeCasteljauStructure()->rotateY();
-		bernstein_bezier->getDerativeStructure()->rotateY();
+void ViewPanel::polyObjRotY() {
+	for (CurveBezier* b : allCurves) {
+		if (bezier_toggle) {
+			if (dynamic_cast<Bernstein*>(b)) {
+				b->rotateY();
+				b->getControlStructure()->rotateY();
+				b->getDeCasteljauStructure()->rotateY();
+				b->getDerativeStructure()->rotateY();
+			}
+		}
+		else if (dynamic_cast<DeCasteljau*>(b)) {
+			b->rotateY();
+			b->getControlStructure()->rotateY();
+			b->getDeCasteljauStructure()->rotateY();
+			b->getDerativeStructure()->rotateY();
+		}
 	}
-	else {
-		deCasteljau_bezier->rotateY();
-		deCasteljau_bezier->getControlStructure()->rotateY();
-		deCasteljau_bezier->getDeCasteljauStructure()->rotateY();
-		deCasteljau_bezier->getDerativeStructure()->rotateY();
-	}*/
 }
-void ViewPanel::polyObjRotZ() { /*
-	if (bezier_toggle) {
-		bernstein_bezier->rotateZ();
-		bernstein_bezier->getControlStructure()->rotateZ();
-		bernstein_bezier->getDeCasteljauStructure()->rotateZ();
-		bernstein_bezier->getDerativeStructure()->rotateZ();
+void ViewPanel::polyObjRotZ() {
+	for (CurveBezier* b : allCurves) {
+		if (bezier_toggle) {
+			if (dynamic_cast<Bernstein*>(b)) {
+				b->rotateZ();
+				b->getControlStructure()->rotateZ();
+				b->getDeCasteljauStructure()->rotateZ();
+				b->getDerativeStructure()->rotateZ();
+			}
+		}
+		else if (dynamic_cast<DeCasteljau*>(b)) {
+			b->rotateZ();
+			b->getControlStructure()->rotateZ();
+			b->getDeCasteljauStructure()->rotateZ();
+			b->getDerativeStructure()->rotateZ();
+		}
 	}
-	else {
-		deCasteljau_bezier->rotateZ();
-		deCasteljau_bezier->getControlStructure()->rotateZ();
-		deCasteljau_bezier->getDeCasteljauStructure()->rotateZ();
-		deCasteljau_bezier->getDerativeStructure()->rotateZ();
-	}*/
 }
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
@@ -226,6 +235,12 @@ void ViewPanel::drawStructure(double t) {
 		}
 	}
 }
+
+
+
+
+
+
 
 
 //void ViewPanel::drawStructures(vector<double> t_vec) {

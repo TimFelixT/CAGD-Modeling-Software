@@ -1,6 +1,7 @@
 #include "header/ViewPanel.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "header/Gui.h" //Vermeidet circular dependencies
+#include "header/GlobalConstants.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 	Bernstein *bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
@@ -166,19 +167,91 @@ void ViewPanel::polyObjRotZ() {
 }
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
-	/*if (bezier_toggle)
-		bernstein_bezier->getControlStructure()->selectPoint(cameraPos, rayVector);
-	else
-		deCasteljau_bezier->getControlStructure()->selectPoint(cameraPos, rayVector);*/
-}
-void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
-	/*if (bezier_toggle) {
-		if (bernstein_bezier->getControlStructure()->dragPoint(cameraPos, rayVector)) {
-			bernstein_bezier->updateCurveBuffer();
-			bernstein_bezier->setInitialized(false);
+	for (CurveBezier* b : allCurves) {
+		if (bezier_toggle) {
+			cout << "Hier" << endl;
+			if (dynamic_cast<Bernstein*>(b)) {
+				selectPointPost(cameraPos, rayVector, b->getControlStructure(), true);
+			}
 		}
-	}*/
+		else if (dynamic_cast<DeCasteljau*>(b)) {
+			selectPointPost(cameraPos, rayVector, b->getControlStructure(), false);
+		}
+	}
 }
+
+void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const &b, bool bernstein) {
+	double distance = INFINITY;
+	//For each würde in diesem Fall nicht funktionieren
+	for (int i = 0; i < b->vertices.size(); i++) {
+
+		double numerator = glm::length(glm::cross((b->vertices.at(i).getVec3() - cameraPos), rayVector));
+		double denumerator = glm::length(rayVector);
+		double d = numerator / denumerator;
+
+		if (d < distance) {
+			distance = d;
+			if (bernstein) {
+				selectedPointVectorBernstein = &(b->vertices.at(i));
+			} else {
+				selectedPointVectorDecasteljau = &(b->vertices.at(i));
+			}
+		}
+	}
+	if (distance < globalConstants.SELECTION_OFFSET) {
+		if (bernstein) {
+			selectedPointNormalBernstein = rayVector;
+			cout << "Selected Bernstein: " << selectedPointVectorBernstein->xCoor << "   " << selectedPointVectorBernstein->yCoor << "   " << selectedPointVectorBernstein->zCoor << endl;
+		} else {
+			selectedPointNormalDecasteljau = rayVector;
+			cout << "Selected Decasteljau: " << selectedPointVectorDecasteljau->xCoor << "   " << selectedPointVectorDecasteljau->yCoor << "   " << selectedPointVectorDecasteljau->zCoor << endl;
+		}
+	} else {
+		if (bernstein) {
+			selectedPointVectorBernstein = nullptr;
+			selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);
+			cout << "No point Selected Bernstein" << endl;
+		} else {
+			selectedPointVectorDecasteljau = nullptr;
+			selectedPointNormalDecasteljau = glm::vec3(0.0f, 0.0f, 0.0f);
+			cout << "No point Selected Decasteljau" << endl;
+		}
+	}
+}
+
+
+
+void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
+	double denominator;
+	if (bezier_toggle) {
+		denominator = glm::dot(selectedPointNormalBernstein, rayVector);
+		if (glm::abs(denominator) > 0.00001) {
+			glm::vec3 difference = selectedPointVectorBernstein->getVec3() - cameraPos;
+			double t = glm::dot(difference, selectedPointNormalBernstein) / denominator;
+
+			if (t > 0.0001) {
+				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+				glm::vec3 newPoint = cameraPos + newRay;
+				selectedPointVectorBernstein->setVec3(newPoint, 1);
+				updateBernstein();
+			}
+		}
+	} else {
+		denominator = glm::dot(selectedPointNormalDecasteljau, rayVector);
+		if (glm::abs(denominator) > 0.00001) {
+			glm::vec3 difference = selectedPointVectorDecasteljau->getVec3() - cameraPos;
+			double t = glm::dot(difference, selectedPointNormalDecasteljau) / denominator;
+
+			if (t > 0.0001) {
+				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+				glm::vec3 newPoint = cameraPos + newRay;
+				selectedPointVectorDecasteljau->setVec3(newPoint, 1);
+				updateDecasteljau();
+			}
+		}
+	}
+}
+
 void ViewPanel::showPoints() {
 	for (CurveBezier* b : allCurves) {
 		if (bezier_toggle) {
@@ -236,8 +309,21 @@ void ViewPanel::drawStructure(double t) {
 	}
 }
 
+void ViewPanel::updateBernstein() {
+	for (CurveBezier* b : allCurves) {
+		if (dynamic_cast<Bernstein*>(b)) {
+			b->setInitialized(false);
+		}
+	}
+}
 
-
+void ViewPanel::updateDecasteljau() {
+	for (CurveBezier* b : allCurves) {
+		if (dynamic_cast<DeCasteljau*>(b)) {
+			b->setInitialized(false);
+		}
+	}
+}
 
 
 

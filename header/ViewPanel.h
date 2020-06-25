@@ -35,6 +35,7 @@ public:
 	void translate(PointVector, int);
 
 	void selectPoint(glm::vec3&, glm::vec3&);
+
 	void dragPoint(glm::vec3&, glm::vec3&);
 
 	void showPoints();
@@ -55,6 +56,15 @@ private:
 	glm::mat4x4 model;
 
 	vector<CurveBezier*> allCurves;
+
+	PointVector* selectedPointVectorBernstein = nullptr;
+	glm::vec3 selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);
+	PointVector* selectedPointVectorDecasteljau = nullptr;
+	glm::vec3 selectedPointNormalDecasteljau = glm::vec3(0.0f, 0.0f, 0.0f);
+	void selectPointPost(glm::vec3&, glm::vec3&, PolyObject* const&, bool);
+
+	void updateBernstein();
+	void updateDecasteljau();
 
 	Gui* gui;
 

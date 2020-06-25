@@ -28,6 +28,8 @@ void ViewPanel::init() {
 		b->getDerativeStructure()->init();
 		b->getDeCasteljauStructure()->init();
 	}
+	drawStructure(0.5, 0);
+	drawStructure(0.5, 1);
 }
 
 void ViewPanel::setGui(Gui* g) {
@@ -36,6 +38,9 @@ void ViewPanel::setGui(Gui* g) {
 
 void ViewPanel::toggleBezierCurve() {
 	bezier_toggle = !bezier_toggle;
+}
+void ViewPanel::toggleStructure() {
+	structure_toggle = !structure_toggle;
 }
 
 void ViewPanel::degreeIncrease() {
@@ -69,17 +74,23 @@ void ViewPanel::draw() {
 		if (bezier_toggle) {
 			if (dynamic_cast<Bernstein*>(b)) {
 				b->draw(projection * view * model);
-					b->getControlStructure()->draw(projection * view * model);
+				b->getControlStructure()->draw(projection * view * model);
+				
+				if (structure_toggle) {
 					b->getDeCasteljauStructure()->draw(projection * view * model);
+				}
 
-					if (b->isDerivative() == 1) {
-						b->getDerativeStructure()->draw(projection * view * model);
-					}
+				if (b->isDerivative() == 1) {
+					b->getDerativeStructure()->draw(projection * view * model);
+				}
 			}
 		} else if(dynamic_cast<DeCasteljau*>(b)) {
 			b->draw(projection * view * model);
 			b->getControlStructure()->draw(projection * view * model);
-			b->getDeCasteljauStructure()->draw(projection * view * model);
+
+			if (structure_toggle) {
+				b->getDeCasteljauStructure()->draw(projection * view * model);
+			}
 
 			if (b->isDerivative() == 1) {
 				b->getDerativeStructure()->draw(projection * view * model);
@@ -253,7 +264,7 @@ void ViewPanel::showPoints() {
 	}
 }
 
-void ViewPanel::drawStructure(double t) {
+void ViewPanel::drawStructure(double t, int curveType) {
 	std::vector<PointVector>vertices;
 	std::vector<PointVector>empty;
 	PolyObject* deCasteljauStructure;
@@ -262,7 +273,7 @@ void ViewPanel::drawStructure(double t) {
 		vertices.clear();
 		empty.clear();
 
-		if (bezier_toggle) {
+		if (curveType == 0) { // 0 = Bernstein, 1 = DeCasteljau
 			if (dynamic_cast<Bernstein*>(b)) {
 				deCasteljauStructure = b->getDeCasteljauStructure();
 				vertices = b->getControlVertices();

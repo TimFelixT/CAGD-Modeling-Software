@@ -21,6 +21,7 @@ public:
 
 
 	void toggleBezierCurve();
+	void toggleStructure();
 	void degreeIncrease();
 	void subdivision();
 	void derivative();
@@ -37,13 +38,14 @@ public:
 
 	void showPoints();
 
-	void drawStructure(double t);
+	void drawStructure(double t, int);
 	void drawStructures(vector<double> t);
 
 	void setGui(Gui*);
 
 
 	bool bezier_toggle = false;
+	bool structure_toggle = false;
 
 private:
 	std::stack <glm::mat4x4> matrixStack;
@@ -64,6 +66,5 @@ private:
 	void updateDecasteljau();
 
 	Gui* gui;
-
 	friend class Gui;
 };

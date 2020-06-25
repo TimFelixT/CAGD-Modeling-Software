@@ -51,8 +51,28 @@
             display: none;
             overflow: hidden;
         }
+        /* Arrow Style */
+        .arrow {
+            border: solid black;
+            border-width: 0 6px 6px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .arrow:hover {
+            background-color: #ccc;
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
     </style>
     <script>
+        var tValueBernstein = 0.5;
+        var tValueDecasteljau = 0.5;
         /* TabLayout Functions */
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
@@ -175,8 +195,30 @@
             updateBtn.addEventListener("click", function(){ resetCurves() });
             kurven.appendChild(updateBtn);
             OnResetCurves();
-        }
-        
+        }   
+        function changeStructureT(curveType, direction, span){
+            /* curveType 0 = Bernstein, 1 = DeCasteljau
+                direction 0 = up, 1 = down */           
+            if (curveType == 0) {
+                if (tValueBernstein < 0.96 && direction == 0) {
+                    tValueBernstein += 0.05;
+                    OnChangeStructureT((Math.round(tValueBernstein * 100) / 100).toFixed(2), 0);
+                } else if (tValueBernstein >= 0.05 && direction == 1) {
+                    tValueBernstein -= 0.05;
+                    OnChangeStructureT((Math.round(tValueBernstein * 100) / 100).toFixed(2), 0);
+                }
+                span.innerText = "Wert: " + (Math.round(tValueBernstein * 100) / 100).toFixed(2);
+            } else {
+                if (tValueDecasteljau < 0.96 && direction == 0) {
+                    tValueDecasteljau += 0.05;
+                    OnChangeStructureT((Math.round(tValueDecasteljau * 100) / 100).toFixed(2), 1);
+                } else if (tValueDecasteljau >= 0.05 && direction == 1) {
+                    tValueDecasteljau -= 0.0500;
+                    OnChangeStructureT((Math.round(tValueDecasteljau * 100) / 100).toFixed(2), 1);
+                }
+                span.innerText = "Wert: " + (Math.round(tValueDecasteljau * 100) / 100).toFixed(2);
+            }
+        }   
     </script>
 </head>
 
@@ -201,11 +243,31 @@
             <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
             <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
         </div>
+        <br/>
         <div>
             <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
         </div>
+        <br/>
         <div>
-            <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen</button>
+            <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen (nur Beinsteinpolynome)</button>
+        </div>
+        <br/>
+        <div>
+            <button onclick='OnToggleStructure()'>Toggle Strukturanzeige</button>
+            <br/>
+            <br/>
+            <label>Bernsteinstein-Bezierkurve "T" verändern</label>
+            <br/>
+            <i class="arrow up" onclick="changeStructureT(0, 0, document.querySelector('#bernsteinStrukturValue'))" style="margin-right:5px;"></i>
+            <i class="arrow down" onclick="changeStructureT(0, 1, document.querySelector('#bernsteinStrukturValue'))"></i>
+            <span id="bernsteinStrukturValue">Wert: 0.50</span>
+            <br/>
+            <br/>
+            <label for="decasteljauStruktur">DeCasteljau-Bezierkurve "T" verändern</label>
+            <br/>
+            <i class="arrow up" onclick="changeStructureT(1, 0, document.querySelector('#decasteljauStrukturValue'))" style="margin-right:5px;"></i>
+            <i class="arrow down" onclick="changeStructureT(1, 1, document.querySelector('#decasteljauStrukturValue'))"></i>
+            <span id="decasteljauStrukturValue">Wert: 0.50</span>
         </div>
     </div>
 </body>

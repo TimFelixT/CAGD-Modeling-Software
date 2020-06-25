@@ -36,6 +36,9 @@ private:
     void OnToggleBezier(const JSObject&, const JSArgs&);
     void OnToggleHighlightControlpoints(const JSObject&, const JSArgs&);
     void OnDegreeIncrease(const JSObject&, const JSArgs&);
+    void OnToggleStructure(const JSObject&, const JSArgs&);
+    void OnChangeStructureT(const JSObject&, const JSArgs&);
+
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

@@ -38,6 +38,8 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnToggleHighlightControlpoints"] = BindJSCallback(&Gui::OnToggleHighlightControlpoints);
 	global["OnDegreeIncrease"] = BindJSCallback(&Gui::OnDegreeIncrease);
 	global["OnResetCurves"] = BindJSCallback(&Gui::OnResetCurves);
+	global["OnChangeStructureT"] = BindJSCallback(&Gui::OnChangeStructureT);
+	global["OnToggleStructure"] = BindJSCallback(&Gui::OnToggleStructure);
 
 	loadData();
 }
@@ -155,6 +157,18 @@ void Gui::OnDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {
 		viewPanel->degreeIncrease();
 		updateDisplay();
 	}
+}
+void Gui::OnToggleStructure(const JSObject& thisObject, const JSArgs& args) {
+	viewPanel->toggleStructure();
+	updateDisplay();
+}
+void Gui::OnChangeStructureT(const JSObject& thisObject, const JSArgs& args) {
+	double tValue = args[0].ToNumber();
+	int curveType = args[1].ToInteger();
+
+	viewPanel->drawStructure(tValue, curveType);
+	updateDisplay();
+
 }
 
 void Gui::updateDisplay() {

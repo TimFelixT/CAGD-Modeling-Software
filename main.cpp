@@ -40,8 +40,6 @@ glm::mat4x4 projection;
 ViewPanel* viewPanel = new ViewPanel(&program);
 Gui* gui;
 
-float t = 0.5;
-
 float zNear = 0.001f;
 float zFar = 120.0f;
 float eyeX = 0.0f;
@@ -59,14 +57,6 @@ glm::vec3 eye(eyeX, eyeY, eyeZ);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
 glm::vec3 up(0.0f, 1.0f, 0.0f);
 
-
-/** Temporary PointVectors **/
-PointVector pushx(0.25f, 0.0f, 0.0f, 0);
-PointVector pushy(0.0f, 0.25f, 0.0f, 0);
-PointVector pushz(0.0f, 0.0f, 0.25f, 0);
-PointVector add(-5.0f, -5.0f, 2.0f, 0);
-PointVector add2(-1.0f, 0.0f, 0.0f, 0);
-/*************************/
 
 /*
  Initialization. Should return true if everything is ok and false if something went wrong.
@@ -172,26 +162,6 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         eyeZ++;
         eye.z = eyeZ;
         init();
-        break;
-    case '+':
-        t += 0.02;
-        if (t > 1) {
-            t = 1;
-        }
-        else {
-            viewPanel->drawStructure(t);
-            init();
-        }
-        break;
-    case '-':
-        t -= 0.02;
-        if (t < 0) {
-            t = 0;
-        }
-        else {
-            viewPanel->drawStructure(t);
-            init();
-        }
         break;
     case 'n':
         viewPanel->derivative();

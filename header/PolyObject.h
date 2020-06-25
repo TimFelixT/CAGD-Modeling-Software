@@ -35,8 +35,10 @@ public:
 	void pushFace(std::vector<PointVector>);
 	void pushVertice(PointVector);
 	void pushColor();
+	void popColor();
 	void pushNormal(PointVector);
 	void pushIndex(GLushort index);
+	void popIndex();
 
 	void clear();
 

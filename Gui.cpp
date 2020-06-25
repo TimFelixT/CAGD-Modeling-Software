@@ -94,6 +94,18 @@ void Gui::OnAddNewPoint(const JSObject& thisObject, const JSArgs& args) {
 
 }
 void Gui::OnDeleteLastPoint(const JSObject& thisObject, const JSArgs& args) {
+	int curveIndex = args[0].ToInteger();
+	int canDelete = args[1].ToInteger();
+
+	if (canDelete == -1) {
+		cout << "Kein Loeschen - 3 Punkte sollte eine Bezierkurve schon haben!" << endl;
+	} else {
+		CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
+		c.deleteLastPoint();
+		c.updateCurveBuffer();
+		c.setInitialized(false);
+		updateDisplay();
+	}
 
 }
 void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {

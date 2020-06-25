@@ -152,8 +152,17 @@
             OnAddNewPoint(0, 0, 0, 1, bezierCurveIndex);
 
         }
-        function deleteLastPoint(){
-
+        function deleteLastPoint(deleteBtn){
+            let panel = deleteBtn.parentNode.parentNode;
+            if (panel.childElementCount <= 4) {
+                //Nicht möglich - 3 Punkte müssen mindestens vorhanden sein (Der erste div ist kein Punkt, daher 4 bei if)
+                OnDeleteLastPoint(0, -1);
+            } else {
+                let bezierCurveIndex = panel.getAttribute("data-index");
+                let remove = panel.lastChild;
+                panel.removeChild(remove);
+                OnDeleteLastPoint(bezierCurveIndex, 1);
+            } // OnDeleteLastPoint - 1 für kann gelöscht werden, -1 zu wenig Einträge
         }
         function resetCurves(){
             let kurven = document.querySelector("#kurve");

@@ -30,8 +30,6 @@ public:
 	void polyObjRotZ();
 
 
-	void deletePoint(int);
-	void translate(PointVector, int);
 
 	void selectPoint(glm::vec3&, glm::vec3&);
 

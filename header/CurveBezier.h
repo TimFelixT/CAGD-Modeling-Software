@@ -29,9 +29,8 @@ public:
 	void rotateZ();
 
 
-	void translate(PointVector direction, int position);
 	void addPointEnd(PointVector point);
-	void deletePointAt(int position);
+	void deleteLastPoint();
 
 	void updateCurveBuffer();
 	

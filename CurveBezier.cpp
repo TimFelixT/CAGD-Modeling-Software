@@ -136,12 +136,6 @@ void CurveBezier::setInitialized(bool s) {
 	this->initialized = s;
 }
 
-void CurveBezier::translate(PointVector direction, int position) {
-	std::vector<PointVector> vertices = obj->getVertices();
-	vertices.at(position) = vertices.at(position) + direction;
-	obj->setVertices(vertices);
-	initialized = false;
-}
 void CurveBezier::addPointEnd(PointVector point) {
 	obj->pushVertice(point);
 	obj->pushColor();
@@ -151,10 +145,11 @@ void CurveBezier::addPointEnd(PointVector point) {
 	obj->pushIndex(index + 1);
 	initialized = false;
 }
-void CurveBezier::deletePointAt(int position) {
+void CurveBezier::deleteLastPoint() {
 	std::vector<PointVector> vertices = obj->getVertices();
-	if (vertices.size() <= position || position < 0) return;
-	vertices.erase(vertices.cbegin() + position);
+	vertices.pop_back();
 	obj->setVertices(vertices);
+	obj->popColor();
+	obj->popIndex();
 	initialized = false;
 }

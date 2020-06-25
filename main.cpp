@@ -173,22 +173,6 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         eye.z = eyeZ;
         init();
         break;
-	case '1':
-		viewPanel->translate(pushx, 2);
-		init();
-		break;
-	case '2':
-		viewPanel->translate(pushy, 2);
-		init();
-		break;
-	case '3':
-		viewPanel->translate(pushz, 2);
-		init();
-		break;
-	case 'd':
-		viewPanel->deletePoint(2);
-		init();
-		break;
     case '+':
         t += 0.02;
         if (t > 1) {

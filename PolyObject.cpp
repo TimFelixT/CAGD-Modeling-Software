@@ -162,7 +162,11 @@ void PolyObject::pushFace(vector<PointVector> face) {
 void PolyObject::pushIndex(GLushort index) {
 	indices.push_back(index);
 }
-
+void PolyObject::popIndex() {
+	//Zweimal wegen einer Linie
+	indices.pop_back();
+	indices.pop_back();
+}
 void PolyObject::clear()
 {
 	vertices.clear();
@@ -179,6 +183,9 @@ void PolyObject::pushVertice(PointVector vertice) {
 void PolyObject::pushColor()
 {
 	colors.push_back(color);
+}
+void PolyObject::popColor() {
+	colors.pop_back();
 }
 
 void PolyObject::pushNormal(PointVector normal) {

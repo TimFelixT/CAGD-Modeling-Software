@@ -100,13 +100,6 @@ void ViewPanel::setView(glm::mat4x4 v) {
 	view = v;
 }
 
-void ViewPanel::deletePoint(int position) {
-	//bernstein_bezier->deletePointAt(position);
-}
-void ViewPanel::translate(PointVector direction, int position) {
-	//bernstein_bezier->translate(direction, position);
-}
-
 
 void ViewPanel::polyObjRotX() {
 	for (CurveBezier* b : allCurves) {

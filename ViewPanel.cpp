@@ -100,9 +100,6 @@ void ViewPanel::setView(glm::mat4x4 v) {
 	view = v;
 }
 
-void ViewPanel::addPoint(PointVector point) {
-	//bernstein_bezier->addPointEnd(point);
-}
 void ViewPanel::deletePoint(int position) {
 	//bernstein_bezier->deletePointAt(position);
 }

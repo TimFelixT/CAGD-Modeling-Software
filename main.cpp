@@ -185,11 +185,6 @@ void glutKeyboard(unsigned char keycode, int x, int y)
 		viewPanel->translate(pushz, 2);
 		init();
 		break;
-	case 'a':
-		viewPanel->addPoint(add);
-		add = add + add2;
-		init();
-		break;
 	case 'd':
 		viewPanel->deletePoint(2);
 		init();

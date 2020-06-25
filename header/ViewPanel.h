@@ -30,7 +30,6 @@ public:
 	void polyObjRotZ();
 
 
-	void addPoint(PointVector);
 	void deletePoint(int);
 	void translate(PointVector, int);
 

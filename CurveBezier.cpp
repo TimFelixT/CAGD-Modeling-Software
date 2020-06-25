@@ -144,6 +144,7 @@ void CurveBezier::translate(PointVector direction, int position) {
 }
 void CurveBezier::addPointEnd(PointVector point) {
 	obj->pushVertice(point);
+	obj->pushColor();
 	std::vector<GLushort> indicesobj = obj->getIndices();
 	GLushort index = indicesobj.at(indicesobj.size() - 1);
 	obj->pushIndex(index);

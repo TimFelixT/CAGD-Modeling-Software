@@ -80,6 +80,17 @@ void Gui::OnResetCurves(const JSObject& thisObject, const JSArgs& args) {
 }
 
 void Gui::OnAddNewPoint(const JSObject& thisObject, const JSArgs& args) {
+	double x = args[0].ToNumber();
+	double y = args[1].ToNumber();
+	double z = args[2].ToNumber();
+	double homo = args[3].ToNumber();
+	int curveIndex = args[4].ToInteger();
+
+	CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
+	c.addPointEnd(PointVector(x, y, z, homo));
+	c.updateCurveBuffer();
+	c.setInitialized(false);
+	updateDisplay();
 
 }
 void Gui::OnDeleteLastPoint(const JSObject& thisObject, const JSArgs& args) {

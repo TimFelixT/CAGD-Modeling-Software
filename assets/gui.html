@@ -139,7 +139,18 @@
                      
         }
         function addNewPoint(addBtn){
-            
+            let panel = addBtn.parentNode.parentNode;
+            let bezierCurveIndex = panel.getAttribute("data-index");
+            let htmlPointIndex = parseInt(panel.lastChild.lastChild.getAttribute("data-index"), 10) +1;
+            let pointcontainer = document.createElement("div");
+            pointcontainer.style.display = "inline-block;"
+            for (let i=0; i<4; i++) {
+                //Neuer Punkt ist (0, 0, 0, 1)
+                addPoint(pointcontainer, 0, htmlPointIndex+i);
+            }
+            panel.appendChild(pointcontainer);
+            OnAddNewPoint(0, 0, 0, 1, bezierCurveIndex);
+
         }
         function deleteLastPoint(){
 
@@ -156,9 +167,7 @@
             kurven.appendChild(updateBtn);
             OnResetCurves();
         }
-
-
-
+        
     </script>
 </head>
 

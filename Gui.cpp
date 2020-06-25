@@ -128,8 +128,10 @@ void Gui::OnToggleHighlightControlpoints(const JSObject& thisObject, const JSArg
 	glutPostRedisplay();
 }
 void Gui::OnDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {
-	viewPanel->degreeIncrease();
-	updateDisplay();
+	if (viewPanel->bezier_toggle) {
+		viewPanel->degreeIncrease();
+		updateDisplay();
+	}
 }
 
 void Gui::updateDisplay() {

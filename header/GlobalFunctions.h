@@ -13,17 +13,17 @@ static struct GlobalFunctions {
 	
 	void rotateXPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {
-			vector[i].setVec3(glm::rotateX(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 0);
+			vector[i].setVec3(glm::rotateX(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 1);
 		}
 	}
 	void rotateYPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {
-			vector[i].setVec3(glm::rotateY(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 0);
+			vector[i].setVec3(glm::rotateY(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 1);
 		}
 	}
 	void rotateZPointVector(std::vector<PointVector>& vector) {
 		for (int i = 0; i < vector.size(); i++) {
-			vector[i].setVec3(glm::rotateZ(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 0);
+			vector[i].setVec3(glm::rotateZ(vector[i].getVec3(), globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180)), 1);
 		}
 	}
 

@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "include/GLSLProgram.h"
 #include "include/GLTools.h"
@@ -42,13 +43,17 @@ Gui* gui;
 float t = 0.5;
 
 float zNear = 0.001f;
-float zFar = 80.0f;
+float zFar = 120.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)
 float lookAtAngle = 45.0f;
 
 bool needInit = false;
+bool middleButtonPressed = false;
+
+int xMoved = 0;
+int yMoved = 0;
 
 glm::vec3 eye(eyeX, eyeY, eyeZ);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
@@ -241,8 +246,39 @@ void glutMouse(int button, int state, int mousex, int mousey) {
         viewPanel->dragPoint(eye, ray_wor);
         init();
     }
+    if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) {
+        xMoved = mousex;
+        yMoved = mousey;
+        middleButtonPressed = true;
+    }
+    if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP){
+        middleButtonPressed = false;
+        xMoved = 0;
+        yMoved = 0;
+    }
   
 	glutPostRedisplay();
+}
+void glutMotion(int x, int y) {
+    if (middleButtonPressed) {
+            eyeX += (xMoved - x)/1.5f;
+            eye.x = eyeX;
+            xMoved = x;
+
+            eyeY += (yMoved - y)/1.5f;
+            eye.y = eyeY;
+            yMoved = y;
+                  
+            init();
+    }
+}
+void mouseWheel (int button, int dir, int x, int y) {
+    if (dir > 0) {
+        eye = glm::rotateY(eye, 0.1f);
+    } else {
+        eye = glm::rotateY(eye, -0.1f);
+    }
+    init();
 }
 
 
@@ -294,6 +330,8 @@ int main(int argc, char** argv) {
     glutIdleFunc(glutDisplay); // redisplay when idle
     glutKeyboardFunc(glutKeyboard);
 	glutMouseFunc(glutMouse);
+    glutMotionFunc(glutMotion);
+    glutMouseWheelFunc(mouseWheel);
 
     // init vertex-array-objects.
     bool result = init();

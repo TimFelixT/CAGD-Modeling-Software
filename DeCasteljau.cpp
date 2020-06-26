@@ -73,7 +73,7 @@ void DeCasteljau::calcCurve() {
 	}
 }
 
-void DeCasteljau::calcRationalCurve()
+void DeCasteljau::calcRationalCurve(int w_i, float weight)
 {
 	std::vector<PointVector> controlVertices = obj->getVertices();
 	PointVector p;
@@ -83,13 +83,10 @@ void DeCasteljau::calcRationalCurve()
 	curveColors.clear();
 	curveBuffer.clear();
 
-	//for (auto& vert : controlVertices) {
-	//	vert.weight = rand() % 100;
-	//	vert = vert * vert.weight;
-	//}
-
-	controlVertices.at(1).weight = 3;
-	controlVertices.at(1) = controlVertices.at(1) * controlVertices.at(1).weight;
+	if (w_i >= 0 && w_i < controlVertices.size()) {
+		controlVertices.at(w_i).weight = weight;
+		controlVertices.at(w_i) = controlVertices.at(w_i) * controlVertices.at(w_i).weight;
+	}
 
 	for (double t = 0; t < 1; t += 0.01) {
 		p = deCasteljau(controlVertices.size() - 1, 0, t, controlVertices);

@@ -5,7 +5,7 @@
 
 #include "Bernstein.h"
 #include "Decasteljau.h"
-
+#include "../Bezier_Surface.h"
 
 class Gui; //Vermeidet circular dependencies
 
@@ -55,6 +55,7 @@ private:
 	glm::mat4x4 model;
 
 	vector<CurveBezier*> allCurves;
+	vector<Bezier_Surface*> allSurfaces;
 
 	Gui* gui;
 

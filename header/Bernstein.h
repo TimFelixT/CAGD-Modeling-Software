@@ -8,7 +8,7 @@ public:
 	~Bernstein();
 	void bezier_derivative() override;
 	void calcCurve() override;
-	void calcRationalCurve() override;
+	void calcRationalCurve(int w_i, float weight) override;
 private:
 	long long binomialCoefficiant(long long, long long);
 	long long factorial(long long);

@@ -13,15 +13,15 @@ using namespace std;
 class ObjFileParser {
 public:
 
-	bool parseObjectFile(const char* filename, PolyObject* polyObj);
+	bool parseObjectFile(const char* filename, vector<PolyObject*>* polyObj);
+
+	bool parseObjectFile(const char* filename, PolyObject* polyObj, int*, int*);
 
 private:
 
 	void parseLine(string line, PolyObject* polyObj);
 
 	PointVector parseVertice(string line);
-
-	PointVector parseFaceVertice(char* line);
 
 	void parseFace(string line, PolyObject*);
 };

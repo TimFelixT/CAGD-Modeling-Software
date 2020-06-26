@@ -42,7 +42,6 @@ void CurveBezier::init() {
 	if (!initialized) {
 		calcCurve();
 		bezier_derivative();
-		//calcCurveDeCasteljau();
 		initialized = true;
 	}
 

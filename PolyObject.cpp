@@ -29,7 +29,7 @@ PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 	ObjFileParser parser;
-	parser.parseObjectFile(filename, this);
+	parser.parseObjectFile(filename, this, nullptr, nullptr);
 }
 
 PolyObject::~PolyObject() {
@@ -181,6 +181,11 @@ void PolyObject::pushColor()
 	colors.push_back(color);
 }
 
+void PolyObject::pushColor(PointVector _color)
+{
+	colors.push_back(_color);
+}
+
 void PolyObject::pushNormal(PointVector normal) {
 	glm::vec3 norm = glm::normalize(normal.getVec3());
 
@@ -207,8 +212,23 @@ std::vector<GLushort> PolyObject::getIndices() {
 	return indices;
 }
 
+cg::GLSLProgram* PolyObject::getProgram()
+{
+	return program;
+}
+
 void PolyObject::setVertices(std::vector<PointVector> in) {
 	vertices = in;
+}
+
+void PolyObject::setProgram(cg::GLSLProgram* prog)
+{
+	program = prog;
+}
+
+void PolyObject::setColor(PointVector new_color)
+{
+	color = new_color;
 }
 
 void PolyObject::selectPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {

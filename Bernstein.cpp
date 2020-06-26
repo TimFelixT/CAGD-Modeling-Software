@@ -29,24 +29,24 @@ void Bernstein::bezier_derivative() {
 
 	for (float t = 0; t < 1; t += globalConstants.BEZIER_ACCURACY) {
 
-		PointVector d_point(0.0f, 0.0f, 0.0f, 0.0f);
-		PointVector point(0.0f, 0.0f, 0.0f, 0.0f);
+		glm::vec3 d_point(0.0f, 0.0f, 0.0f);
+		glm::vec3 point(0.0f, 0.0f, 0.0f);
 
 		controlVertices[1].weight = 3;
 		float quot = 0;
 
 		for (int i = 0; i <= n; i++)
 		{
-			PointVector delta_point;
+			glm::vec3 delta_point;
 			if (i < n) {
-				delta_point = controlVertices[i + 1] - controlVertices[i];
+				delta_point = controlVertices[i + 1].getVec3() - controlVertices[i].getVec3();
 
 				d_point = d_point + (binomialCoefficiant(n - 1, i) * pow(1 - t, n - 1 - i) * pow(t, i)) * delta_point;
 			}
-			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i];
+			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i) * controlVertices[i].getVec3());
 		}
-		d_obj->pushVertice(point);
-		d_obj->pushVertice(n * d_point);
+		d_obj->pushVertice(PointVector(point, 0));
+		d_obj->pushVertice(n * PointVector(d_point, 0));
 		d_obj->pushColor();
 		d_obj->pushColor();
 	}
@@ -106,7 +106,7 @@ void Bernstein::calcCurve() {
 
 }
 
-void Bernstein::calcRationalCurve()
+void Bernstein::calcRationalCurve(int w_i, float weight)
 {
 	std::vector<PointVector> controlVertices = obj->getVertices();
 
@@ -119,7 +119,7 @@ void Bernstein::calcRationalCurve()
 
 		int n = controlVertices.size() - 1;
 		glm::vec3 point(0.0f, 0.0f, 0.0f);
-		controlVertices[1].weight = 3;
+		controlVertices[w_i].weight = weight;
 		float quot = 0;
 
 		for (int i = 0; i <= n; i++)

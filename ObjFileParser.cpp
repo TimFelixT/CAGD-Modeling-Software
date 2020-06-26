@@ -25,15 +25,56 @@ bool isSurface(string line) {
 	return regex_match(line, regex("\\s*surf\\s+(\\d+\\s*)+\\s*"));
 }
 
+//
+//void parseCurveBezier(fstream* file, vector<PolyObject*>* polyObjs, vector<PointVector>* vertices) {
+//	string line;
+//
+//	while (getline(*file, line))
+//	{
+//		if (isDegree(line)) {
+//			cout << "is degree" << endl;
+//		}
+//		if (isSurface(line)) {
+//			while (line != "end") {
+//				PolyObject* obj = new PolyObject();
+//				smatch m;
+//				vector<char> indices;
+//
+//				regex face_reg = regex("(\\d+)((/(\\d+))*)");
+//				
+//				//Extract all the values
+//				while (regex_search(line, m, face_reg)) {
+//					indices.push_back(m.str(0)[0]);
+//					line = m.suffix().str();
+//				}
+//
+//				for (int i = 0; i < indices.size() - 1; i++) {
+//					obj->pushVertice(vertices->at((indices[i] - '0') - 1));
+//					obj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
+//					obj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
+//					obj->pushIndex(i);
+//					obj->pushIndex(i + 1);
+//				}
+//				obj->pushVertice(vertices->at((indices[indices.size()-1] - '0') - 1));
+//				polyObjs->push_back(obj);
+//				getline(*file, line);
+//			}
+//		}
+//	}
+//}
 
-void parseCurveBezier(fstream* file, PolyObject* polyObj) {
+void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n) {
 	string line;
-	Bezier_Surface bezier_surf;
 
 	while (getline(*file, line))
 	{
 		if (isDegree(line)) {
-			cout << "is degree" << endl;
+			smatch m;
+
+			regex nr_rgx = regex("\\d+\\s+\\d+");
+			regex_search(line, m, nr_rgx);
+			*deg_m = (int)(m.str(0)[0] - '0');
+			*deg_n = (int)(m.str(0)[m.str(0).size() - 1] - '0');
 		}
 		if (isSurface(line)) {
 			while (line != "end") {
@@ -44,21 +85,59 @@ void parseCurveBezier(fstream* file, PolyObject* polyObj) {
 				
 				//Extract all the values
 				while (regex_search(line, m, face_reg)) {
-					indices.push_back(m.str(0)[0]);
+					indices.push_back((int)(m.str(0)[0] - '0') - 1);
 					line = m.suffix().str();
 				}
 
 				for (int i = 0; i < indices.size() - 1; i++) {
-					polyObj->pushIndex(indices[i] - '0');
-					polyObj->pushIndex(indices[i + 1] - '0');
+					//polyObj->pushVertice(vertices->at((indices[i] - '0') - 1));
+					polyObj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
+					polyObj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
+					polyObj->pushIndex(indices[i]);
+					polyObj->pushIndex(indices[i + 1]);
 				}
+				//polyObj->pushVertice(vertices->at((indices[indices.size()-1] - '0') - 1));
 				getline(*file, line);
 			}
 		}
 	}
 }
 
-bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
+//
+//bool ObjFileParser::parseObjectFile(const char* filename, vector<PolyObject*>* polyObjs)
+//{
+//	fstream file(filename);
+//
+//	if (!file.good())
+//	{
+//		string logString = "could not open file \"" + string(filename) + "\"";
+//		return false;
+//	}
+//
+//	string line;
+//	vector<PointVector> vertices;
+//
+//	while (getline(file, line))
+//	{
+//		cout << line << endl;
+//		if (isVertex(line)) {
+//			vertices.push_back(parseVertice(line));
+//		}
+//		if (isDegree(line)) {
+//
+//		}
+//		if (isCurveBezier(line)) {
+//			parseCurveBezier(&file, polyObjs, &vertices);
+//			file.close();
+//			return true;
+//		}
+//	}
+//
+//	file.close();
+//	return true;
+//}
+
+bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj, int* deg_n = 0, int* deg_m = 0)
 {
 	fstream file(filename);
 
@@ -74,7 +153,7 @@ bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj)
 	{
 		cout << line << endl;
 		if (isCurveBezier(line)) {
-			parseCurveBezier(&file, polyObj);
+			parseCurveBezier(&file, polyObj, deg_n, deg_m);
 			file.close();
 			return true;
 		}

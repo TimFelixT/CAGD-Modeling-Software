@@ -3,16 +3,16 @@
 #include "header/Gui.h" //Vermeidet circular dependencies
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	Bernstein *bernstein_bezier = new Bernstein(new PolyObject("UB1_1.obj", prog), prog);
-	DeCasteljau *deCasteljau_bezier = new DeCasteljau(new PolyObject("UB1_1.obj", prog), prog);
+	//Bernstein *bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
+	//DeCasteljau *deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
+	Bezier_Surface* surface = new Bezier_Surface("UB1_1.obj", prog);
 
+	//bernstein_bezier->setControlStructure(new PolyObject(program));
+	//deCasteljau_bezier->setControlStructure(new PolyObject(program));
 
-	bernstein_bezier->setControlStructure(new PolyObject(program));
-	deCasteljau_bezier->setControlStructure(new PolyObject(program));
-
-	allCurves.push_back(bernstein_bezier);
-	allCurves.push_back(deCasteljau_bezier);
-
+	//allCurves.push_back(bernstein_bezier);
+	//allCurves.push_back(deCasteljau_bezier);
+	allSurfaces.push_back(surface);
 
 }
 
@@ -26,6 +26,10 @@ void ViewPanel::init() {
 		b->getControlStructure()->setPoints(true);
 		b->getDerativeStructure()->init();
 		b->getDeCasteljauStructure()->init();
+	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		s->init();
 	}
 }
 
@@ -43,6 +47,11 @@ void ViewPanel::degreeIncrease() {
 			b->degree_increase();
 		}
 	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		s->degree_increase_u();
+		s->degree_increase_v();
+	}
 }
 
 void ViewPanel::subdivision() {
@@ -56,6 +65,12 @@ void ViewPanel::subdivision() {
 void ViewPanel::derivative() {
 	for (CurveBezier* b : allCurves) {
 		b->toggleDerivative();
+	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		for (CurveBezier* b : s->getCurves()) {
+			b->toggleDerivative();
+		}
 	}
 }
 
@@ -84,6 +99,10 @@ void ViewPanel::draw() {
 				b->getDerativeStructure()->draw(projection * view * model);
 			}
 		}
+	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		s->draw(bezier_toggle, projection, view, model);
 	}
 
 	model = matrixStack.top();
@@ -127,6 +146,10 @@ void ViewPanel::polyObjRotX() {
 			b->getDerativeStructure()->rotateX();
 		}
 	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		s->rotateX();
+	}
 }
 void ViewPanel::polyObjRotY() {
 	for (CurveBezier* b : allCurves) {
@@ -145,6 +168,10 @@ void ViewPanel::polyObjRotY() {
 			b->getDerativeStructure()->rotateY();
 		}
 	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		s->rotateY();
+	}
 }
 void ViewPanel::polyObjRotZ() {
 	for (CurveBezier* b : allCurves) {
@@ -162,6 +189,10 @@ void ViewPanel::polyObjRotZ() {
 			b->getDeCasteljauStructure()->rotateZ();
 			b->getDerativeStructure()->rotateZ();
 		}
+	}
+
+	for (Bezier_Surface* s : allSurfaces) {
+		s->rotateZ();
 	}
 }
 

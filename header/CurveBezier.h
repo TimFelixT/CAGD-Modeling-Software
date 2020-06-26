@@ -37,6 +37,11 @@ public:
 	
 	void setInitialized(bool);
 
+	//Berechnungsmethoden
+	virtual void calcCurve() {};
+	virtual void bezier_derivative() {};
+	virtual void calcRationalCurve(int w_i, float weight) {};
+
 protected:
 	PolyObject* obj;
 	PolyObject* d_obj;
@@ -56,11 +61,6 @@ protected:
 
 
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
-
-	//Berechnungsmethoden
-	virtual void calcCurve() {};
-	virtual void bezier_derivative() {};
-	virtual void calcRationalCurve() {};
 
 	friend class Gui;
 private:

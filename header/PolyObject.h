@@ -29,12 +29,17 @@ public:
 	vector<PointVector> getNormals();
 	vector<vector<PointVector>> getFaces();
 	std::vector<GLushort> getIndices();
+	cg::GLSLProgram* getProgram();
+
 	void setVertices(std::vector<PointVector> in);
+	void setProgram(cg::GLSLProgram*);
+	void setColor(PointVector);
 
 	// Push functions
 	void pushFace(std::vector<PointVector>);
 	void pushVertice(PointVector);
 	void pushColor();
+	void pushColor(PointVector);
 	void pushNormal(PointVector);
 	void pushIndex(GLushort index);
 

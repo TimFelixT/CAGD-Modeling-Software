@@ -41,6 +41,8 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnChangeStructureT"] = BindJSCallback(&Gui::OnChangeStructureT);
 	global["OnToggleStructure"] = BindJSCallback(&Gui::OnToggleStructure);
 	global["OnSplitCurve"] = BindJSCallback(&Gui::OnSplitCurve);
+	global["OnCreateCurve"] = BindJSCallback(&Gui::OnCreateCurve);
+	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
 
 	loadData();
 }
@@ -196,6 +198,16 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 	}
 
 
+}
+void Gui::OnCreateCurve(const JSObject& thisObject, const JSArgs& args) {
+
+}
+void Gui::OnDeleteCurve(const JSObject& thisObject, const JSArgs& args) {
+	int curveIndex = args[0].ToInteger();
+	cout << curveIndex << endl;
+
+	viewPanel->allCurves.erase(viewPanel->allCurves.begin() + curveIndex);
+	updateDisplay();
 }
 
 void Gui::updateDisplay() {

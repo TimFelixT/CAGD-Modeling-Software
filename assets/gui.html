@@ -132,6 +132,11 @@
             splitInput.setAttribute("placeholder", "0.25; 0.75");
             splitInput.addEventListener("change", function(){ splitCurve(this.value, panel.getAttribute("data-index")); });
             btnPanel.appendChild(splitInput);
+            deleteCurveBtn = document.createElement("button");
+            deleteCurveBtn.innerText = "Diese Kurve löschen";
+            deleteCurveBtn.addEventListener("click", function(){ deleteCurve(panel.getAttribute("data-index")); });
+            btnPanel.appendChild(document.createElement("br"));
+            btnPanel.appendChild(deleteCurveBtn);
             btnPanel.appendChild(document.createElement("br"));
             btnPanel.appendChild(document.createElement("br"));
             btnPanel.appendChild(document.createElement("br"));
@@ -222,7 +227,13 @@
             let updateBtn = document.createElement("button");
             updateBtn.innerText = "Aktualisiere Kontrollpunkte";
             updateBtn.addEventListener("click", function(){ resetCurves() });
+            let createCurveBtn = document.createElement("button");
+            createCurveBtn.innerText = "Neue Kurve hinzufügen";
+            createCurveBtn.addEventListener("click", function(){ OnCreateCurve() });
+
             kurven.appendChild(updateBtn);
+            kurven.appendChild(document.createElement("br"));
+            kurven.appendChild(createCurveBtn);
             OnResetCurves();
         }   
         function changeStructureT(curveType, direction, span){
@@ -247,7 +258,11 @@
                 }
                 span.innerText = "Wert: " + (Math.round(tValueDecasteljau * 100) / 100).toFixed(2);
             }
-        }   
+        } 
+        function deleteCurve(bezierCurveIndex){
+            OnDeleteCurve(bezierCurveIndex);
+            resetCurves();
+        } 
     </script>
 </head>
 
@@ -260,6 +275,8 @@
     <div id="kurve" class="tabcontent">
         <h3>Bezier - Kurve</h3>
         <button onclick='resetCurves()'>Aktualisiere Kontrollpunkte</button>
+        </br>
+        <button onclick='OnCreateCurve()'>Neue Kurve hinzufügen</button>
     </div>
     <div id="flaeche" class="tabcontent">
         <h3>Bezier - Fl&auml;che</h3>

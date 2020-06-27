@@ -38,7 +38,7 @@ public:
 
 	void showPoints();
 
-	void drawStructure(double t, int);
+	void drawStructure(int);
 	void drawStructures(vector<double> t);
 
 	void setGui(Gui*);
@@ -64,6 +64,9 @@ private:
 
 	void updateBernstein();
 	void updateDecasteljau();
+
+	double bernsteinT = 0.5;
+	double deCasteljauT = 0.5;
 
 	Gui* gui;
 	friend class Gui;

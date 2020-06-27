@@ -77,6 +77,7 @@ void Gui::addCurves() {
 		}		
 	}
 }
+
 void Gui::OnResetCurves(const JSObject& thisObject, const JSArgs& args) {
 	addCurves();
 }
@@ -166,7 +167,14 @@ void Gui::OnChangeStructureT(const JSObject& thisObject, const JSArgs& args) {
 	double tValue = args[0].ToNumber();
 	int curveType = args[1].ToInteger();
 
-	viewPanel->drawStructure(tValue, curveType);
+	if (curveType == 0) {
+		viewPanel->bernsteinT = tValue;
+	}
+	else {
+		viewPanel->deCasteljauT = tValue;
+	}
+
+	viewPanel->drawStructure(curveType);
 	updateDisplay();
 
 }

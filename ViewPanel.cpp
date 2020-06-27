@@ -28,8 +28,8 @@ void ViewPanel::init() {
 		b->getDerativeStructure()->init();
 		b->getDeCasteljauStructure()->init();
 	}
-	drawStructure(0.5, 0);
-	drawStructure(0.5, 1);
+	drawStructure(0); //Bernstein
+	drawStructure(1); //DeCasteljau
 }
 
 void ViewPanel::setGui(Gui* g) {
@@ -264,10 +264,12 @@ void ViewPanel::showPoints() {
 	}
 }
 
-void ViewPanel::drawStructure(double t, int curveType) {
+void ViewPanel::drawStructure(int curveType) {
 	std::vector<PointVector>vertices;
 	std::vector<PointVector>empty;
 	PolyObject* deCasteljauStructure;
+
+	double t = 0;
 
 	for (CurveBezier* b : allCurves) {
 		vertices.clear();
@@ -277,12 +279,14 @@ void ViewPanel::drawStructure(double t, int curveType) {
 			if (dynamic_cast<Bernstein*>(b)) {
 				deCasteljauStructure = b->getDeCasteljauStructure();
 				vertices = b->getControlVertices();
+				t = bernsteinT;
 			} else {
 				continue;
 			}
 		} else if (dynamic_cast<DeCasteljau*>(b)) {
 			deCasteljauStructure = b->getDeCasteljauStructure();
 			vertices = b->getControlVertices();
+			t = deCasteljauT;
 		} else {
 			continue;
 		}

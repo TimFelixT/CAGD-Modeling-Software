@@ -19,7 +19,6 @@ public:
 
     void addCurves();
 
-
 private:
 	RefPtr<App> app;
 	RefPtr<Window> window;

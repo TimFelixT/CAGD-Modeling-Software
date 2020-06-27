@@ -208,7 +208,7 @@
             });
             if (correctInput) {
                 console.log("correct");
-                OnSplitCurve(valueArr);
+                OnSplitCurve(valueArr, bezierCurveIndex);
             } else {
                 OnSplitCurve(-1);
             }
@@ -265,38 +265,44 @@
         <h3>Bezier - Fl&auml;che</h3>
     </div>
     <div id="einstellungen" class="tabcontent">
-        <h3>Einstellungen</h3>
-        <div>
-            <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
-            <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
-            <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
-            <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+        <div id="einstellungen_bezierkurve" style="border-style: solid; border-width: 1px; padding:5px;">
+            <h3>Einstellungen - Bezierkurve</h3>
+            <div>
+                <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
+                <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
+                <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
+                <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+            </div>
+            <br/>
+            <div>
+                <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
+            </div>
+            <br/>
+            <div>
+                <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen (nur Beinsteinpolynome)</button>
+            </div>
+            <br/>
+            <div>
+                <button onclick='OnToggleStructure()'>Toggle Strukturanzeige</button>
+                <br/>
+                <br/>
+                <label>Bernsteinstein-Bezierkurve "T" verändern</label>
+                <br/>
+                <i class="arrow up" onclick="changeStructureT(0, 0, document.querySelector('#bernsteinStrukturValue'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeStructureT(0, 1, document.querySelector('#bernsteinStrukturValue'))"></i>
+                <span id="bernsteinStrukturValue">Wert: 0.50</span>
+                <br/>
+                <br/>
+                <label for="decasteljauStruktur">DeCasteljau-Bezierkurve "T" verändern</label>
+                <br/>
+                <i class="arrow up" onclick="changeStructureT(1, 0, document.querySelector('#decasteljauStrukturValue'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeStructureT(1, 1, document.querySelector('#decasteljauStrukturValue'))"></i>
+                <span id="decasteljauStrukturValue">Wert: 0.50</span>
+            </div>
         </div>
         <br/>
-        <div>
-            <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
-        </div>
-        <br/>
-        <div>
-            <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen (nur Beinsteinpolynome)</button>
-        </div>
-        <br/>
-        <div>
-            <button onclick='OnToggleStructure()'>Toggle Strukturanzeige</button>
-            <br/>
-            <br/>
-            <label>Bernsteinstein-Bezierkurve "T" verändern</label>
-            <br/>
-            <i class="arrow up" onclick="changeStructureT(0, 0, document.querySelector('#bernsteinStrukturValue'))" style="margin-right:5px;"></i>
-            <i class="arrow down" onclick="changeStructureT(0, 1, document.querySelector('#bernsteinStrukturValue'))"></i>
-            <span id="bernsteinStrukturValue">Wert: 0.50</span>
-            <br/>
-            <br/>
-            <label for="decasteljauStruktur">DeCasteljau-Bezierkurve "T" verändern</label>
-            <br/>
-            <i class="arrow up" onclick="changeStructureT(1, 0, document.querySelector('#decasteljauStrukturValue'))" style="margin-right:5px;"></i>
-            <i class="arrow down" onclick="changeStructureT(1, 1, document.querySelector('#decasteljauStrukturValue'))"></i>
-            <span id="decasteljauStrukturValue">Wert: 0.50</span>
+        <div id="einstellungen_bezierflaeche" style="border-style: solid; border-width: 1px; padding:5px;">
+            <h3>Einstellungen - Bezierfl&auml;che</h3>
         </div>
     </div>
 </body>

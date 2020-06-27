@@ -189,9 +189,10 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 		for (int i = 0; i < arr.length(); i++) {
 			t_vec.push_back(arr[i].ToNumber());
 		}
+		int curveIndex = args[1].ToInteger();
 		//Aufteilungsmethode hier aufrufen
 	} else {
-		cout << "Keine Korrekte eingabe zur Unterteilung!" << endl;
+		cout << "Keine Korrekte Eingabe zur Unterteilung!" << endl;
 	}
 
 

@@ -122,6 +122,19 @@
             deleteBtn.addEventListener("click", function(){ deleteLastPoint(this) });
             btnPanel.appendChild(addBtn);
             btnPanel.appendChild(deleteBtn);
+            btnPanel.appendChild(document.createElement("br"));
+
+            splitLabel = document.createElement("label");
+            splitLabel.innerText = "Bezierkurve unterteilen  ";
+            btnPanel.appendChild(splitLabel);
+            splitInput = document.createElement("input");
+            splitInput.setAttribute("type", "text");
+            splitInput.setAttribute("placeholder", "0.25; 0.75");
+            splitInput.addEventListener("change", function(){ splitCurve(this.value, panel.getAttribute("data-index")); });
+            btnPanel.appendChild(splitInput);
+            btnPanel.appendChild(document.createElement("br"));
+            btnPanel.appendChild(document.createElement("br"));
+            btnPanel.appendChild(document.createElement("br"));
 
             for (let i=0; i < arguments.length; i+=4) {
                 if (arguments[i+2] == undefined && arguments[i+3] == undefined) {
@@ -138,8 +151,6 @@
                     addPoint(pointcontainer, arguments[i+3], i+3);
                     panel.appendChild(pointcontainer);
                 }
-
-
             }
         }
         function addPoint(pointcontainer, value, index) {
@@ -183,6 +194,24 @@
                 panel.removeChild(remove);
                 OnDeleteLastPoint(bezierCurveIndex, 1);
             } // OnDeleteLastPoint - 1 für kann gelöscht werden, -1 zu wenig Einträge
+        }
+        function splitCurve(values, bezierCurveIndex){
+            values = values.trim();
+            let valueArr = values.split(";");
+            let correctInput = true;
+            valueArr.forEach(element => {
+                if (isNaN(element)) {
+                    correctInput = false;
+                } else if (Number(element) >= 1 || Number(element) <= 0) {
+                    correctInput = false;
+                }
+            });
+            if (correctInput) {
+                console.log("correct");
+                OnSplitCurve(valueArr);
+            } else {
+                OnSplitCurve(-1);
+            }
         }
         function resetCurves(){
             let kurven = document.querySelector("#kurve");

@@ -37,6 +37,7 @@ private:
     void OnDegreeIncrease(const JSObject&, const JSArgs&);
     void OnToggleStructure(const JSObject&, const JSArgs&);
     void OnChangeStructureT(const JSObject&, const JSArgs&);
+    void OnSplitCurve(const JSObject&, const JSArgs&);
 
 
     /* OpenGL Funktionspointer */

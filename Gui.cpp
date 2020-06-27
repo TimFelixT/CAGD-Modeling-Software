@@ -40,6 +40,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnResetCurves"] = BindJSCallback(&Gui::OnResetCurves);
 	global["OnChangeStructureT"] = BindJSCallback(&Gui::OnChangeStructureT);
 	global["OnToggleStructure"] = BindJSCallback(&Gui::OnToggleStructure);
+	global["OnSplitCurve"] = BindJSCallback(&Gui::OnSplitCurve);
 
 	loadData();
 }
@@ -176,6 +177,23 @@ void Gui::OnChangeStructureT(const JSObject& thisObject, const JSArgs& args) {
 
 	viewPanel->drawStructure(curveType);
 	updateDisplay();
+
+}
+
+void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
+
+	vector<float> t_vec;
+
+	if (args[0].IsArray()) {
+		JSArray arr = args[0].ToArray();
+		for (int i = 0; i < arr.length(); i++) {
+			t_vec.push_back(arr[i].ToNumber());
+		}
+		//Aufteilungsmethode hier aufrufen
+	} else {
+		cout << "Keine Korrekte eingabe zur Unterteilung!" << endl;
+	}
+
 
 }
 

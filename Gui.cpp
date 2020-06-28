@@ -226,23 +226,23 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 			t_vec.push_back(arr[i].ToNumber());
 		}
 		int curveIndex = args[1].ToInteger();
-		
+
 		viewPanel->subdivision(t_vec[0], newCurve, curveIndex);
+
 		PolyObject *po = new PolyObject(viewPanel->program);
 		po->setVertices(newCurve);
 
+		PolyObject* controlPoints = new PolyObject(viewPanel->program);
+		controlPoints->setVertices(newCurve);
+		for (int i = 0; i < newCurve.size() - 1; i++) {
+			controlPoints->pushIndex(i);
+			controlPoints->pushIndex(i + 1);
+			controlPoints->pushColor();
+		}
+		controlPoints->pushColor();
+
 		CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
 		if (dynamic_cast<Bernstein*>(&c)) {
-			PolyObject* controlPoints = new PolyObject(viewPanel->program);
-			controlPoints->setVertices(newCurve);
-			
-			for (int i = 0; i < newCurve.size() - 1; i++) {
-				controlPoints->pushIndex(i);
-				controlPoints->pushIndex(i + 1);
-				controlPoints->pushColor();
-			}
-			controlPoints->pushColor();
-
 			Bernstein* b = new Bernstein(controlPoints,viewPanel->program);
 			b->obj->setVertices(newCurve);
 			b->setControlStructure(po);
@@ -250,16 +250,6 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 			viewPanel->allCurves.push_back(b);
 		}
 		else {
-			PolyObject* controlPoints = new PolyObject(viewPanel->program);
-			controlPoints->setVertices(newCurve);
-
-			for (int i = 0; i < newCurve.size() - 1; i++) {
-				controlPoints->pushIndex(i);
-				controlPoints->pushIndex(i + 1);
-				controlPoints->pushColor();
-			}
-			controlPoints->pushColor();
-
 			DeCasteljau* d = new DeCasteljau(controlPoints, viewPanel->program);
 			d->obj->setVertices(newCurve);					
 			d->setControlStructure(po);
@@ -268,7 +258,6 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 		}
 		c.updateCurveBuffer();
 		c.initialized = false;
-
 		updateDisplay();
 	} else {
 		cout << "Keine Korrekte Eingabe zur Unterteilung!" << endl;

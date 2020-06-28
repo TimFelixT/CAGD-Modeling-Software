@@ -164,20 +164,20 @@ void ViewPanel::polyObjRotZ() {
 }
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
+	double distance = INFINITY;
 	for (CurveBezier* b : allCurves) {
 		if (bezier_toggle) {
 			if (dynamic_cast<Bernstein*>(b)) {
-				selectPointPost(cameraPos, rayVector, b->getControlStructure(), true);
+				selectPointPost(cameraPos, rayVector, b->getControlStructure(), true, distance);
 			}
 		}
 		else if (dynamic_cast<DeCasteljau*>(b)) {
-			selectPointPost(cameraPos, rayVector, b->getControlStructure(), false);
+			selectPointPost(cameraPos, rayVector, b->getControlStructure(), false, distance);
 		}
 	}
 }
 
-void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const &b, bool bernstein) {
-	double distance = INFINITY;
+void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const &b, bool bernstein, double &distance) {
 	//For each würde in diesem Fall nicht funktionieren
 	for (int i = 0; i < b->vertices.size(); i++) {
 

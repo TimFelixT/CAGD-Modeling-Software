@@ -2,6 +2,8 @@
 
 #include <Ultralight/Ultralight.h>
 #include <AppCore/AppCore.h>
+#include "Bernstein.h"
+
 
 using namespace ultralight;
 using namespace std;
@@ -18,6 +20,8 @@ public:
 
 
     void addCurves();
+
+    void addCurveSubDivide(std::vector<PointVector> points);
 
 private:
 	RefPtr<App> app;

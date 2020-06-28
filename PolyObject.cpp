@@ -47,6 +47,7 @@ void PolyObject::init() {
 	for (auto vert : vertices) {
 		verts.push_back(vert.getVec3());
 	}
+	
 	for (auto col : colors) {
 		cols.push_back(col.getVec3());
 	}

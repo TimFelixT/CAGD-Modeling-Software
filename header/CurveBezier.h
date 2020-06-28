@@ -32,6 +32,8 @@ public:
 	void addPointEnd(PointVector point);
 	void deleteLastPoint();
 
+	void subdivision(float t, std::vector<PointVector>& newVertices2);
+
 	void updateCurveBuffer();
 	
 	void setInitialized(bool);

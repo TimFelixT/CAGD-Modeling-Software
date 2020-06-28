@@ -153,3 +153,21 @@ void CurveBezier::deleteLastPoint() {
 	obj->popIndex();
 	initialized = false;
 }
+
+void CurveBezier::subdivision(float t, std::vector<PointVector>& newVertices2) {
+	std::vector<PointVector> vertices = obj->getVertices();
+	std::vector<PointVector> newVertices;
+
+	for (int i = 0; i < vertices.size() - 1; i++) {
+		newVertices.push_back(vertices[0]);
+		for (int j = 0; j < vertices.size() - 1 - i; j++) {
+			vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
+		}
+		newVertices2.push_back(vertices[vertices.size() - 1 - i]);
+
+	}
+	newVertices.push_back(vertices[0]);
+	newVertices2.push_back(vertices[0]);
+
+	obj->setVertices(newVertices);
+}

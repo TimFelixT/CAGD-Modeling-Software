@@ -106,12 +106,12 @@ void render()
 }
 
 void glutDisplay() {
-    render();
-    glutSwapBuffers();
     if (needInit) {
         init();
         needInit = false;
     }
+    render();
+    glutSwapBuffers();
 }
 
 /*

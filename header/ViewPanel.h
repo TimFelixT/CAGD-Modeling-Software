@@ -23,7 +23,7 @@ public:
 	void toggleBezierCurve();
 	void toggleStructure();
 	void degreeIncrease();
-	void subdivision();
+	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
 	void derivative();
 
 	void polyObjRotX();
@@ -55,6 +55,9 @@ private:
 	glm::mat4x4 model;
 
 	vector<CurveBezier*> allCurves;
+
+	Bernstein* bernstein_bezier;
+	DeCasteljau* deCasteljau_bezier;
 
 	PointVector* selectedPointVectorBernstein = nullptr;
 	glm::vec3 selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);

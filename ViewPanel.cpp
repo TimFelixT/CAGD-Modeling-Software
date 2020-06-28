@@ -4,8 +4,8 @@
 #include "header/GlobalConstants.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	Bernstein *bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
-	DeCasteljau *deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
+	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
+	deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
 
 
 	bernstein_bezier->setControlStructure(new PolyObject(program));
@@ -51,12 +51,8 @@ void ViewPanel::degreeIncrease() {
 	}
 }
 
-void ViewPanel::subdivision() {
-	vector<float> t_vec;
-	t_vec.push_back(0.25f);
-	t_vec.push_back(0.75f);
-
-	//bernstein_bezier->bezier_subdivision(t_vec);
+void ViewPanel::subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex) {	
+	allCurves.at(curveIndex)->subdivision(t, newCurveVerts);
 }
 
 void ViewPanel::derivative() {
@@ -170,7 +166,6 @@ void ViewPanel::polyObjRotZ() {
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
 	for (CurveBezier* b : allCurves) {
 		if (bezier_toggle) {
-			cout << "Hier" << endl;
 			if (dynamic_cast<Bernstein*>(b)) {
 				selectPointPost(cameraPos, rayVector, b->getControlStructure(), true);
 			}
@@ -329,49 +324,3 @@ void ViewPanel::updateDecasteljau() {
 		}
 	}
 }
-
-
-
-
-
-//void ViewPanel::drawStructures(vector<double> t_vec) {
-//	std::vector<PointVector>vertices = obj->getVertices();
-//	std::vector<PointVector>empty;
-//	PolyObject* deCasteljauStructure = bernstein_bezier->getControlStructure();
-//
-//	for (int r = 0; r < t_vec.size(); r++) {
-//		PolyObject* structure = new PolyObject(program);
-//		for (int i = 0; i < vertices.size() - 1; i++) {
-//			PointVector vertice;
-//			//for (int j = 0; j < vertices.size() - 1 - i; j++) {
-//			//	vertices[j] = (vertices[j] * (1 - t_vec.at(r))) + (vertices[j + 1] * t_vec.at(r));
-//			//	structure->pushVertice(vertices[j]);
-//			//	structure->pushColor();
-//			//}
-//
-//			for (int k = 0; k < vertices.size() - 1; k++) {
-//				//vertices[k] = vertices[k] * ();
-//				structure->pushVertice(vertices[k]);
-//
-//			}
-//
-//		}
-//		deCasteljauStructures.push_back(structure);
-//		vertices = obj->getVertices();
-//	}
-//
-//	int k = 0;
-//
-//	for (auto* structure : deCasteljauStructures) {
-//		for (int i = obj->getVertices().size() - 2; i > 0; i--)
-//		{
-//			for (int j = 0; j < i; j++) {
-//				structure->pushIndex(k);
-//				structure->pushIndex(k + 1);
-//				k++;
-//			}
-//			k++;
-//		}
-//		k = 0;
-//	}
-//}

@@ -58,6 +58,7 @@ void ViewPanel::degreeIncrease() {
 	for (Bezier_Surface* s : allSurfaces) {
 		//s->degree_increase_u();
 		s->degree_increase_v();
+		s->degree_increase_u();
 	}
 }
 

@@ -33,14 +33,36 @@ PolyObject* CurveBezier::getDerativeStructure()
 	return d_obj;
 }
 
+std::vector<PointVector> CurveBezier::getCurveVertices()
+{
+	return curveVertices;
+}
+
 void CurveBezier::setControlStructure(PolyObject* obj)
 {
 	deCasteljauStructure = obj;
 }
 
+void CurveBezier::setCurveVertices(vector<PointVector> verts)
+{
+	curveVertices = verts;
+	int k = 0;
+	curveIndices.clear();
+	curveBuffer.clear();
+	curveColors.clear();
+	for (PointVector p : verts) {
+		curveIndices.push_back(k);
+		curveIndices.push_back(k + 1);
+		curveBuffer.push_back(p.getVec3());
+		curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+		k++;
+	}
+	curveIndices.pop_back();
+}
+
 void CurveBezier::init() {
 	if (!initialized) {
-		calcCurve();
+		calcRationalCurve();
 		bezier_derivative();
 		initialized = true;
 	}

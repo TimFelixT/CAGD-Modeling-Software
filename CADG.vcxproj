@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="header\Bernstein.h" />
     <ClInclude Include="header\Bezier_Operations.h" />
+    <ClInclude Include="header\Bezier_Surface.h" />
     <ClInclude Include="header\Colors.h" />
     <ClInclude Include="header\CurveBezier.h" />
     <ClInclude Include="header\DeCasteljau.h" />

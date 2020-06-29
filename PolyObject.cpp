@@ -29,7 +29,7 @@ PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 	ObjFileParser parser;
-	parser.parseObjectFile(filename, this, nullptr, nullptr);
+	parser.parseObjectFile(filename, this, nullptr, nullptr, nullptr, nullptr);
 }
 
 PolyObject::~PolyObject() {
@@ -86,6 +86,12 @@ void PolyObject::init() {
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
 
+	if (fillSurface) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 }
 
 void PolyObject::draw(glm::mat4x4 mvp) {
@@ -102,6 +108,22 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	glDrawElements(GL_LINES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 	if (showPoints)
 		glDrawElements(GL_POINTS, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+
+	glBindVertexArray(0);
+}
+
+void PolyObject::draw(glm::mat4x4 mvp, GLenum mode) {
+
+	program->use();
+	program->setUniform("mvp", mvp);
+
+	glPointSize(5.0f);
+
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	int size;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+	glDrawElements(mode, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 
 	glBindVertexArray(0);
 }
@@ -159,6 +181,11 @@ void PolyObject::pushFace(vector<PointVector> face) {
 	faces.push_back(face);
 }
 
+void PolyObject::pushIFace(std::vector<int> iface)
+{
+	ifaces.push_back(iface);
+}
+
 void PolyObject::pushIndex(GLushort index) {
 	indices.push_back(index);
 }
@@ -208,6 +235,10 @@ std::vector<PointVector> PolyObject::getNormals() {
 std::vector<std::vector<PointVector>> PolyObject::getFaces() {
 	return faces;
 }
+vector<vector<int>> PolyObject::getIFaces()
+{
+	return ifaces;
+}
 std::vector<GLushort> PolyObject::getIndices() {
 	return indices;
 }
@@ -219,6 +250,12 @@ cg::GLSLProgram* PolyObject::getProgram()
 
 void PolyObject::setVertices(std::vector<PointVector> in) {
 	vertices = in;
+	for (int i = 0; i < in.size() - 1; i++) {
+		indices.push_back(i);
+		indices.push_back(i + 1);
+
+		colors.push_back(color);
+	}
 }
 
 void PolyObject::setProgram(cg::GLSLProgram* prog)
@@ -280,6 +317,11 @@ bool PolyObject::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 
 void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
+}
+
+void PolyObject::toggleFillSurface()
+{
+	this->fillSurface = !this->fillSurface;
 }
 
 void PolyObject::setPoints(bool show) {

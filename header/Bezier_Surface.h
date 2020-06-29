@@ -19,7 +19,6 @@ public:
 	void rationalSurface(int w_i, int w_j, float weight);
 	void degree_increase_u();
 	void degree_increase_v();
-	void degree_increase();
 	void divide();
 
 	void rotateX();
@@ -28,17 +27,21 @@ public:
 
 private:
 	void calculateVCurves();
-
-	void calculateUIndices();
-
-	void calculateVIndices();
-
 	void calculateUCurves();
+
+	void buildControlStructure();
+
+	void calculateBezierSurface();
 
 	vector<CurveBezier*> u_curves;
 	vector<CurveBezier*> v_curves;
+
+	vector<PolyObject*> v_vec;
+	vector<PolyObject*> u_vec;
+
 	vector<PolyObject*> objs;
-	PolyObject* obj;
+	PolyObject* controlStructure;
+	PolyObject* bezierSurface;
 
 	int deg_m, deg_n;
 };

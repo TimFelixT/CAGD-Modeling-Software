@@ -7,8 +7,10 @@ public:
 	Bernstein(PolyObject* pobj, cg::GLSLProgram*);
 	~Bernstein();
 	void bezier_derivative() override;
+	PointVector calcPoint(vector<PointVector> controlVertices, float t);
 	void calcCurve() override;
-	void calcRationalCurve(int w_i, float weight) override;
+	void calcCurve(int);
+	void calcRationalCurve() override;
 private:
 	long long binomialCoefficiant(long long, long long);
 	long long factorial(long long);

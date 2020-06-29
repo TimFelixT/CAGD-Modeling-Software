@@ -5,8 +5,6 @@
 Bernstein::Bernstein(PolyObject* pobj, cg::GLSLProgram* program) : CurveBezier(pobj, program)
 {
 	d_obj = new PolyObject(program);
-
-	bezier_derivative();
 }
 
 Bernstein::~Bernstein()
@@ -58,6 +56,20 @@ void Bernstein::bezier_derivative() {
 	}
 }
 
+PointVector Bernstein::calcPoint(vector<PointVector> controlVertices, float t) {
+		int n = controlVertices.size() - 1;
+		glm::vec3 point(0.0f, 0.0f, 0.0f);
+
+		for (int i = 0; i <= n; i++)
+		{
+			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i].getVec3();
+		}
+
+		PointVector p = PointVector(point, 0);
+
+		return p;
+}
+
 void Bernstein::calcCurve() {
 	std::vector<PointVector> controlVertices = obj->getVertices();
 
@@ -78,20 +90,11 @@ void Bernstein::calcCurve() {
 	float currentCurveLength = 0.0f;
 
 	for (float t = 0; t < 1; t += globalConstants.BEZIER_ACCURACY) {
+		PointVector p = calcPoint(controlVertices, t);
 
-		int n = controlVertices.size() - 1;
-		glm::vec3 point(0.0f, 0.0f, 0.0f);
-
-		for (int i = 0; i <= n; i++)
-		{
-			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i].getVec3();
-		}
-
-		PointVector p(point, 0);
 		curveVertices.push_back(p);
 		curveBuffer.push_back(p.getVec3());
 	}
-
 
 	for (int i = 0; i < curveVertices.size(); i++)
 	{
@@ -106,7 +109,46 @@ void Bernstein::calcCurve() {
 
 }
 
-void Bernstein::calcRationalCurve(int w_i, float weight)
+void Bernstein::calcCurve(int steps) {
+	std::vector<PointVector> controlVertices = obj->getVertices();
+
+	curveIndices.clear();
+	curveVertices.clear();
+	curveColors.clear();
+	curveBuffer.clear();
+
+	float curveLength = 0.0f;
+
+	for (int i = 0; i < controlVertices.size() - 1; i++)
+	{
+		curveLength += abs(sqrt(pow(controlVertices[i + 1].xCoor - controlVertices[i].xCoor, 2) + pow(controlVertices[i + 1].yCoor - controlVertices[i].yCoor, 2) + pow(controlVertices[i + 1].zCoor - controlVertices[i].zCoor, 2)));
+	}
+
+
+	float currentPoint = 0.0f;
+	float currentCurveLength = 0.0f;
+
+	for (float t = 0; t <= 1; t += (1.0f / (float)steps)) {
+		PointVector p = calcPoint(controlVertices, t);
+
+		curveVertices.push_back(p);
+		curveBuffer.push_back(p.getVec3());
+	}
+
+	for (int i = 0; i < curveVertices.size(); i++)
+	{
+		if (i != curveVertices.size() - 1) {
+			curveIndices.push_back(i);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+			if (i < curveIndices.size())
+				curveIndices.push_back(i + 1);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+	}
+
+}
+
+void Bernstein::calcRationalCurve()
 {
 	std::vector<PointVector> controlVertices = obj->getVertices();
 
@@ -119,7 +161,7 @@ void Bernstein::calcRationalCurve(int w_i, float weight)
 
 		int n = controlVertices.size() - 1;
 		glm::vec3 point(0.0f, 0.0f, 0.0f);
-		controlVertices[w_i].weight = weight;
+		//controlVertices[w_i].weight = weight;
 		float quot = 0;
 
 		for (int i = 0; i <= n; i++)
@@ -153,6 +195,9 @@ void CurveBezier::degree_increase() {
 	float n = b.size();
 
 	for (int i = 0; i <= b.size(); i++) {
+		if(i < b.size())
+			b1.at(i).weight = b.at(i).weight;
+
 		if (i != 0 && i != b.size()) {
 
 			b1.at(i).xCoor = (((float)i / n) * b.at(i - 1).xCoor) + ((1.0f - (i / n)) * b.at(i).xCoor);

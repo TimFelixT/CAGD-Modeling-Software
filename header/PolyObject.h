@@ -28,6 +28,7 @@ public:
 	vector<PointVector> getVertices();
 	vector<PointVector> getNormals();
 	vector<vector<PointVector>> getFaces();
+	vector<vector<int>> getIFaces();
 	std::vector<GLushort> getIndices();
 	cg::GLSLProgram* getProgram();
 
@@ -37,6 +38,7 @@ public:
 
 	// Push functions
 	void pushFace(std::vector<PointVector>);
+	void pushIFace(std::vector<int>);
 	void pushVertice(PointVector);
 	void pushColor();
 	void pushColor(PointVector);
@@ -51,6 +53,8 @@ public:
 	virtual void init();
 	void draw(glm::mat4x4);
 
+	void draw(glm::mat4x4 mvp, GLenum mode);
+
 	// Rotation functions
 	void rotateX();
 	void rotateY();
@@ -61,6 +65,7 @@ public:
 	bool dragPoint(glm::vec3&, glm::vec3&);
 
 	void togglePoints();
+	void toggleFillSurface();
 	void setPoints(bool);
 
 
@@ -73,6 +78,7 @@ private:
 	vector<PointVector> normals;
 	vector<PointVector> colors;
 	vector<vector<PointVector>> faces;
+	vector<vector<int>> ifaces;
 	std::vector<GLushort> indices;
 
 	cg::GLSLProgram* program;
@@ -91,6 +97,7 @@ private:
 	glm::vec3 selectedPointNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	bool showPoints = false;
+	bool fillSurface = false;
 
 	friend class Gui;
 };

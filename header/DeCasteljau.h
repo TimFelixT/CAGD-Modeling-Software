@@ -6,7 +6,7 @@ public:
 	DeCasteljau(PolyObject* pobj, cg::GLSLProgram*);
 	~DeCasteljau();
 	void calcCurve() override;
-	void calcRationalCurve(int w_i, float weight) override;
+	void calcRationalCurve() override;
 	void bezier_derivative() override;
 	void bezier_subdivision(vector<float> t_vec);
 

@@ -17,8 +17,11 @@ public:
 	PolyObject* getDeCasteljauStructure();
 	PolyObject* getControlStructure();
 	PolyObject* getDerativeStructure();
+	std::vector<PointVector> getCurveVertices();
 
 	void setControlStructure(PolyObject* obj);
+
+	void setCurveVertices(vector<PointVector> verts);
 
 	void degree_increase();
 
@@ -40,7 +43,7 @@ public:
 	//Berechnungsmethoden
 	virtual void calcCurve() {};
 	virtual void bezier_derivative() {};
-	virtual void calcRationalCurve(int w_i, float weight) {};
+	virtual void calcRationalCurve() {};
 
 protected:
 	PolyObject* obj;

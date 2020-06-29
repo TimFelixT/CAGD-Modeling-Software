@@ -2,6 +2,8 @@
 
 #include <Ultralight/Ultralight.h>
 #include <AppCore/AppCore.h>
+#include "Bernstein.h"
+
 
 using namespace ultralight;
 using namespace std;
@@ -19,6 +21,7 @@ public:
 
     void addCurves();
 
+    void addCurveSubDivide(std::vector<PointVector> points);
 
 private:
 	RefPtr<App> app;
@@ -36,6 +39,12 @@ private:
     void OnToggleBezier(const JSObject&, const JSArgs&);
     void OnToggleHighlightControlpoints(const JSObject&, const JSArgs&);
     void OnDegreeIncrease(const JSObject&, const JSArgs&);
+    void OnToggleStructure(const JSObject&, const JSArgs&);
+    void OnChangeStructureT(const JSObject&, const JSArgs&);
+    void OnSplitCurve(const JSObject&, const JSArgs&);
+    void OnCreateCurve(const JSObject&, const JSArgs&);
+    void OnDeleteCurve(const JSObject&, const JSArgs&);
+
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "include/GLSLProgram.h"
 #include "include/GLTools.h"
@@ -39,29 +40,23 @@ glm::mat4x4 projection;
 ViewPanel* viewPanel = new ViewPanel(&program);
 Gui* gui;
 
-float t = 0.5;
-
 float zNear = 0.001f;
-float zFar = 80.0f;
+float zFar = 120.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)
 float lookAtAngle = 45.0f;
 
 bool needInit = false;
+bool middleButtonPressed = false;
+
+int xMoved = 0;
+int yMoved = 0;
 
 glm::vec3 eye(eyeX, eyeY, eyeZ);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
 glm::vec3 up(0.0f, 1.0f, 0.0f);
 
-
-/** Temporary PointVectors **/
-PointVector pushx(0.25f, 0.0f, 0.0f, 0);
-PointVector pushy(0.0f, 0.25f, 0.0f, 0);
-PointVector pushz(0.0f, 0.0f, 0.25f, 0);
-PointVector add(-5.0f, -5.0f, 2.0f, 0);
-PointVector add2(-1.0f, 0.0f, 0.0f, 0);
-/*************************/
 
 /*
  Initialization. Should return true if everything is ok and false if something went wrong.
@@ -111,12 +106,12 @@ void render()
 }
 
 void glutDisplay() {
-    render();
-    glutSwapBuffers();
     if (needInit) {
         init();
         needInit = false;
     }
+    render();
+    glutSwapBuffers();
 }
 
 /*
@@ -168,49 +163,12 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         eye.z = eyeZ;
         init();
         break;
-	case '1':
-		viewPanel->translate(pushx, 2);
-		init();
-		break;
-	case '2':
-		viewPanel->translate(pushy, 2);
-		init();
-		break;
-	case '3':
-		viewPanel->translate(pushz, 2);
-		init();
-		break;
-	case 'a':
-		viewPanel->addPoint(add);
-		add = add + add2;
-		init();
-		break;
-	case 'd':
-		viewPanel->deletePoint(2);
-		init();
-		break;
-    case '+':
-        t += 0.02;
-        if (t > 1) {
-            t = 1;
-        }
-        else {
-            viewPanel->drawStructure(t);
-            init();
-        }
-        break;
-    case '-':
-        t -= 0.02;
-        if (t < 0) {
-            t = 0;
-        }
-        else {
-            viewPanel->drawStructure(t);
-            init();
-        }
-        break;
     case 'n':
         viewPanel->derivative();
+        init();
+        break;
+    case 'f':
+        viewPanel->toggleFillSurface();
         init();
         break;
     }
@@ -241,8 +199,39 @@ void glutMouse(int button, int state, int mousex, int mousey) {
         viewPanel->dragPoint(eye, ray_wor);
         init();
     }
+    if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) {
+        xMoved = mousex;
+        yMoved = mousey;
+        middleButtonPressed = true;
+    }
+    if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP){
+        middleButtonPressed = false;
+        xMoved = 0;
+        yMoved = 0;
+    }
   
 	glutPostRedisplay();
+}
+void glutMotion(int x, int y) {
+    if (middleButtonPressed) {
+            eyeX += (xMoved - x)/1.5f;
+            eye.x = eyeX;
+            xMoved = x;
+
+            eyeY += (yMoved - y)/1.5f;
+            eye.y = eyeY;
+            yMoved = y;
+                  
+            init();
+    }
+}
+void mouseWheel (int button, int dir, int x, int y) {
+    if (dir > 0) {
+        eye = glm::rotateY(eye, 0.1f);
+    } else {
+        eye = glm::rotateY(eye, -0.1f);
+    }
+    init();
 }
 
 
@@ -294,6 +283,8 @@ int main(int argc, char** argv) {
     glutIdleFunc(glutDisplay); // redisplay when idle
     glutKeyboardFunc(glutKeyboard);
 	glutMouseFunc(glutMouse);
+    glutMotionFunc(glutMotion);
+    glutMouseWheelFunc(mouseWheel);
 
     // init vertex-array-objects.
     bool result = init();

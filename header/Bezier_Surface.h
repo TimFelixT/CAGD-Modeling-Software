@@ -9,6 +9,7 @@ public:
 	//Destruktor
 	~Bezier_Surface();
 
+	PolyObject* getBezierSurface();
 	vector<PolyObject*> getPolyObjects();
 	vector<CurveBezier*> getCurves();
 	void pushObject(PolyObject*);

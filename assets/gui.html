@@ -51,8 +51,28 @@
             display: none;
             overflow: hidden;
         }
+        /* Arrow Style */
+        .arrow {
+            border: solid black;
+            border-width: 0 6px 6px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .arrow:hover {
+            background-color: #ccc;
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
     </style>
     <script>
+        var tValueBernstein = 0.5;
+        var tValueDecasteljau = 0.5;
         /* TabLayout Functions */
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
@@ -102,6 +122,24 @@
             deleteBtn.addEventListener("click", function(){ deleteLastPoint(this) });
             btnPanel.appendChild(addBtn);
             btnPanel.appendChild(deleteBtn);
+            btnPanel.appendChild(document.createElement("br"));
+
+            splitLabel = document.createElement("label");
+            splitLabel.innerText = "Bezierkurve unterteilen  ";
+            btnPanel.appendChild(splitLabel);
+            splitInput = document.createElement("input");
+            splitInput.setAttribute("type", "text");
+            splitInput.setAttribute("placeholder", "0.25; 0.75");
+            splitInput.addEventListener("change", function(){ splitCurve(this.value, panel.getAttribute("data-index")); });
+            btnPanel.appendChild(splitInput);
+            deleteCurveBtn = document.createElement("button");
+            deleteCurveBtn.innerText = "Diese Kurve löschen";
+            deleteCurveBtn.addEventListener("click", function(){ deleteCurve(panel.getAttribute("data-index")); });
+            btnPanel.appendChild(document.createElement("br"));
+            btnPanel.appendChild(deleteCurveBtn);
+            btnPanel.appendChild(document.createElement("br"));
+            btnPanel.appendChild(document.createElement("br"));
+            btnPanel.appendChild(document.createElement("br"));
 
             for (let i=0; i < arguments.length; i+=4) {
                 if (arguments[i+2] == undefined && arguments[i+3] == undefined) {
@@ -118,8 +156,6 @@
                     addPoint(pointcontainer, arguments[i+3], i+3);
                     panel.appendChild(pointcontainer);
                 }
-
-
             }
         }
         function addPoint(pointcontainer, value, index) {
@@ -139,10 +175,48 @@
                      
         }
         function addNewPoint(addBtn){
-            
-        }
-        function deleteLastPoint(){
+            let panel = addBtn.parentNode.parentNode;
+            let bezierCurveIndex = panel.getAttribute("data-index");
+            let htmlPointIndex = parseInt(panel.lastChild.lastChild.getAttribute("data-index"), 10) +1;
+            let pointcontainer = document.createElement("div");
+            pointcontainer.style.display = "inline-block;"
+            for (let i=0; i<4; i++) {
+                //Neuer Punkt ist (0, 0, 0, 1)
+                addPoint(pointcontainer, 0, htmlPointIndex+i);
+            }
+            panel.appendChild(pointcontainer);
+            OnAddNewPoint(0, 0, 0, 1, bezierCurveIndex);
 
+        }
+        function deleteLastPoint(deleteBtn){
+            let panel = deleteBtn.parentNode.parentNode;
+            if (panel.childElementCount <= 4) {
+                //Nicht möglich - 3 Punkte müssen mindestens vorhanden sein (Der erste div ist kein Punkt, daher 4 bei if)
+                OnDeleteLastPoint(0, -1);
+            } else {
+                let bezierCurveIndex = panel.getAttribute("data-index");
+                let remove = panel.lastChild;
+                panel.removeChild(remove);
+                OnDeleteLastPoint(bezierCurveIndex, 1);
+            } // OnDeleteLastPoint - 1 für kann gelöscht werden, -1 zu wenig Einträge
+        }
+        function splitCurve(values, bezierCurveIndex){
+            values = values.trim();
+            let valueArr = values.split(";");
+            let correctInput = true;
+            valueArr.forEach(element => {
+                if (isNaN(element)) {
+                    correctInput = false;
+                } else if (Number(element) >= 1 || Number(element) <= 0) {
+                    correctInput = false;
+                }
+            });
+            if (correctInput) {
+                console.log("correct");
+                OnSplitCurve(valueArr, bezierCurveIndex);
+            } else {
+                OnSplitCurve(-1);
+            }
         }
         function resetCurves(){
             let kurven = document.querySelector("#kurve");
@@ -153,12 +227,42 @@
             let updateBtn = document.createElement("button");
             updateBtn.innerText = "Aktualisiere Kontrollpunkte";
             updateBtn.addEventListener("click", function(){ resetCurves() });
+            let createCurveBtn = document.createElement("button");
+            createCurveBtn.innerText = "Neue Kurve hinzufügen";
+            createCurveBtn.addEventListener("click", function(){ OnCreateCurve() });
+
             kurven.appendChild(updateBtn);
+            kurven.appendChild(document.createElement("br"));
+            kurven.appendChild(createCurveBtn);
             OnResetCurves();
-        }
-
-
-
+        }   
+        function changeStructureT(curveType, direction, span){
+            /* curveType 0 = Bernstein, 1 = DeCasteljau
+                direction 0 = up, 1 = down */           
+            if (curveType == 0) {
+                if (tValueBernstein < 0.96 && direction == 0) {
+                    tValueBernstein += 0.05;
+                    OnChangeStructureT((Math.round(tValueBernstein * 100) / 100).toFixed(2), 0);
+                } else if (tValueBernstein >= 0.05 && direction == 1) {
+                    tValueBernstein -= 0.05;
+                    OnChangeStructureT((Math.round(tValueBernstein * 100) / 100).toFixed(2), 0);
+                }
+                span.innerText = "Wert: " + (Math.round(tValueBernstein * 100) / 100).toFixed(2);
+            } else {
+                if (tValueDecasteljau < 0.96 && direction == 0) {
+                    tValueDecasteljau += 0.05;
+                    OnChangeStructureT((Math.round(tValueDecasteljau * 100) / 100).toFixed(2), 1);
+                } else if (tValueDecasteljau >= 0.05 && direction == 1) {
+                    tValueDecasteljau -= 0.0500;
+                    OnChangeStructureT((Math.round(tValueDecasteljau * 100) / 100).toFixed(2), 1);
+                }
+                span.innerText = "Wert: " + (Math.round(tValueDecasteljau * 100) / 100).toFixed(2);
+            }
+        } 
+        function deleteCurve(bezierCurveIndex){
+            OnDeleteCurve(bezierCurveIndex);
+            resetCurves();
+        } 
     </script>
 </head>
 
@@ -171,23 +275,51 @@
     <div id="kurve" class="tabcontent">
         <h3>Bezier - Kurve</h3>
         <button onclick='resetCurves()'>Aktualisiere Kontrollpunkte</button>
+        </br>
+        <button onclick='OnCreateCurve()'>Neue Kurve hinzufügen</button>
     </div>
     <div id="flaeche" class="tabcontent">
         <h3>Bezier - Fl&auml;che</h3>
     </div>
     <div id="einstellungen" class="tabcontent">
-        <h3>Einstellungen</h3>
-        <div>
-            <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
-            <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
-            <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
-            <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+        <div id="einstellungen_bezierkurve" style="border-style: solid; border-width: 1px; padding:5px;">
+            <h3>Einstellungen - Bezierkurve</h3>
+            <div>
+                <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
+                <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
+                <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
+                <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+            </div>
+            <br/>
+            <div>
+                <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
+            </div>
+            <br/>
+            <div>
+                <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen (nur Beinsteinpolynome)</button>
+            </div>
+            <br/>
+            <div>
+                <button onclick='OnToggleStructure()'>Toggle Strukturanzeige</button>
+                <br/>
+                <br/>
+                <label>Bernsteinstein-Bezierkurve "T" verändern</label>
+                <br/>
+                <i class="arrow up" onclick="changeStructureT(0, 0, document.querySelector('#bernsteinStrukturValue'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeStructureT(0, 1, document.querySelector('#bernsteinStrukturValue'))"></i>
+                <span id="bernsteinStrukturValue">Wert: 0.50</span>
+                <br/>
+                <br/>
+                <label for="decasteljauStruktur">DeCasteljau-Bezierkurve "T" verändern</label>
+                <br/>
+                <i class="arrow up" onclick="changeStructureT(1, 0, document.querySelector('#decasteljauStrukturValue'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeStructureT(1, 1, document.querySelector('#decasteljauStrukturValue'))"></i>
+                <span id="decasteljauStrukturValue">Wert: 0.50</span>
+            </div>
         </div>
-        <div>
-            <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>
-        </div>
-        <div>
-            <button onclick='OnDegreeIncrease()'>Gradanhebung durchführen</button>
+        <br/>
+        <div id="einstellungen_bezierflaeche" style="border-style: solid; border-width: 1px; padding:5px;">
+            <h3>Einstellungen - Bezierfl&auml;che</h3>
         </div>
     </div>
 </body>

@@ -236,3 +236,4 @@ long long Bernstein::binomialCoefficiant(long long n, long long k)
 {
 	return factorial(n) / (factorial(k) * factorial(n - k));
 }
+

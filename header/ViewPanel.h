@@ -5,7 +5,7 @@
 
 #include "Bernstein.h"
 #include "Decasteljau.h"
-#include "../Bezier_Surface.h"
+#include "header/Bezier_Surface.h"
 
 class Gui; //Vermeidet circular dependencies
 
@@ -21,31 +21,33 @@ public:
 
 
 	void toggleBezierCurve();
+	void toggleStructure();
 	void degreeIncrease();
-	void subdivision();
+	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
 	void derivative();
+
+	void toggleFillSurface();
 
 	void polyObjRotX();
 	void polyObjRotY();
 	void polyObjRotZ();
 
 
-	void addPoint(PointVector);
-	void deletePoint(int);
-	void translate(PointVector, int);
 
 	void selectPoint(glm::vec3&, glm::vec3&);
+
 	void dragPoint(glm::vec3&, glm::vec3&);
 
 	void showPoints();
 
-	void drawStructure(double t);
+	void drawStructure(int);
 	void drawStructures(vector<double> t);
 
 	void setGui(Gui*);
 
 
 	bool bezier_toggle = false;
+	bool structure_toggle = false;
 
 private:
 	std::stack <glm::mat4x4> matrixStack;
@@ -57,7 +59,21 @@ private:
 	vector<CurveBezier*> allCurves;
 	vector<Bezier_Surface*> allSurfaces;
 
-	Gui* gui;
+	Bernstein* bernstein_bezier;
+	DeCasteljau* deCasteljau_bezier;
 
+	PointVector* selectedPointVectorBernstein = nullptr;
+	glm::vec3 selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);
+	PointVector* selectedPointVectorDecasteljau = nullptr;
+	glm::vec3 selectedPointNormalDecasteljau = glm::vec3(0.0f, 0.0f, 0.0f);
+	void selectPointPost(glm::vec3&, glm::vec3&, PolyObject* const&, bool, double&);
+
+	void updateBernstein();
+	void updateDecasteljau();
+
+	double bernsteinT = 0.5;
+	double deCasteljauT = 0.5;
+
+	Gui* gui;
 	friend class Gui;
 };

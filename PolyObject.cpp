@@ -47,6 +47,7 @@ void PolyObject::init() {
 	for (auto vert : vertices) {
 		verts.push_back(vert.getVec3());
 	}
+	
 	for (auto col : colors) {
 		cols.push_back(col.getVec3());
 	}
@@ -189,7 +190,11 @@ void PolyObject::pushIFace(std::vector<int> iface)
 void PolyObject::pushIndex(GLushort index) {
 	indices.push_back(index);
 }
-
+void PolyObject::popIndex() {
+	//Zweimal wegen einer Linie
+	indices.pop_back();
+	indices.pop_back();
+}
 void PolyObject::clear()
 {
 	vertices.clear();
@@ -206,6 +211,9 @@ void PolyObject::pushVertice(PointVector vertice) {
 void PolyObject::pushColor()
 {
 	colors.push_back(color);
+}
+void PolyObject::popColor() {
+	colors.pop_back();
 }
 
 void PolyObject::pushColor(PointVector _color)
@@ -266,53 +274,6 @@ void PolyObject::setProgram(cg::GLSLProgram* prog)
 void PolyObject::setColor(PointVector new_color)
 {
 	color = new_color;
-}
-
-void PolyObject::selectPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
-
-	double distance = INFINITY;
-
-	//For each würde in diesem Fall nicht funktionieren
-	for (int i = 0; i < vertices.size(); i++) {
-
-		double numerator = glm::length(glm::cross((vertices.at(i).getVec3() - cameraPos), rayVector));
-		double denumerator = glm::length(rayVector);
-		double d = numerator / denumerator;
-
-		if (d < distance) {
-			distance = d;
-			selectedPointVector = &(vertices.at(i));
-		}
-	}
-
-	if (distance < globalConstants.SELECTION_OFFSET) {
-		selectedPointNormal = rayVector;
-		cout << "Selected: " << selectedPointVector->xCoor << "   " << selectedPointVector->yCoor << "   " << selectedPointVector->zCoor << endl;
-	}
-	else {
-		selectedPointVector = nullptr;
-		selectedPointNormal = glm::vec3(0.0f, 0.0f, 0.0f);
-		cout << "No point Selected" << endl;
-	}
-
-}
-
-bool PolyObject::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
-	double denominator = glm::dot(selectedPointNormal, rayVector);
-
-	if (glm::abs(denominator) > 0.00001) {
-		glm::vec3 difference = selectedPointVector->getVec3() - cameraPos;
-		double t = glm::dot(difference, selectedPointNormal) / denominator;
-
-		if (t > 0.0001) {
-			glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
-			glm::vec3 newPoint = cameraPos + newRay;
-			selectedPointVector->setVec3(newPoint, 1);
-
-			return true;
-		}
-	}
-	return false;
 }
 
 void PolyObject::togglePoints() {

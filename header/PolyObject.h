@@ -42,8 +42,10 @@ public:
 	void pushVertice(PointVector);
 	void pushColor();
 	void pushColor(PointVector);
+	void popColor();
 	void pushNormal(PointVector);
 	void pushIndex(GLushort index);
+	void popIndex();
 
 	void clear();
 
@@ -59,10 +61,6 @@ public:
 	void rotateX();
 	void rotateY();
 	void rotateZ();
-
-	//Methods to select and move a Point
-	void selectPoint(glm::vec3&, glm::vec3&);
-	bool dragPoint(glm::vec3&, glm::vec3&);
 
 	void togglePoints();
 	void toggleFillSurface();
@@ -92,14 +90,11 @@ private:
 
 	void updateCurveBuffer();
 
-	//Needed for moving and selection of a point
-	PointVector *selectedPointVector = nullptr;
-	glm::vec3 selectedPointNormal = glm::vec3(0.0f,0.0f,0.0f);
-
 	bool showPoints = false;
 	bool fillSurface = false;
 
 	friend class Gui;
+	friend class ViewPanel;
 };
 
 #endif // !POLY_OBJ

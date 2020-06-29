@@ -51,6 +51,11 @@ Bezier_Surface::~Bezier_Surface()
 {
 }
 
+PolyObject* Bezier_Surface::getBezierSurface()
+{
+	return bezierSurface;
+}
+
 vector<PolyObject*> Bezier_Surface::getPolyObjects()
 {
 	return objs;
@@ -68,30 +73,30 @@ void Bezier_Surface::pushObject(PolyObject* obj)
 
 void Bezier_Surface::init()
 {
-	//obj->init();
 	for (CurveBezier* curve : u_curves) {
 		curve->init();
 		curve->getControlStructure()->init();
-		//curve->getControlStructure()->setPoints(true);
+		curve->getControlStructure()->setPoints(true);
 		curve->getDerativeStructure()->init();
 		//curve->getDeCasteljauStructure()->init();
 	}
 	for (CurveBezier* curve : v_curves) {
 		curve->init();
 		curve->getControlStructure()->init();
-		//curve->getControlStructure()->setPoints(true);
+		curve->getControlStructure()->setPoints(true);
 		curve->getDerativeStructure()->init();
 		//curve->getDeCasteljauStructure()->init();
 	}
 	//calculateBezierSurface();
 	bezierSurface->init();
-	//controlStructure->init();
+	controlStructure->init();
+	controlStructure->setPoints(true);
 }
 
 void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 model) {
 	while (lock == 1) { /* wait */ }
 	lock = 1;
-	//controlStructure->draw(projection * view * model);
+	controlStructure->draw(projection * view * model);
 	for (CurveBezier* b : u_curves) {
 		//Doppelte Verschachtelung nötig, da sonst nicht alle fälle abgedeckt
 		if (bezier_toggle) {
@@ -141,7 +146,6 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 	}
 	lock = 0;
 	bezierSurface->draw(projection * view * model, GL_TRIANGLES);
-	//obj->draw(projection * view * model);
 }
 
 void Bezier_Surface::rationalSurface(int w_i, int w_j, float weight)
@@ -318,12 +322,12 @@ void Bezier_Surface::buildControlStructure() {
 	}
 	ifaces = controlStructure->getIFaces();
 
-	for (int i = 0; i < ifaces.size(); i++) {
-		for (int j = 0; j < deg_n; j++) {
-			controlStructure->pushIndex(ifaces[i][j]);
-			controlStructure->pushIndex(ifaces[i][j + 1]);
-		}
-	}
+	//for (int i = 0; i < ifaces.size(); i++) {
+	//	for (int j = 0; j < deg_n; j++) {
+	//		controlStructure->pushIndex(ifaces[i][j]);
+	//		controlStructure->pushIndex(ifaces[i][j + 1]);
+	//	}
+	//}
 }
 
 void Bezier_Surface::calculateBezierSurface()

@@ -1,11 +1,13 @@
 #include "header/ViewPanel.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "header/Gui.h" //Vermeidet circular dependencies
+#include "header/GlobalConstants.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	//Bernstein *bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
-	//DeCasteljau *deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
+
 	Bezier_Surface* surface = new Bezier_Surface("UB1_1.obj", prog);
+	//bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
+	//deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
 
 	//bernstein_bezier->setControlStructure(new PolyObject(program));
 	//deCasteljau_bezier->setControlStructure(new PolyObject(program));
@@ -31,6 +33,8 @@ void ViewPanel::init() {
 	for (Bezier_Surface* s : allSurfaces) {
 		s->init();
 	}
+	drawStructure(0); //Bernstein
+	drawStructure(1); //DeCasteljau
 }
 
 void ViewPanel::setGui(Gui* g) {
@@ -39,6 +43,9 @@ void ViewPanel::setGui(Gui* g) {
 
 void ViewPanel::toggleBezierCurve() {
 	bezier_toggle = !bezier_toggle;
+}
+void ViewPanel::toggleStructure() {
+	structure_toggle = !structure_toggle;
 }
 
 void ViewPanel::degreeIncrease() {
@@ -54,12 +61,8 @@ void ViewPanel::degreeIncrease() {
 	}
 }
 
-void ViewPanel::subdivision() {
-	vector<float> t_vec;
-	t_vec.push_back(0.25f);
-	t_vec.push_back(0.75f);
-
-	//bernstein_bezier->bezier_subdivision(t_vec);
+void ViewPanel::subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex) {	
+	allCurves.at(curveIndex)->subdivision(t, newCurveVerts);
 }
 
 void ViewPanel::derivative() {
@@ -74,6 +77,12 @@ void ViewPanel::derivative() {
 	}
 }
 
+void ViewPanel::toggleFillSurface() {
+	for (Bezier_Surface* s : allSurfaces) {
+		s->getBezierSurface()->toggleFillSurface();
+	}
+}
+
 void ViewPanel::draw() {
 	matrixStack.push(model);
 	matrixStack.push(model);
@@ -83,17 +92,23 @@ void ViewPanel::draw() {
 		if (bezier_toggle) {
 			if (dynamic_cast<Bernstein*>(b)) {
 				b->draw(projection * view * model);
-					b->getControlStructure()->draw(projection * view * model);
+				b->getControlStructure()->draw(projection * view * model);
+				
+				if (structure_toggle) {
 					b->getDeCasteljauStructure()->draw(projection * view * model);
+				}
 
-					if (b->isDerivative() == 1) {
-						b->getDerativeStructure()->draw(projection * view * model);
-					}
+				if (b->isDerivative() == 1) {
+					b->getDerativeStructure()->draw(projection * view * model);
+				}
 			}
 		} else if(dynamic_cast<DeCasteljau*>(b)) {
 			b->draw(projection * view * model);
 			b->getControlStructure()->draw(projection * view * model);
-			b->getDeCasteljauStructure()->draw(projection * view * model);
+
+			if (structure_toggle) {
+				b->getDeCasteljauStructure()->draw(projection * view * model);
+			}
 
 			if (b->isDerivative() == 1) {
 				b->getDerativeStructure()->draw(projection * view * model);
@@ -116,16 +131,6 @@ void ViewPanel::setProjection(glm::mat4x4 p) {
 }
 void ViewPanel::setView(glm::mat4x4 v) {
 	view = v;
-}
-
-void ViewPanel::addPoint(PointVector point) {
-	//bernstein_bezier->addPointEnd(point);
-}
-void ViewPanel::deletePoint(int position) {
-	//bernstein_bezier->deletePointAt(position);
-}
-void ViewPanel::translate(PointVector direction, int position) {
-	//bernstein_bezier->translate(direction, position);
 }
 
 
@@ -197,19 +202,90 @@ void ViewPanel::polyObjRotZ() {
 }
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
-	/*if (bezier_toggle)
-		bernstein_bezier->getControlStructure()->selectPoint(cameraPos, rayVector);
-	else
-		deCasteljau_bezier->getControlStructure()->selectPoint(cameraPos, rayVector);*/
-}
-void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
-	/*if (bezier_toggle) {
-		if (bernstein_bezier->getControlStructure()->dragPoint(cameraPos, rayVector)) {
-			bernstein_bezier->updateCurveBuffer();
-			bernstein_bezier->setInitialized(false);
+	double distance = INFINITY;
+	for (CurveBezier* b : allCurves) {
+		if (bezier_toggle) {
+			if (dynamic_cast<Bernstein*>(b)) {
+				selectPointPost(cameraPos, rayVector, b->getControlStructure(), true, distance);
+			}
 		}
-	}*/
+		else if (dynamic_cast<DeCasteljau*>(b)) {
+			selectPointPost(cameraPos, rayVector, b->getControlStructure(), false, distance);
+		}
+	}
 }
+
+void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const &b, bool bernstein, double &distance) {
+	//For each würde in diesem Fall nicht funktionieren
+	for (int i = 0; i < b->vertices.size(); i++) {
+
+		double numerator = glm::length(glm::cross((b->vertices.at(i).getVec3() - cameraPos), rayVector));
+		double denumerator = glm::length(rayVector);
+		double d = numerator / denumerator;
+
+		if (d < distance) {
+			distance = d;
+			if (bernstein) {
+				selectedPointVectorBernstein = &(b->vertices.at(i));
+			} else {
+				selectedPointVectorDecasteljau = &(b->vertices.at(i));
+			}
+		}
+	}
+	if (distance < globalConstants.SELECTION_OFFSET) {
+		if (bernstein) {
+			selectedPointNormalBernstein = rayVector;
+			cout << "Selected Bernstein: " << selectedPointVectorBernstein->xCoor << "   " << selectedPointVectorBernstein->yCoor << "   " << selectedPointVectorBernstein->zCoor << endl;
+		} else {
+			selectedPointNormalDecasteljau = rayVector;
+			cout << "Selected Decasteljau: " << selectedPointVectorDecasteljau->xCoor << "   " << selectedPointVectorDecasteljau->yCoor << "   " << selectedPointVectorDecasteljau->zCoor << endl;
+		}
+	} else {
+		if (bernstein) {
+			selectedPointVectorBernstein = nullptr;
+			selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);
+			cout << "No point Selected Bernstein" << endl;
+		} else {
+			selectedPointVectorDecasteljau = nullptr;
+			selectedPointNormalDecasteljau = glm::vec3(0.0f, 0.0f, 0.0f);
+			cout << "No point Selected Decasteljau" << endl;
+		}
+	}
+}
+
+
+
+void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
+	double denominator;
+	if (bezier_toggle) {
+		denominator = glm::dot(selectedPointNormalBernstein, rayVector);
+		if (glm::abs(denominator) > 0.00001) {
+			glm::vec3 difference = selectedPointVectorBernstein->getVec3() - cameraPos;
+			double t = glm::dot(difference, selectedPointNormalBernstein) / denominator;
+
+			if (t > 0.0001) {
+				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+				glm::vec3 newPoint = cameraPos + newRay;
+				selectedPointVectorBernstein->setVec3(newPoint, 1);
+				updateBernstein();
+			}
+		}
+	} else {
+		denominator = glm::dot(selectedPointNormalDecasteljau, rayVector);
+		if (glm::abs(denominator) > 0.00001) {
+			glm::vec3 difference = selectedPointVectorDecasteljau->getVec3() - cameraPos;
+			double t = glm::dot(difference, selectedPointNormalDecasteljau) / denominator;
+
+			if (t > 0.0001) {
+				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+				glm::vec3 newPoint = cameraPos + newRay;
+				selectedPointVectorDecasteljau->setVec3(newPoint, 1);
+				updateDecasteljau();
+			}
+		}
+	}
+}
+
 void ViewPanel::showPoints() {
 	for (CurveBezier* b : allCurves) {
 		if (bezier_toggle) {
@@ -221,30 +297,34 @@ void ViewPanel::showPoints() {
 	}
 }
 
-void ViewPanel::drawStructure(double t) {
+void ViewPanel::drawStructure(int curveType) {
 	std::vector<PointVector>vertices;
 	std::vector<PointVector>empty;
 	PolyObject* deCasteljauStructure;
+
+	double t = 0;
 
 	for (CurveBezier* b : allCurves) {
 		vertices.clear();
 		empty.clear();
 
-		if (bezier_toggle) {
+		if (curveType == 0) { // 0 = Bernstein, 1 = DeCasteljau
 			if (dynamic_cast<Bernstein*>(b)) {
 				deCasteljauStructure = b->getDeCasteljauStructure();
 				vertices = b->getControlVertices();
+				t = bernsteinT;
 			} else {
 				continue;
 			}
 		} else if (dynamic_cast<DeCasteljau*>(b)) {
 			deCasteljauStructure = b->getDeCasteljauStructure();
 			vertices = b->getControlVertices();
+			t = deCasteljauT;
 		} else {
 			continue;
 		}
 
-		deCasteljauStructure->setVertices(empty);
+		deCasteljauStructure->getVertices().clear();
 
 		for (int i = 0; i < vertices.size() - 1; i++) {
 			for (int j = 0; j < vertices.size() - 1 - i; j++) {
@@ -267,51 +347,18 @@ void ViewPanel::drawStructure(double t) {
 	}
 }
 
+void ViewPanel::updateBernstein() {
+	for (CurveBezier* b : allCurves) {
+		if (dynamic_cast<Bernstein*>(b)) {
+			b->setInitialized(false);
+		}
+	}
+}
 
-
-
-
-
-
-
-//void ViewPanel::drawStructures(vector<double> t_vec) {
-//	std::vector<PointVector>vertices = obj->getVertices();
-//	std::vector<PointVector>empty;
-//	PolyObject* deCasteljauStructure = bernstein_bezier->getControlStructure();
-//
-//	for (int r = 0; r < t_vec.size(); r++) {
-//		PolyObject* structure = new PolyObject(program);
-//		for (int i = 0; i < vertices.size() - 1; i++) {
-//			PointVector vertice;
-//			//for (int j = 0; j < vertices.size() - 1 - i; j++) {
-//			//	vertices[j] = (vertices[j] * (1 - t_vec.at(r))) + (vertices[j + 1] * t_vec.at(r));
-//			//	structure->pushVertice(vertices[j]);
-//			//	structure->pushColor();
-//			//}
-//
-//			for (int k = 0; k < vertices.size() - 1; k++) {
-//				//vertices[k] = vertices[k] * ();
-//				structure->pushVertice(vertices[k]);
-//
-//			}
-//
-//		}
-//		deCasteljauStructures.push_back(structure);
-//		vertices = obj->getVertices();
-//	}
-//
-//	int k = 0;
-//
-//	for (auto* structure : deCasteljauStructures) {
-//		for (int i = obj->getVertices().size() - 2; i > 0; i--)
-//		{
-//			for (int j = 0; j < i; j++) {
-//				structure->pushIndex(k);
-//				structure->pushIndex(k + 1);
-//				k++;
-//			}
-//			k++;
-//		}
-//		k = 0;
-//	}
-//}
+void ViewPanel::updateDecasteljau() {
+	for (CurveBezier* b : allCurves) {
+		if (dynamic_cast<DeCasteljau*>(b)) {
+			b->setInitialized(false);
+		}
+	}
+}

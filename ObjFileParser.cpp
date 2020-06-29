@@ -1,5 +1,5 @@
 #include "header/ObjFileParser.h"
-#include "Bezier_Surface.h"
+#include "header/Bezier_Surface.h"
 
 bool isVertex(string line) {
 	return regex_match(line, regex("(\\s*v\\s*(-?\\d+(\\.\\d+)*\\s*){3})\\s*"));
@@ -106,8 +106,8 @@ void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n
 					//polyObj->pushVertice(vertices->at((indices[i] - '0') - 1));
 					polyObj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
 					//polyObj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
-					//polyObj->pushIndex(indices[i]);
-					//polyObj->pushIndex(indices[i + 1]);
+					polyObj->pushIndex(indices[i]);
+					polyObj->pushIndex(indices[i + 1]);
 					iface.push_back(indices[i]);
 					face.push_back(polyObj->getVertices().at(indices[i]));
 

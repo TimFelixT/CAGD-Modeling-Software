@@ -157,24 +157,38 @@ void CurveBezier::setInitialized(bool s) {
 	this->initialized = s;
 }
 
-void CurveBezier::translate(PointVector direction, int position) {
-	std::vector<PointVector> vertices = obj->getVertices();
-	vertices.at(position) = vertices.at(position) + direction;
-	obj->setVertices(vertices);
-	initialized = false;
-}
 void CurveBezier::addPointEnd(PointVector point) {
 	obj->pushVertice(point);
+	obj->pushColor();
 	std::vector<GLushort> indicesobj = obj->getIndices();
 	GLushort index = indicesobj.at(indicesobj.size() - 1);
 	obj->pushIndex(index);
 	obj->pushIndex(index + 1);
 	initialized = false;
 }
-void CurveBezier::deletePointAt(int position) {
+void CurveBezier::deleteLastPoint() {
 	std::vector<PointVector> vertices = obj->getVertices();
-	if (vertices.size() <= position || position < 0) return;
-	vertices.erase(vertices.cbegin() + position);
+	vertices.pop_back();
 	obj->setVertices(vertices);
+	obj->popColor();
+	obj->popIndex();
 	initialized = false;
+}
+
+void CurveBezier::subdivision(float t, std::vector<PointVector>& newVertices2) {
+	std::vector<PointVector> vertices = obj->getVertices();
+	std::vector<PointVector> newVertices;
+
+	for (int i = 0; i < vertices.size() - 1; i++) {
+		newVertices.push_back(vertices[0]);
+		for (int j = 0; j < vertices.size() - 1 - i; j++) {
+			vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
+		}
+		newVertices2.push_back(vertices[vertices.size() - 1 - i]);
+
+	}
+	newVertices.push_back(vertices[0]);
+	newVertices2.push_back(vertices[0]);
+
+	obj->setVertices(newVertices);
 }

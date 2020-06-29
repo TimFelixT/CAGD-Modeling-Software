@@ -335,7 +335,7 @@ void ViewPanel::drawStructure(int curveType) {
 			continue;
 		}
 
-		deCasteljauStructure->getVertices().clear();
+		deCasteljauStructure->clearVertices();
 
 		for (int i = 0; i < vertices.size() - 1; i++) {
 			for (int j = 0; j < vertices.size() - 1 - i; j++) {
@@ -356,7 +356,6 @@ void ViewPanel::drawStructure(int curveType) {
 			k++;
 		}
 	}
-	init();
 }
 
 void ViewPanel::updateBernstein() {

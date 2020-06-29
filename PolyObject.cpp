@@ -295,3 +295,6 @@ void PolyObject::translate(PointVector tv) {
 		pt = pt + tv;
 	}
 }
+void PolyObject::clearVertices() {
+	vertices.clear();
+}

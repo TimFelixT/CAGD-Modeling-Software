@@ -130,7 +130,7 @@
             btnPanel.appendChild(splitLabel);
             splitInput = document.createElement("input");
             splitInput.setAttribute("type", "text");
-            splitInput.setAttribute("placeholder", "0.25; 0.75");
+            splitInput.setAttribute("placeholder", "0.25");
             splitInput.addEventListener("change", function(){ splitCurve(this.value, panel.getAttribute("data-index")); });
             btnPanel.appendChild(splitInput);
             btnPanel.appendChild(document.createElement("br"));

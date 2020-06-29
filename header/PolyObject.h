@@ -49,6 +49,8 @@ public:
 
 	void clear();
 
+	void clearVertices();
+
 	void triangulatePolyNet();
 
 	// Drawing functions

@@ -32,6 +32,7 @@ private:
     virtual void Gui::OnDOMReady(ultralight::View*);
     
     /* JS Methods */
+    //Kurven
     void OnResetCurves(const JSObject&, const JSArgs&);
     void OnAddNewPoint(const JSObject&, const JSArgs&);
     void OnDeleteLastPoint(const JSObject&, const JSArgs&);
@@ -45,6 +46,10 @@ private:
     void OnCreateCurve(const JSObject&, const JSArgs&);
     void OnDeleteCurve(const JSObject&, const JSArgs&);
 
+    //Flächen
+    void OnToggleShader(const JSObject&, const JSArgs&);
+    void OnIncreaseSurfaceT(const JSObject&, const JSArgs&);
+    void OnDecreaseSurfaceT(const JSObject&, const JSArgs&);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

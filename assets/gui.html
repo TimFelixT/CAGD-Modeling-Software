@@ -133,6 +133,11 @@
             splitInput.setAttribute("placeholder", "0.25; 0.75");
             splitInput.addEventListener("change", function(){ splitCurve(this.value, panel.getAttribute("data-index")); });
             btnPanel.appendChild(splitInput);
+            btnPanel.appendChild(document.createElement("br"));
+            centerCurveBtn = document.createElement("button");
+            centerCurveBtn.innerText = "Kurve zentrieren";
+            centerCurveBtn.addEventListener("click", function(){ OnCenterCurve(panel.getAttribute("data-index")); });
+            btnPanel.appendChild(centerCurveBtn);
             deleteCurveBtn = document.createElement("button");
             deleteCurveBtn.innerText = "Diese Kurve löschen";
             deleteCurveBtn.addEventListener("click", function(){ deleteCurve(panel.getAttribute("data-index")); });

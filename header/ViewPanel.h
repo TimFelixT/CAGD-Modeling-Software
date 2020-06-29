@@ -41,7 +41,7 @@ public:
 	void showPoints();
 
 	void drawStructure(int);
-	void drawStructures(vector<double> t);
+	//void drawStructures(vector<double> t);
 
 	void setGui(Gui*);
 

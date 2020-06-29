@@ -63,7 +63,7 @@ bool isSurface(string line) {
 //	}
 //}
 
-void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n, vector<PolyObject*>* v, vector<PolyObject*>* u) {
+void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n) {
 	string line;
 
 	while (getline(*file, line))
@@ -124,8 +124,6 @@ void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n
 				polyObj->pushFace(face);
 
 				//polyObj->pushVertice(vertices->at((indices[indices.size()-1] - '0') - 1));
-				u->push_back(u_vec);
-				v->push_back(v_vec);
 				getline(*file, line);
 			}
 		}
@@ -183,7 +181,7 @@ bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj, i
 	{
 		cout << line << endl;
 		if (isCurveBezier(line)) {
-			parseCurveBezier(&file, polyObj, deg_n, deg_m, u, v);
+			parseCurveBezier(&file, polyObj, deg_n, deg_m);
 			file.close();
 			return true;
 		}

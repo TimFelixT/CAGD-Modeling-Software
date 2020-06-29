@@ -15,7 +15,7 @@ public:
 
 	bool parseObjectFile(const char* filename, vector<PolyObject*>* polyObj);
 
-	bool parseObjectFile(const char* filename, PolyObject* polyObj, int*, int*, vector<PolyObject*>*, vector<PolyObject*>*);
+	bool parseObjectFile(const char* filename, PolyObject* polyObj, int*, int*);
 
 private:
 

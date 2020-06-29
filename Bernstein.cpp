@@ -30,7 +30,6 @@ void Bernstein::bezier_derivative() {
 		glm::vec3 d_point(0.0f, 0.0f, 0.0f);
 		glm::vec3 point(0.0f, 0.0f, 0.0f);
 
-		controlVertices[1].weight = 3;
 		float quot = 0;
 
 		for (int i = 0; i <= n; i++)

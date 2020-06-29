@@ -10,12 +10,14 @@ public:
 	~Bezier_Surface();
 
 	PolyObject* getBezierSurface();
-	vector<PolyObject*> getPolyObjects();
 	vector<CurveBezier*> getCurves();
-	void pushObject(PolyObject*);
 
 	void init();
 	void draw(bool, glm::mat4x4, glm::mat4x4, glm::mat4x4);
+
+	void increaseTesselatingRate();
+
+	void decreaseTesselatingRate();
 
 	void rationalSurface(int w_i, int w_j, float weight);
 	void degree_increase_u();
@@ -40,10 +42,9 @@ private:
 	vector<PolyObject*> v_vec;
 	vector<PolyObject*> u_vec;
 
-	vector<PolyObject*> objs;
 	PolyObject* controlStructure;
 	PolyObject* bezierSurface;
 
-	int deg_m, deg_n;
+	int deg_m, deg_n, t;
 };
 

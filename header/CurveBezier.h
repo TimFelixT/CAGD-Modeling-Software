@@ -20,7 +20,6 @@ public:
 	std::vector<PointVector> getCurveVertices();
 
 	void setControlStructure(PolyObject* obj);
-
 	void setCurveVertices(vector<PointVector> verts);
 
 	void degree_increase();

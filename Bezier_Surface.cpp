@@ -7,9 +7,10 @@ int lock = 0;
 
 Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog)
 {
+	t = 4;
 	ObjFileParser parser;
 	controlStructure = new PolyObject(prog);
-	parser.parseObjectFile(filename, controlStructure, &deg_m, &deg_n, &u_vec, &v_vec);
+	parser.parseObjectFile(filename, controlStructure, &deg_m, &deg_n);
 	buildControlStructure();
 	calculateBezierSurface();
 	//curves.push_back(new Bernstein(obj, prog));
@@ -44,7 +45,7 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog)
 	//}
 	//calculateVCurves();
 
-	rationalSurface(1, 1, 3);
+	//rationalSurface(1, 1, 3);
 }
 
 Bezier_Surface::~Bezier_Surface()
@@ -56,19 +57,9 @@ PolyObject* Bezier_Surface::getBezierSurface()
 	return bezierSurface;
 }
 
-vector<PolyObject*> Bezier_Surface::getPolyObjects()
-{
-	return objs;
-}
-
 vector<CurveBezier*> Bezier_Surface::getCurves()
 {
 	return u_curves;
-}
-
-void Bezier_Surface::pushObject(PolyObject* obj)
-{
-	objs.push_back(obj);
 }
 
 void Bezier_Surface::init()
@@ -146,6 +137,16 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 	}
 	lock = 0;
 	bezierSurface->draw(projection * view * model, GL_TRIANGLES);
+}
+
+void Bezier_Surface::increaseTesselatingRate() {
+	t++;
+	bezierSurface->clear();
+	calculateBezierSurface();
+}
+
+void Bezier_Surface::decreaseTesselatingRate() {
+	t--;
 }
 
 void Bezier_Surface::rationalSurface(int w_i, int w_j, float weight)
@@ -258,7 +259,6 @@ void Bezier_Surface::rotateZ()
 
 void Bezier_Surface::calculateVCurves()
 {
-	int t = 2;
 	while (lock == 1) { /* wait */ }
 	lock = 1;
 
@@ -279,7 +279,6 @@ void Bezier_Surface::calculateVCurves()
 
 void Bezier_Surface::calculateUCurves()
 {
-	int t = 2;
 	while (lock == 1) { /* wait */ }
 	lock = 1;
 
@@ -332,8 +331,6 @@ void Bezier_Surface::buildControlStructure() {
 
 void Bezier_Surface::calculateBezierSurface()
 {
-	int t = 2;
-
 	calculateVCurves();
 	calculateUCurves();
 

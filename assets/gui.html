@@ -188,7 +188,11 @@
             pointcontainer.style.display = "inline-block;"
             for (let i=0; i<4; i++) {
                 //Neuer Punkt ist (0, 0, 0, 1)
-                addPoint(pointcontainer, 0, htmlPointIndex+i);
+                if (i==3) {
+                    addPoint(pointcontainer, 1, htmlPointIndex+i);
+                } else {
+                    addPoint(pointcontainer, 0, htmlPointIndex+i);
+                }
             }
             panel.appendChild(pointcontainer);
             OnAddNewPoint(0, 0, 0, 1, bezierCurveIndex);
@@ -196,9 +200,9 @@
         }
         function deleteLastPoint(deleteBtn){
             let panel = deleteBtn.parentNode.parentNode;
-            if (panel.childElementCount <= 4) {
-                //Nicht möglich - 3 Punkte müssen mindestens vorhanden sein (Der erste div ist kein Punkt, daher 4 bei if)
-                OnDeleteLastPoint(0, -1);
+            if (panel.childElementCount <= 2) {
+                //Letzter Punkt Kurve wird gelöscht
+                deleteCurve(panel.getAttribute("data-index"));
             } else {
                 let bezierCurveIndex = panel.getAttribute("data-index");
                 let remove = panel.lastChild;

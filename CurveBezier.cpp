@@ -162,16 +162,16 @@ void CurveBezier::addPointEnd(PointVector point) {
 	obj->pushColor();
 	std::vector<GLushort> indicesobj = obj->getIndices();
 	GLushort index = indicesobj.at(indicesobj.size() - 1);
-	obj->pushIndex(index);
-	obj->pushIndex(index + 1);
 	initialized = false;
+
+
+
 }
 void CurveBezier::deleteLastPoint() {
 	std::vector<PointVector> vertices = obj->getVertices();
 	vertices.pop_back();
 	obj->setVertices(vertices);
 	obj->popColor();
-	obj->popIndex();
 	initialized = false;
 }
 
@@ -202,9 +202,10 @@ void CurveBezier::centerCurve() {
 	}
 	float size = obj->getVertices().size();
 	midPoint = midPoint * (1.0f/size);
+	midPoint = midPoint * (-1);
 	midPoint.homoCoor = 0;
-	for (int i = 0; i <obj->getVertices().size(); i++) {
-		newPoints.push_back(obj->getVertices().at(i) - midPoint);
-	}
-	obj->setVertices(newPoints);
+	
+	obj->translate(midPoint);
+	d_obj->translate(midPoint);
+	deCasteljauStructure->translate(midPoint);
 }

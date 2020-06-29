@@ -147,6 +147,7 @@ void Gui::OnDeleteLastPoint(const JSObject& thisObject, const JSArgs& args) {
 	if (canDelete == -1) {
 		cout << "Kein Loeschen - 3 Punkte sollte eine Bezierkurve schon haben!" << endl;
 	} else {
+
 		CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
 		c.deleteLastPoint();
 		c.updateCurveBuffer();
@@ -219,7 +220,7 @@ void Gui::OnChangeStructureT(const JSObject& thisObject, const JSArgs& args) {
 	}
 
 	viewPanel->drawStructure(curveType);
-	updateDisplay();
+	//updateDisplay();
 
 }
 

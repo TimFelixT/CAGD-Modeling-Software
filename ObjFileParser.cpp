@@ -25,44 +25,6 @@ bool isSurface(string line) {
 	return regex_match(line, regex("\\s*surf\\s+(\\d+\\s*)+\\s*"));
 }
 
-//
-//void parseCurveBezier(fstream* file, vector<PolyObject*>* polyObjs, vector<PointVector>* vertices) {
-//	string line;
-//
-//	while (getline(*file, line))
-//	{
-//		if (isDegree(line)) {
-//			cout << "is degree" << endl;
-//		}
-//		if (isSurface(line)) {
-//			while (line != "end") {
-//				PolyObject* obj = new PolyObject();
-//				smatch m;
-//				vector<char> indices;
-//
-//				regex face_reg = regex("(\\d+)((/(\\d+))*)");
-//				
-//				//Extract all the values
-//				while (regex_search(line, m, face_reg)) {
-//					indices.push_back(m.str(0)[0]);
-//					line = m.suffix().str();
-//				}
-//
-//				for (int i = 0; i < indices.size() - 1; i++) {
-//					obj->pushVertice(vertices->at((indices[i] - '0') - 1));
-//					obj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
-//					obj->pushColor(PointVector(0.0f, 1.0f, 1.0f, 1.0f));
-//					obj->pushIndex(i);
-//					obj->pushIndex(i + 1);
-//				}
-//				obj->pushVertice(vertices->at((indices[indices.size()-1] - '0') - 1));
-//				polyObjs->push_back(obj);
-//				getline(*file, line);
-//			}
-//		}
-//	}
-//}
-
 void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n) {
 	string line;
 

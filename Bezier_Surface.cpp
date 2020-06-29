@@ -258,7 +258,7 @@ void Bezier_Surface::rotateZ()
 
 void Bezier_Surface::calculateVCurves()
 {
-	int t = 4;
+	int t = 2;
 	while (lock == 1) { /* wait */ }
 	lock = 1;
 
@@ -279,7 +279,7 @@ void Bezier_Surface::calculateVCurves()
 
 void Bezier_Surface::calculateUCurves()
 {
-	int t = 4;
+	int t = 2;
 	while (lock == 1) { /* wait */ }
 	lock = 1;
 
@@ -332,7 +332,7 @@ void Bezier_Surface::buildControlStructure() {
 
 void Bezier_Surface::calculateBezierSurface()
 {
-	int t = 4;
+	int t = 2;
 
 	calculateVCurves();
 	calculateUCurves();
@@ -366,9 +366,18 @@ void Bezier_Surface::calculateBezierSurface()
 			if ((n * (i + 1)) + j >= u_curves.size() * v_curves.size()) {
 				continue;
 			}
+			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * i) + j);
+			bezierSurface->pushIndex((n * (i + 1)) + j);
+
 			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j);
+			bezierSurface->pushIndex((n * (i + 1)) + j + 1);
+
+
+			bezierSurface->pushIndex((n * i) + j + 1);
+			bezierSurface->pushIndex((n * (i + 1)) + j);
+			bezierSurface->pushIndex((n * i) + j);
 
 			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j + 1);

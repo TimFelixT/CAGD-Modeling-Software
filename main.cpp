@@ -171,10 +171,6 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         viewPanel->toggleFillSurface();
         init();
         break;
-    case 'p':
-        viewPanel->increaseT();
-        init();
-        break;
     }
     glutPostRedisplay();
 }

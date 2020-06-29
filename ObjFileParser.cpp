@@ -165,7 +165,7 @@ void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n
 //}
 
 
-bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj, int* deg_n = 0, int* deg_m = 0, vector<PolyObject*>* v = 0, vector<PolyObject*>* u = 0)
+bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj, int* deg_n = 0, int* deg_m = 0)
 {
 	fstream file(filename);
 

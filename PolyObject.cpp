@@ -29,7 +29,7 @@ PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 	ObjFileParser parser;
-	parser.parseObjectFile(filename, this, nullptr, nullptr, nullptr, nullptr);
+	parser.parseObjectFile(filename, this, nullptr, nullptr);
 }
 
 PolyObject::~PolyObject() {

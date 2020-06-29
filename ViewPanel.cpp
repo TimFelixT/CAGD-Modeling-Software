@@ -5,16 +5,16 @@
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 
-	Bezier_Surface* surface = new Bezier_Surface("UB1_1.obj", prog);
-	//bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
-	//deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
+	//Bezier_Surface* surface = new Bezier_Surface("UB1_1.obj", prog);
+	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
+	deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
 
-	//bernstein_bezier->setControlStructure(new PolyObject(program));
-	//deCasteljau_bezier->setControlStructure(new PolyObject(program));
+	bernstein_bezier->setControlStructure(new PolyObject(program));
+	deCasteljau_bezier->setControlStructure(new PolyObject(program));
 
-	//allCurves.push_back(bernstein_bezier);
-	//allCurves.push_back(deCasteljau_bezier);
-	allSurfaces.push_back(surface);
+	allCurves.push_back(bernstein_bezier);
+	allCurves.push_back(deCasteljau_bezier);
+	//allSurfaces.push_back(surface);
 
 }
 

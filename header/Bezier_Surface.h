@@ -16,7 +16,6 @@ public:
 	void draw(bool, glm::mat4x4, glm::mat4x4, glm::mat4x4);
 
 	void increaseTesselatingRate();
-
 	void decreaseTesselatingRate();
 
 	void rationalSurface(int w_i, int w_j, float weight);

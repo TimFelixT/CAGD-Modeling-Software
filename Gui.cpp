@@ -31,6 +31,8 @@ void Gui::run() {
 void Gui::OnDOMReady(ultralight::View* caller) {
 	SetJSContext(caller->js_context());
 	JSObject global = JSGlobalObject();
+
+	//Kurven
 	global["OnAddNewPoint"] = BindJSCallback(&Gui::OnAddNewPoint);
 	global["OnDeleteLastPoint"] = BindJSCallback(&Gui::OnDeleteLastPoint);
 	global["OnPointChange"] = BindJSCallback(&Gui::OnPointChange);
@@ -43,6 +45,11 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnSplitCurve"] = BindJSCallback(&Gui::OnSplitCurve);
 	global["OnCreateCurve"] = BindJSCallback(&Gui::OnCreateCurve);
 	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
+
+	//Flächen
+	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
+	global["OnIncreaseSurfaceT"] = BindJSCallback(&Gui::OnIncreaseSurfaceT);
+	global["OnDecreaseSurfaceT"] = BindJSCallback(&Gui::OnDecreaseSurfaceT);
 
 	loadData();
 }
@@ -273,6 +280,25 @@ void Gui::OnDeleteCurve(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->allCurves.erase(viewPanel->allCurves.begin() + curveIndex);
 	updateDisplay();
 }
+
+void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {
+	int shaderIndex = args[0].ToInteger();
+	cout << "Shader: " << shaderIndex << endl;
+
+
+	//updateDisplay();
+}
+void Gui::OnIncreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
+	for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {
+		viewPanel->allSurfaces.at(i)->
+	}
+}
+void Gui::OnDecreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
+
+}
+
+
+
 
 void Gui::updateDisplay() {
 	*needInit = true;

@@ -62,6 +62,8 @@ protected:
 	std::vector<GLushort> curveIndices;
 	std::vector<glm::vec3> curveColors;
 
+	void centerCurve();
+
 
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 

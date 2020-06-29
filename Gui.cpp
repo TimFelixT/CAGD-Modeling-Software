@@ -272,7 +272,11 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 	}
 }
 void Gui::OnCenterCurve(const JSObject& thisObject, const JSArgs& args) {
-
+	int curveIndex = args[0].ToInteger();
+	CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
+	c.centerCurve();
+	c.initialized = false;
+	updateDisplay();
 }
 
 void Gui::OnCreateCurve(const JSObject& thisObject, const JSArgs& args) {

@@ -192,3 +192,19 @@ void CurveBezier::subdivision(float t, std::vector<PointVector>& newVertices2) {
 
 	obj->setVertices(newVertices);
 }
+
+void CurveBezier::centerCurve() {
+	PointVector midPoint(glm::vec3(0.0f, 0.0f, 0.0f), 0);
+	vector<PointVector> newPoints;
+
+	for (int i = 0; i < obj->getVertices().size(); i++) {
+		midPoint= midPoint + obj->getVertices().at(i);
+	}
+	float size = obj->getVertices().size();
+	midPoint = midPoint * (1.0f/size);
+	midPoint.homoCoor = 0;
+	for (int i = 0; i <obj->getVertices().size(); i++) {
+		newPoints.push_back(obj->getVertices().at(i) - midPoint);
+	}
+	obj->setVertices(newPoints);
+}

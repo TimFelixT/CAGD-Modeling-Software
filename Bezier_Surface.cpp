@@ -7,45 +7,12 @@ int lock = 0;
 
 Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog)
 {
-	t = 4;
+	t = 2;
 	ObjFileParser parser;
 	controlStructure = new PolyObject(prog);
 	parser.parseObjectFile(filename, controlStructure, &deg_m, &deg_n);
 	buildControlStructure();
 	calculateBezierSurface();
-	//curves.push_back(new Bernstein(obj, prog));
-
-	//for (auto obj : objs) {
-	//	obj->setProgram(prog);
-	//	Bernstein* curve = new Bernstein(obj, prog);
-	//	//curve->calcCurve();
-	//	curves.push_back(curve);
-	//}
-
-	//for (int i = 0; i <= deg_n; i++) {
-	//	PolyObject* c_obj = new PolyObject(prog);
-	//	c_obj->setColor(PointVector(0.0f, 1.0f, 1.0f, 0.0f));
-	//	for (int j = 0; j < deg_m; j++) {
-	//		c_obj->pushIndex(j);
-	//		c_obj->pushIndex(j + 1);
-	//		c_obj->pushColor();
-	//		c_obj->pushColor();
-	//	}
-	//	int k = i * deg_m * deg_n;
-	//	while (k < (i + 1) * deg_m * deg_n) {
-	//		if (k == i * deg_m * deg_n || k % 2 != 0) {
-	//			c_obj->pushVertice(obj->getVertices().at(obj->getIndices().at(k)));
-	//		}
-	//		k++;
-	//	}
-	//	//c_obj->pushVertice(objs[objs.size() - 1]->getVertices().at(i));
-
-	//	Bernstein* curve = new Bernstein(c_obj, prog);
-	//	u_curves.push_back(curve);
-	//}
-	//calculateVCurves();
-
-	//rationalSurface(1, 1, 3);
 }
 
 Bezier_Surface::~Bezier_Surface()
@@ -72,10 +39,12 @@ void Bezier_Surface::init()
 		//curve->getDeCasteljauStructure()->init();
 	}
 	for (CurveBezier* curve : v_curves) {
+		static int c = 0;
 		curve->init();
 		curve->getControlStructure()->init();
 		curve->getControlStructure()->setPoints(true);
 		curve->getDerativeStructure()->init();
+		c++;
 		//curve->getDeCasteljauStructure()->init();
 	}
 	//calculateBezierSurface();
@@ -140,13 +109,19 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 }
 
 void Bezier_Surface::increaseTesselatingRate() {
-	t++;
-	bezierSurface->clear();
-	calculateBezierSurface();
+	if (t < 100) {
+		t++;
+		bezierSurface->clear();
+		calculateBezierSurface();
+	}
 }
 
 void Bezier_Surface::decreaseTesselatingRate() {
-	t--;
+	if (t > 1) {
+		t--;
+		bezierSurface->clear();
+		calculateBezierSurface();
+	}
 }
 
 void Bezier_Surface::rationalSurface(int w_i, int w_j, float weight)
@@ -172,9 +147,8 @@ void Bezier_Surface::degree_increase_u()
 		}
 	}
 
-	//v_curves.clear();
-	//deg_m++;
-	//calculateVCurves();
+	deg_m++;
+	calculateVCurves();
 }
 void Bezier_Surface::degree_increase_v()
 {
@@ -186,9 +160,9 @@ void Bezier_Surface::degree_increase_v()
 	}
 
 
-	//u_curves.clear();
-	//deg_n++;
-	//calculateUCurves();
+	u_curves.clear();
+	deg_n++;
+	calculateUCurves();
 }
 
 void Bezier_Surface::rotateX()
@@ -259,18 +233,20 @@ void Bezier_Surface::rotateZ()
 
 void Bezier_Surface::calculateVCurves()
 {
+	v_curves.clear();
 	while (lock == 1) { /* wait */ }
 	lock = 1;
 
 	for (int v = 0; v <= deg_n; v++) {
 		vector<PointVector> vcontrol = controlStructure->getFaces().at(v + deg_n + 1);
 		PolyObject* v_obj = new PolyObject(controlStructure->getProgram());
-
+		v_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 		v_obj->setVertices(vcontrol);
+		v_obj->pushColor();
 
 		Bernstein* vcurve = new Bernstein(v_obj, v_obj->getProgram());
 		vcurve->calcCurve(t);
-
+		vcurve->getControlStructure()->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 		v_curves.push_back(vcurve);
 	}
 
@@ -279,19 +255,23 @@ void Bezier_Surface::calculateVCurves()
 
 void Bezier_Surface::calculateUCurves()
 {
+	u_curves.clear();
 	while (lock == 1) { /* wait */ }
 	lock = 1;
-
-	for (int k = 0; k <= t; k++) {
+	int n = v_curves[0]->getCurveVertices().size();
+	for (int k = 0; k < n; k++) {
 
 		//for (int v = 0; v < deg_n; v++) {
 		vector<PointVector> ucontrol;
+		PolyObject* u_obj = new PolyObject(controlStructure->getProgram());
+		u_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 
 		for (int u = 0; u <= deg_m; u++) {
 			ucontrol.push_back(v_curves[u]->getCurveVertices().at(k));
+			u_obj->pushVertice(v_curves[u]->getCurveVertices().at(k));
+			u_obj->pushColor();
 		}
-		PolyObject* u_obj = new PolyObject(controlStructure->getProgram());
-		u_obj->setVertices(ucontrol);
+		//u_obj->setVertices(ucontrol);
 
 		Bernstein* ucurve = new Bernstein(u_obj, u_obj->getProgram());
 		ucurve->calcCurve(t);
@@ -321,12 +301,12 @@ void Bezier_Surface::buildControlStructure() {
 	}
 	ifaces = controlStructure->getIFaces();
 
-	//for (int i = 0; i < ifaces.size(); i++) {
-	//	for (int j = 0; j < deg_n; j++) {
-	//		controlStructure->pushIndex(ifaces[i][j]);
-	//		controlStructure->pushIndex(ifaces[i][j + 1]);
-	//	}
-	//}
+	for (int i = 0; i <= deg_n; i++) {
+		for (int j = 0; j < deg_m; j++) {
+			controlStructure->pushIndex(j * (deg_n +1 )+ i);
+			controlStructure->pushIndex((j + 1)* (deg_n + 1) + i);
+		}
+	}
 }
 
 void Bezier_Surface::calculateBezierSurface()
@@ -336,27 +316,31 @@ void Bezier_Surface::calculateBezierSurface()
 
 	v_curves.clear();
 
-	for (int u = 0; u <= t; u++) {
+	for (int u = 0; u < u_curves[0]->getCurveVertices().size(); u++) {
 		vector<PointVector> vcontrol;
+		PolyObject* v_obj = new PolyObject(controlStructure->getProgram());
+		v_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 		for (int v = 0; v < u_curves.size(); v++) {
 			vcontrol.push_back(u_curves[v]->getCurveVertices().at(u));
+			v_obj->pushVertice(u_curves[v]->getCurveVertices().at(u));
+			v_obj->pushColor();
 		}
-		PolyObject* v_obj = new PolyObject(controlStructure->getProgram());
-		v_obj->setVertices(vcontrol);
+		//v_obj->setVertices(vcontrol);
 		
 		Bernstein* vcurve = new Bernstein(v_obj, v_obj->getProgram());
 		vcurve->setCurveVertices(vcontrol);
 		v_curves.push_back(vcurve);
 	}
 
+	delete bezierSurface;
 	bezierSurface = new PolyObject(controlStructure->getProgram());
 	bezierSurface->toggleFillSurface();
 	bezierSurface->setColor(PointVector(0.0f, 0.0f, 1.0f, 0.0f));
 
-	for (int i = 0; i < u_curves.size(); i++) {
+	for (float i = 0; i < u_curves.size(); i++) {
 		int n = u_curves[i]->getCurveVertices().size();
 
-		for (int j = 0; j < n - 1; j++) {
+		for (float j = 0; j < n - 1; j ++) {
 			bezierSurface->pushVertice(u_curves[i]->getCurveVertices().at(j));
 			bezierSurface->pushColor();
 

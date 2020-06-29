@@ -127,11 +127,17 @@ void Bernstein::calcCurve(int steps) {
 	float currentPoint = 0.0f;
 	float currentCurveLength = 0.0f;
 
+	int c = 0;
 	for (float t = 0; t <= 1; t += (1.0f / (float)steps)) {
 		PointVector p = calcPoint(controlVertices, t);
 
 		curveVertices.push_back(p);
 		curveBuffer.push_back(p.getVec3());
+
+		if (t + (1.0f / (float)steps) > 1 && c < steps) {
+			t = 1 - (1.0f / (float)steps);
+		}
+		c++;
 	}
 
 	for (int i = 0; i < curveVertices.size(); i++)
@@ -233,6 +239,10 @@ long long Bernstein::factorial(long long x) {
 
 long long Bernstein::binomialCoefficiant(long long n, long long k)
 {
-	return factorial(n) / (factorial(k) * factorial(n - k));
+	long long num = factorial(n);
+	long long denom = factorial(k) * factorial(n - k);
+	if (denom == 0)
+		return 0;
+	return num / denom;
 }
 

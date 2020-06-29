@@ -22,6 +22,7 @@ public:
 
 	void toggleBezierCurve();
 	void toggleStructure();
+	void increaseT();
 	void degreeIncrease();
 	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
 	void derivative();

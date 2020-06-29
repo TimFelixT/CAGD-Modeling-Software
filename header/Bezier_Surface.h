@@ -33,6 +33,8 @@ private:
 
 	void buildControlStructure();
 
+	void updateBezierSurfaceIndices();
+
 	void calculateBezierSurface();
 
 	vector<CurveBezier*> u_curves;

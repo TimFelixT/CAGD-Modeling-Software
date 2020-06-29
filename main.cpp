@@ -66,8 +66,8 @@ bool init()
     // OpenGL: Set "background" color and enable depth testing.
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-    //glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
 
     // Construct view matrix.
 
@@ -169,6 +169,10 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         break;
     case 'f':
         viewPanel->toggleFillSurface();
+        init();
+        break;
+    case 'p':
+        viewPanel->increaseT();
         init();
         break;
     }

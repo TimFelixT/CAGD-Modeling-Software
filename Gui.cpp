@@ -290,11 +290,13 @@ void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {
 }
 void Gui::OnIncreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
 	for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {
-		viewPanel->allSurfaces.at(i)->
+		viewPanel->allSurfaces.at(i)->increaseTesselatingRate();
 	}
 }
 void Gui::OnDecreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
-
+	for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {
+		viewPanel->allSurfaces.at(i)->decreaseTesselatingRate();
+	}
 }
 
 

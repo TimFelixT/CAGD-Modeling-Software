@@ -261,7 +261,6 @@ void Bezier_Surface::calculateUCurves()
 	int n = v_curves[0]->getCurveVertices().size();
 	for (int k = 0; k < n; k++) {
 
-		//for (int v = 0; v < deg_n; v++) {
 		vector<PointVector> ucontrol;
 		PolyObject* u_obj = new PolyObject(controlStructure->getProgram());
 		u_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
@@ -271,13 +270,11 @@ void Bezier_Surface::calculateUCurves()
 			u_obj->pushVertice(v_curves[u]->getCurveVertices().at(k));
 			u_obj->pushColor();
 		}
-		//u_obj->setVertices(ucontrol);
 
 		Bernstein* ucurve = new Bernstein(u_obj, u_obj->getProgram());
 		ucurve->calcCurve(t);
 
 		u_curves.push_back(ucurve);
-		//}
 
 	}
 	lock = 0;

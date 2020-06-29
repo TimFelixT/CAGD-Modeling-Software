@@ -45,6 +45,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnSplitCurve"] = BindJSCallback(&Gui::OnSplitCurve);
 	global["OnCreateCurve"] = BindJSCallback(&Gui::OnCreateCurve);
 	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
+	global["OnCenterCurve"] = BindJSCallback(&Gui::OnCenterCurve);
 
 	//Flächen
 	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
@@ -73,7 +74,7 @@ void Gui::addCurves() {
 				args.push_back(pv.xCoor);
 				args.push_back(pv.yCoor);
 				args.push_back(pv.zCoor);
-				args.push_back(pv.homoCoor);
+				args.push_back(pv.weight);
 
 			}
 			args.push_back(i);
@@ -146,6 +147,7 @@ void Gui::OnDeleteLastPoint(const JSObject& thisObject, const JSArgs& args) {
 	if (canDelete == -1) {
 		cout << "Kein Loeschen - 3 Punkte sollte eine Bezierkurve schon haben!" << endl;
 	} else {
+
 		CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
 		c.deleteLastPoint();
 		c.updateCurveBuffer();
@@ -174,7 +176,7 @@ void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
 		c.obj->vertices.at(pointIndex).zCoor = value;
 		break;
 	case 3:
-		c.obj->vertices.at(pointIndex).homoCoor = value;
+		c.obj->vertices.at(pointIndex).weight = value;
 		break;
 	}
 	c.updateCurveBuffer();
@@ -270,6 +272,14 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 		cout << "Keine Korrekte Eingabe zur Unterteilung!" << endl;
 	}
 }
+void Gui::OnCenterCurve(const JSObject& thisObject, const JSArgs& args) {
+	int curveIndex = args[0].ToInteger();
+	CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
+	c.centerCurve();
+	c.initialized = false;
+	updateDisplay();
+}
+
 void Gui::OnCreateCurve(const JSObject& thisObject, const JSArgs& args) {
 
 }
@@ -304,7 +314,7 @@ void Gui::OnDecreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
 
 void Gui::updateDisplay() {
 	*needInit = true;
-	//glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 

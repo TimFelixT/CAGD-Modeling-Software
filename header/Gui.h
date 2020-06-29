@@ -45,6 +45,7 @@ private:
     void OnSplitCurve(const JSObject&, const JSArgs&);
     void OnCreateCurve(const JSObject&, const JSArgs&);
     void OnDeleteCurve(const JSObject&, const JSArgs&);
+    void OnCenterCurve(const JSObject&, const JSArgs&);
 
     //Flächen
     void OnToggleShader(const JSObject&, const JSArgs&);

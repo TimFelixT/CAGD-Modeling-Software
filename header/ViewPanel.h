@@ -9,7 +9,6 @@
 
 class Gui; //Vermeidet circular dependencies
 
-
 class ViewPanel {
 public:
 	ViewPanel(cg::GLSLProgram*);
@@ -74,6 +73,8 @@ private:
 
 	double bernsteinT = 0.5;
 	double deCasteljauT = 0.5;
+
+
 
 	Gui* gui;
 	friend class Gui;

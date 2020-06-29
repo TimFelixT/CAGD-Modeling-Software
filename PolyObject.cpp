@@ -141,6 +141,7 @@ void PolyObject::rotateZ() {
 	globalFunctions.rotateZPointVector(vertices);
 	updateCurveBuffer();
 }
+
 void PolyObject::updateCurveBuffer() {
 	this->verts.clear();
 	for (auto& ptvector : vertices) {
@@ -258,6 +259,7 @@ cg::GLSLProgram* PolyObject::getProgram()
 
 void PolyObject::setVertices(std::vector<PointVector> in) {
 	vertices = in;
+	indices.clear();
 	for (int i = 0; i < in.size() - 1; i++) {
 		indices.push_back(i);
 		indices.push_back(i + 1);
@@ -287,4 +289,9 @@ void PolyObject::toggleFillSurface()
 
 void PolyObject::setPoints(bool show) {
 	showPoints = show;
+}
+void PolyObject::translate(PointVector tv) {
+	for (PointVector &pt : vertices) {
+		pt = pt + tv;
+	}
 }

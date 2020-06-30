@@ -35,6 +35,7 @@ public:
 	void setVertices(std::vector<PointVector> in);
 	void setProgram(cg::GLSLProgram*);
 	void setColor(PointVector);
+	void setFaces(std::vector <std::vector<PointVector>>);
 
 	// Push functions
 	void pushFace(std::vector<PointVector>);

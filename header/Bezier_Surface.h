@@ -33,7 +33,7 @@ private:
 
 	void buildControlStructure();
 
-	void updateBezierSurfaceIndices();
+	void updateBezierSurface();
 
 	void calculateBezierSurface();
 

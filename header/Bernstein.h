@@ -10,6 +10,7 @@ public:
 	PointVector calcPoint(vector<PointVector> controlVertices, float t);
 	void calcCurve() override;
 	void calcCurve(int);
+	void calcRationalCurve(int steps) override;
 	void calcRationalCurve() override;
 private:
 	long long binomialCoefficiant(long long, long long);

@@ -16,7 +16,6 @@ ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1
 	allCurves.push_back(bernstein_bezier);
 	allCurves.push_back(deCasteljau_bezier);
 	allSurfaces.push_back(surface);
-
 }
 
 

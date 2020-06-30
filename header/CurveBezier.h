@@ -41,9 +41,11 @@ public:
 	void setInitialized(bool);
 
 	//Berechnungsmethoden
+	virtual void calcCurve(int) {};
 	virtual void calcCurve() {};
 	virtual void bezier_derivative() {};
 	virtual void calcRationalCurve() {};
+	virtual void calcRationalCurve(int) {};
 
 protected:
 	PolyObject* obj;

@@ -278,6 +278,11 @@ void PolyObject::setColor(PointVector new_color)
 	color = new_color;
 }
 
+void PolyObject::setFaces(std::vector<std::vector<PointVector>> new_faces)
+{
+	faces = new_faces;
+}
+
 void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
 }

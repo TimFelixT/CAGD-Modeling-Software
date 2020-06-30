@@ -48,6 +48,9 @@ void ViewPanel::toggleBezierCurve() {
 void ViewPanel::toggleStructure() {
 	structure_toggle = !structure_toggle;
 }
+void ViewPanel::toggleSurface() {
+	show_surface_toggle = !show_surface_toggle;
+}
 
 void ViewPanel::degreeIncrease() {
 	for (CurveBezier* b : allCurves) {
@@ -88,14 +91,31 @@ void ViewPanel::toggleFillSurface() {
 void ViewPanel::draw() {
 	matrixStack.push(model);
 	matrixStack.push(model);
+	if (show_surface_toggle) {
+		for (Bezier_Surface* s : allSurfaces) {
+			s->draw(bezier_toggle, projection, view, model);
+		}
+	} else {
+		for (CurveBezier* b : allCurves) {
+			//Doppelte Verschachtelung nötig, da sonst nicht alle fälle abgedeckt
+			if (bezier_toggle) {
+				if (dynamic_cast<Bernstein*>(b)) {
+					b->draw(projection * view * model);
+					b->getControlStructure()->draw(projection * view * model);
 
-	for (CurveBezier* b : allCurves) {
-		//Doppelte Verschachtelung nötig, da sonst nicht alle fälle abgedeckt
-		if (bezier_toggle) {
-			if (dynamic_cast<Bernstein*>(b)) {
+					if (structure_toggle) {
+						b->getDeCasteljauStructure()->draw(projection * view * model);
+					}
+
+					if (b->isDerivative() == 1) {
+						b->getDerativeStructure()->draw(projection * view * model);
+					}
+				}
+			}
+			else if (dynamic_cast<DeCasteljau*>(b)) {
 				b->draw(projection * view * model);
 				b->getControlStructure()->draw(projection * view * model);
-				
+
 				if (structure_toggle) {
 					b->getDeCasteljauStructure()->draw(projection * view * model);
 				}
@@ -104,22 +124,7 @@ void ViewPanel::draw() {
 					b->getDerativeStructure()->draw(projection * view * model);
 				}
 			}
-		} else if(dynamic_cast<DeCasteljau*>(b)) {
-			b->draw(projection * view * model);
-			b->getControlStructure()->draw(projection * view * model);
-
-			if (structure_toggle) {
-				b->getDeCasteljauStructure()->draw(projection * view * model);
-			}
-
-			if (b->isDerivative() == 1) {
-				b->getDerativeStructure()->draw(projection * view * model);
-			}
 		}
-	}
-
-	for (Bezier_Surface* s : allSurfaces) {
-		s->draw(bezier_toggle, projection, view, model);
 	}
 
 	model = matrixStack.top();

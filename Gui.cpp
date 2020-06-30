@@ -49,6 +49,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 
 	//Flächen
 	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
+	global["OnToggleSurface"] = BindJSCallback(&Gui::OnToggleSurface);
 	global["OnIncreaseSurfaceT"] = BindJSCallback(&Gui::OnIncreaseSurfaceT);
 	global["OnDecreaseSurfaceT"] = BindJSCallback(&Gui::OnDecreaseSurfaceT);
 
@@ -185,13 +186,7 @@ void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
 	
 }
 void Gui::OnToggleBezier(const JSObject& thisObject, const JSArgs& args) {
-	int type = args[0].ToInteger();
-	if (type == 0) {
-		viewPanel->toggleBezierCurve();
-	}
-	else {
-		viewPanel->toggleBezierCurve();
-	}
+	viewPanel->toggleBezierCurve();
 	glutPostRedisplay();
 }
 void Gui::OnToggleHighlightControlpoints(const JSObject& thisObject, const JSArgs& args) {
@@ -289,6 +284,11 @@ void Gui::OnDeleteCurve(const JSObject& thisObject, const JSArgs& args) {
 
 	viewPanel->allCurves.erase(viewPanel->allCurves.begin() + curveIndex);
 	updateDisplay();
+}
+
+void Gui::OnToggleSurface(const JSObject& thisObject, const JSArgs& args) {
+	viewPanel->toggleSurface();
+
 }
 
 void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {

@@ -308,14 +308,23 @@
         <h3>Bezier - Fl&auml;che</h3>
     </div>
     <div id="einstellungen" class="tabcontent">
-        <div id="einstellungen_bezierkurve" style="border-style: solid; border-width: 1px; padding:5px;">
-            <h3>Einstellungen - Bezierkurve</h3>
+        <div id="einstellungen_allgemein" style="border-style: solid; border-width: 1px; padding:5px;">
+            <h3>Einstellungen - Allgemein</h3>
+            <div>
+                <label for="toggle_curve">Bezierkurven anzeigen</label>
+                <input type="radio" id="toggle_curve" name="toggle_type" value="curve" checked="checked" onchange='OnToggleSurface()'>
+                <label for="toggle_surface">Bezierflächen anzeigen</label>
+                <input type="radio" id="toggle_surface" name="toggle_type" value="surface" onchange='OnToggleSurface()'>
+            </div>
             <div>
                 <label for="bernstein">Bernsteinstein-Bezierkurve anzeigen</label>
-                <input type="radio" id="bernstein" name="drawtype" value="bernstein" onclick='OnToggleBezier(0)'>
+                <input type="radio" id="bernstein" name="drawtype" value="bernstein" onchange='OnToggleBezier(0)'>
                 <label for="decasteljau">DeCasteljau-Bezierkurve anzeigen</label>
-                <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onclick='OnToggleBezier(1)'>
+                <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onchange='OnToggleBezier()'>
             </div>
+        </div>
+        <div id="einstellungen_bezierkurve" style="border-style: solid; border-width: 1px; padding:5px;">
+            <h3>Einstellungen - Bezierkurve</h3>
             <br/>
             <div>
                 <button onclick='OnToggleHighlightControlpoints()'>Toggle Kontrollpunkte hervorheben</button>

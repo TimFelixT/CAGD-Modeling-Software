@@ -21,6 +21,7 @@ public:
 
 	void toggleBezierCurve();
 	void toggleStructure();
+	void toggleSurface();
 	void degreeIncrease();
 	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
 	void derivative();
@@ -43,7 +44,7 @@ public:
 
 	void setGui(Gui*);
 
-
+	bool show_surface_toggle = false;
 	bool bezier_toggle = false;
 	bool structure_toggle = false;
 

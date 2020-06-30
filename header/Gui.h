@@ -48,6 +48,7 @@ private:
     void OnCenterCurve(const JSObject&, const JSArgs&);
 
     //Flächen
+    void OnToggleSurface(const JSObject&, const JSArgs&);
     void OnToggleShader(const JSObject&, const JSArgs&);
     void OnIncreaseSurfaceT(const JSObject&, const JSArgs&);
     void OnDecreaseSurfaceT(const JSObject&, const JSArgs&);

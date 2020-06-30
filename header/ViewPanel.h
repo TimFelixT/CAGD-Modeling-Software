@@ -21,7 +21,6 @@ public:
 
 	void toggleBezierCurve();
 	void toggleStructure();
-	void increaseT();
 	void degreeIncrease();
 	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
 	void derivative();
@@ -41,7 +40,6 @@ public:
 	void showPoints();
 
 	void drawStructure(int);
-	//void drawStructures(vector<double> t);
 
 	void setGui(Gui*);
 

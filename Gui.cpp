@@ -302,11 +302,13 @@ void Gui::OnIncreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
 	for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {
 		viewPanel->allSurfaces.at(i)->increaseTesselatingRate();
 	}
+	updateDisplay();
 }
 void Gui::OnDecreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
 	for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {
 		viewPanel->allSurfaces.at(i)->decreaseTesselatingRate();
 	}
+	updateDisplay();
 }
 
 

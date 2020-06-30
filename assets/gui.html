@@ -177,8 +177,7 @@
             let dataIndex = input.getAttribute("data-index");
             let value = input.value;
             let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
-            OnPointChange(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex);
-                     
+            OnPointChange(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex);                
         }
         function addNewPoint(addBtn){
             let panel = addBtn.parentNode.parentNode;
@@ -196,7 +195,6 @@
             }
             panel.appendChild(pointcontainer);
             OnAddNewPoint(0, 0, 0, 1, bezierCurveIndex);
-
         }
         function deleteLastPoint(deleteBtn){
             let panel = deleteBtn.parentNode.parentNode;
@@ -274,6 +272,9 @@
             resetCurves();
         }
         /* Bezierfläche Funktionen*/
+        function resetSurfaces(){
+
+        }
         function changeSurfaceT(increase, label) {
             //0 = Increase, 1 = Decrease
             if (increase == 0) {
@@ -289,6 +290,43 @@
             }
             label.innerText = "Wert: " + tSurface;
         }
+        function addSurface() {
+            let s = document.querySelector("#flaeche");
+            let button = document.createElement("button");
+            button.classList.add("accordion");
+            button.innerText = "Bezier Fläche";
+            button.addEventListener("click", function(){ toggleAccordion(this); });
+            s.appendChild(button);
+            let panel = document.createElement("div");
+            panel.classList.add("panel");
+            s.appendChild(panel);
+
+            for (let i=0; i < arguments.length; i+=4) {
+                /* Ein Kontrollpunkt */
+                let pointcontainer = document.createElement("div");
+                pointcontainer.style.display = "inline-block;"
+                addSurfacePoint(pointcontainer, arguments[i], i);
+                addSurfacePoint(pointcontainer, arguments[i+1], i+1);
+                addSurfacePoint(pointcontainer, arguments[i+2], i+2);
+                addSurfacePoint(pointcontainer, arguments[i+3], i+3);
+                panel.appendChild(pointcontainer);
+            }
+        }
+        function addSurfacePoint(pointcontainer, value, index){
+            let input = document.createElement("input");
+            input.setAttribute("type", "number");
+            input.setAttribute("step", "0.001");
+            input.setAttribute("data-index", index);
+            input.addEventListener("change", function(){ surfacePointEdited(this); });
+            input.value = value;
+            pointcontainer.appendChild(input);
+        }
+        function surfacePointEdited(input){
+            let dataIndex = input.getAttribute("data-index");
+            let value = input.value;
+            let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
+            OnSurfacePointEdited(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex); 
+        }
     </script>
 </head>
 
@@ -301,11 +339,12 @@
     <div id="kurve" class="tabcontent">
         <h3>Bezier - Kurve</h3>
         <button onclick='resetCurves()'>Aktualisiere Kontrollpunkte</button>
-        </br>
-        <button onclick='OnCreateCurve()'>Neue Kurve hinzufügen</button>
+        <!--</br>
+        <button onclick='OnCreateCurve()'>Neue Kurve hinzufügen</button>-->
     </div>
     <div id="flaeche" class="tabcontent">
         <h3>Bezier - Fl&auml;che</h3>
+        <button onclick='resetSurfaces()'>Aktualisiere Kontrollpunkte</button>
     </div>
     <div id="einstellungen" class="tabcontent">
         <div id="einstellungen_allgemein" style="border-style: solid; border-width: 1px; padding:5px;">

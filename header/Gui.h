@@ -20,8 +20,7 @@ public:
 
 
     void addCurves();
-
-    void addCurveSubDivide(std::vector<PointVector> points);
+    void addSurfaces();
 
 private:
 	RefPtr<App> app;
@@ -52,6 +51,7 @@ private:
     void OnToggleShader(const JSObject&, const JSArgs&);
     void OnIncreaseSurfaceT(const JSObject&, const JSArgs&);
     void OnDecreaseSurfaceT(const JSObject&, const JSArgs&);
+    void OnSurfacePointEdited(const JSObject&, const JSArgs&);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

@@ -52,5 +52,6 @@ private:
 	int deg_m, deg_n, t;
 
 	friend class Gui;
+	friend class ViewPanel;
 };
 

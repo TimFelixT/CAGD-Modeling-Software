@@ -56,6 +56,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnDecreaseSurfaceT"] = BindJSCallback(&Gui::OnDecreaseSurfaceT);
 	global["OnSurfacePointEdited"] = BindJSCallback(&Gui::OnSurfacePointEdited);
 	global["OnSplitSurface"] = BindJSCallback(&Gui::OnSplitSurface);
+	global["OnSurfaceDegreeIncrease"] = BindJSCallback(&Gui::OnSurfaceDegreeIncrease);
 
 	loadData();
 }
@@ -349,6 +350,23 @@ void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
 		// Hier aufteilen
 
 	}
+
+}
+void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {
+	//0 = Increase u Richtung, 1 = Increase v Richtung
+	int uOrV = args[0].ToInteger();
+	int surfaceIndex = args[1].ToInteger();
+
+	Bezier_Surface& s = *(viewPanel->allSurfaces.at(surfaceIndex));
+
+	if (uOrV == 0) {
+		//Hier Gradangebung für s in u Richtung aufrufen
+		cout << "u" << endl;
+	} else {
+		//Hier Gradangebung für s in v Richtung aufrufen
+		cout << "v" << endl;
+	}
+
 
 }
 

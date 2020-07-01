@@ -11,6 +11,7 @@ Gui::~Gui() {}
 
 void Gui::loadData() {
 	addCurves();
+	addSurfaces();
 }
 
 
@@ -46,12 +47,14 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnCreateCurve"] = BindJSCallback(&Gui::OnCreateCurve);
 	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
 	global["OnCenterCurve"] = BindJSCallback(&Gui::OnCenterCurve);
+	global["OnChangeDeCasteljauTRange"] = BindJSCallback(&Gui::OnChangeDeCasteljauTRange);
 
 	//Flächen
 	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
 	global["OnToggleSurface"] = BindJSCallback(&Gui::OnToggleSurface);
 	global["OnIncreaseSurfaceT"] = BindJSCallback(&Gui::OnIncreaseSurfaceT);
 	global["OnDecreaseSurfaceT"] = BindJSCallback(&Gui::OnDecreaseSurfaceT);
+	global["OnSurfacePointEdited"] = BindJSCallback(&Gui::OnSurfacePointEdited);
 	global["OnSplitSurface"] = BindJSCallback(&Gui::OnSplitSurface);
 
 	loadData();
@@ -91,34 +94,24 @@ void Gui::addCurves() {
 	}
 }
 
-void Gui::addCurveSubDivide(std::vector<PointVector> points) {
+void Gui::addSurfaces() {
 	JSContextRef myContext = overlay->view()->js_context();
 	SetJSContext(myContext);
 	JSObject global = JSGlobalObject();
-	JSFunction addCurve = global["addCurve"];
+	JSFunction addSurface = global["addSurface"];
 
-	if (addCurve.IsValid()) {
+	if (addSurface.IsValid()) {
 		JSArgs args;
 
-		for (int i = 0; i < viewPanel->allCurves.size(); i++) {
-
-			CurveBezier& c = *(viewPanel->allCurves[i]);
-
-			for (PointVector pv : points) {
+		for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {
+			PolyObject& controlStructure = *(viewPanel->allSurfaces[i]->controlStructure);
+			for (PointVector pv : controlStructure.getVertices()) {
 				args.push_back(pv.xCoor);
 				args.push_back(pv.yCoor);
 				args.push_back(pv.zCoor);
-				args.push_back(pv.homoCoor);
-
+				args.push_back(pv.weight);
 			}
-			args.push_back(i);
-			if (dynamic_cast<Bernstein*>(&c)) {
-				args.push_back(0);
-			}
-			else {
-				args.push_back(1);
-			}
-			JSValue result = addCurve(args);
+			JSValue result = addSurface(args);
 			args.clear();
 		}
 	}
@@ -184,7 +177,6 @@ void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
 	c.updateCurveBuffer();
 	c.setInitialized(false);
 	updateDisplay();
-	
 }
 void Gui::OnToggleBezier(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->toggleBezierCurve();
@@ -305,6 +297,16 @@ void Gui::OnDeleteCurve(const JSObject& thisObject, const JSArgs& args) {
 	updateDisplay();
 }
 
+void Gui::OnChangeDeCasteljauTRange(const JSObject& thisObject, const JSArgs& args) {
+	for (CurveBezier* c : viewPanel->allCurves) {
+		if (dynamic_cast<DeCasteljau*>(c)) {
+			//dynamic_cast<DeCasteljau*>(c)->toggleTRange();
+			c->setInitialized(false);
+		}
+	}
+	updateDisplay();
+}
+
 void Gui::OnToggleSurface(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->toggleSurface();
 
@@ -328,6 +330,44 @@ void Gui::OnDecreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
 		viewPanel->allSurfaces.at(i)->decreaseTesselatingRate();
 	}
 	updateDisplay();
+}
+void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
+	int pointIndex = args[0].ToInteger();
+	int coorIndex = args[1].ToInteger();
+	double value = args[2].ToNumber();
+	int curveIndex = args[3].ToInteger();
+
+	Bezier_Surface& s = *(viewPanel->allSurfaces.at(curveIndex));
+
+	switch (coorIndex) {
+	case 0:
+		s.controlStructure->vertices.at(pointIndex).xCoor = value;
+		break;
+	case 1:
+		s.controlStructure->vertices.at(pointIndex).yCoor = value;
+		break;
+	case 2:
+		s.controlStructure->vertices.at(pointIndex).zCoor = value;
+		break;
+	case 3:
+		s.controlStructure->vertices.at(pointIndex).weight = value;
+		break;
+	}
+	//s.updateBezierSurface();
+	//updateDisplay();
+}
+
+void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
+	int surfaceIndex = args[0].ToInteger();
+	float splitT = args[1].ToNumber();
+
+	if (surfaceIndex == -1) {
+		cout << "Keine gueltige Eingabe zur Unterteilung!" << endl;
+	} else {
+		// Hier aufteilen
+
+	}
+
 }
 
 

@@ -224,19 +224,48 @@ void ViewPanel::polyObjRotZ() {
 
 void ViewPanel::selectPoint(glm::vec3 &cameraPos, glm::vec3 &rayVector) {
 	double distance = INFINITY;
-	for (CurveBezier* b : allCurves) {
-		if (bezier_toggle) {
-			if (dynamic_cast<Bernstein*>(b)) {
-				selectPointPost(cameraPos, rayVector, b->getControlStructure(), true, distance);
-			}
+	if (show_surface_toggle) {
+		for (Bezier_Surface* s : allSurfaces) {
+			selectPointPostSurface(cameraPos, rayVector, s->controlStructure, distance);
 		}
-		else if (dynamic_cast<DeCasteljau*>(b)) {
-			selectPointPost(cameraPos, rayVector, b->getControlStructure(), false, distance);
+	}
+	else {
+		for (CurveBezier* b : allCurves) {
+			if (bezier_toggle) {
+				if (dynamic_cast<Bernstein*>(b)) {
+					selectPointPostCurve(cameraPos, rayVector, b->getControlStructure(), true, distance);
+				}
+			}
+			else if (dynamic_cast<DeCasteljau*>(b)) {
+				selectPointPostCurve(cameraPos, rayVector, b->getControlStructure(), false, distance);
+			}
 		}
 	}
 }
 
-void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const &b, bool bernstein, double &distance) {
+void ViewPanel::selectPointPostSurface(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const& b, double& distance) {
+	for (int i = 0; i < b->vertices.size(); i++) {
+
+		double numerator = glm::length(glm::cross((b->vertices.at(i).getVec3() - cameraPos), rayVector));
+		double denumerator = glm::length(rayVector);
+		double d = numerator / denumerator;
+
+		if (d < distance) {
+			distance = d;
+			selectedPointVectorSurface = &(b->vertices.at(i));
+		}
+	}
+	if (distance < globalConstants.SELECTION_OFFSET) {
+		selectedPointNormalSurface = rayVector;
+		cout << "Selected Surface Point: " << selectedPointVectorSurface->xCoor << "   " << selectedPointVectorSurface->yCoor << "   " << selectedPointVectorSurface->zCoor << endl;
+	} else {
+		selectedPointVectorSurface = nullptr;
+		selectedPointNormalSurface = glm::vec3(0.0f, 0.0f, 0.0f);
+		cout << "No point Selected Surface" << endl;
+	}
+}
+
+void ViewPanel::selectPointPostCurve(glm::vec3& cameraPos, glm::vec3& rayVector, PolyObject* const &b, bool bernstein, double &distance) {
 	//For each würde in diesem Fall nicht funktionieren
 	for (int i = 0; i < b->vertices.size(); i++) {
 
@@ -256,10 +285,10 @@ void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, Poly
 	if (distance < globalConstants.SELECTION_OFFSET) {
 		if (bernstein) {
 			selectedPointNormalBernstein = rayVector;
-			cout << "Selected Bernstein: " << selectedPointVectorBernstein->xCoor << "   " << selectedPointVectorBernstein->yCoor << "   " << selectedPointVectorBernstein->zCoor << endl;
+			cout << "Selected Bernstein Point: " << selectedPointVectorBernstein->xCoor << "   " << selectedPointVectorBernstein->yCoor << "   " << selectedPointVectorBernstein->zCoor << endl;
 		} else {
 			selectedPointNormalDecasteljau = rayVector;
-			cout << "Selected Decasteljau: " << selectedPointVectorDecasteljau->xCoor << "   " << selectedPointVectorDecasteljau->yCoor << "   " << selectedPointVectorDecasteljau->zCoor << endl;
+			cout << "Selected Decasteljau Point: " << selectedPointVectorDecasteljau->xCoor << "   " << selectedPointVectorDecasteljau->yCoor << "   " << selectedPointVectorDecasteljau->zCoor << endl;
 		}
 	} else {
 		if (bernstein) {
@@ -278,30 +307,45 @@ void ViewPanel::selectPointPost(glm::vec3& cameraPos, glm::vec3& rayVector, Poly
 
 void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 	double denominator;
-	if (bezier_toggle) {
-		denominator = glm::dot(selectedPointNormalBernstein, rayVector);
-		if (glm::abs(denominator) > 0.00001) {
-			glm::vec3 difference = selectedPointVectorBernstein->getVec3() - cameraPos;
-			double t = glm::dot(difference, selectedPointNormalBernstein) / denominator;
 
+	if (show_surface_toggle) {
+		denominator = glm::dot(selectedPointNormalSurface, rayVector);
+		if (glm::abs(denominator) > 0.00001) {
+			glm::vec3 difference = selectedPointVectorSurface->getVec3() - cameraPos;
+			double t = glm::dot(difference, selectedPointNormalSurface) / denominator;
 			if (t > 0.0001) {
 				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
 				glm::vec3 newPoint = cameraPos + newRay;
-				selectedPointVectorBernstein->setVec3(newPoint, 1);
-				updateBernstein();
+				selectedPointVectorSurface->setVec3(newPoint, 1);
+				//updateSurface();
 			}
 		}
 	} else {
-		denominator = glm::dot(selectedPointNormalDecasteljau, rayVector);
-		if (glm::abs(denominator) > 0.00001) {
-			glm::vec3 difference = selectedPointVectorDecasteljau->getVec3() - cameraPos;
-			double t = glm::dot(difference, selectedPointNormalDecasteljau) / denominator;
+		if (bezier_toggle) {
+			denominator = glm::dot(selectedPointNormalBernstein, rayVector);
+			if (glm::abs(denominator) > 0.00001) {
+				glm::vec3 difference = selectedPointVectorBernstein->getVec3() - cameraPos;
+				double t = glm::dot(difference, selectedPointNormalBernstein) / denominator;
 
-			if (t > 0.0001) {
-				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
-				glm::vec3 newPoint = cameraPos + newRay;
-				selectedPointVectorDecasteljau->setVec3(newPoint, 1);
-				updateDecasteljau();
+				if (t > 0.0001) {
+					glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+					glm::vec3 newPoint = cameraPos + newRay;
+					selectedPointVectorBernstein->setVec3(newPoint, 1);
+					updateBernstein();
+				}
+			}
+		} else {
+			denominator = glm::dot(selectedPointNormalDecasteljau, rayVector);
+			if (glm::abs(denominator) > 0.00001) {
+				glm::vec3 difference = selectedPointVectorDecasteljau->getVec3() - cameraPos;
+				double t = glm::dot(difference, selectedPointNormalDecasteljau) / denominator;
+
+				if (t > 0.0001) {
+					glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
+					glm::vec3 newPoint = cameraPos + newRay;
+					selectedPointVectorDecasteljau->setVec3(newPoint, 1);
+					updateDecasteljau();
+				}
 			}
 		}
 	}

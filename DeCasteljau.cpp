@@ -92,8 +92,18 @@ void DeCasteljau::calcRationalCurve()
 		controlVertices.at(w_i) = controlVertices.at(w_i) * controlVertices.at(w_i).weight;
 	}
 
-	for (double t = 0; t < 1; t += 0.01) {
-		p = deCasteljau(controlVertices.size() - 1, 0, t, controlVertices);
+	float t_start;
+	float t_end;
+	if (t_range_toggle) {
+		t_start = -1;
+		t_end = 2;
+	} else {
+		t_start = 0;
+		t_end = 1;
+	}
+
+	for (;t_start < t_end; t_start += 0.01) {
+		p = deCasteljau(controlVertices.size() - 1, 0, t_start, controlVertices);
 		p.xCoor = p.xCoor / p.homoCoor;
 		p.yCoor = p.yCoor / p.homoCoor;
 		p.zCoor = p.zCoor / p.homoCoor;
@@ -139,4 +149,8 @@ void DeCasteljau::bezier_subdivision(vector<float> t_vec) {
 		}
 		new_curves.push_back(new_curve);
 	}
+}
+
+void DeCasteljau::toggleTRange() {
+	t_range_toggle = !t_range_toggle;
 }

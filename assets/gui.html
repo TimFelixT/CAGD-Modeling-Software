@@ -235,13 +235,13 @@
             let updateBtn = document.createElement("button");
             updateBtn.innerText = "Aktualisiere Kontrollpunkte";
             updateBtn.addEventListener("click", function(){ resetCurves() });
-            let createCurveBtn = document.createElement("button");
-            createCurveBtn.innerText = "Neue Kurve hinzufügen";
-            createCurveBtn.addEventListener("click", function(){ OnCreateCurve() });
+            //let createCurveBtn = document.createElement("button");
+            //createCurveBtn.innerText = "Neue Kurve hinzufügen";
+            //createCurveBtn.addEventListener("click", function(){ OnCreateCurve() });
 
             kurven.appendChild(updateBtn);
             kurven.appendChild(document.createElement("br"));
-            kurven.appendChild(createCurveBtn);
+            //kurven.appendChild(createCurveBtn);
             OnResetCurves();
         }   
         function changeStructureT(curveType, direction, span){
@@ -389,6 +389,11 @@
                 <i class="arrow up" onclick="changeStructureT(1, 0, document.querySelector('#decasteljauStrukturValue'))" style="margin-right:10px;"></i>
                 <i class="arrow down" onclick="changeStructureT(1, 1, document.querySelector('#decasteljauStrukturValue'))"></i>
                 <span id="decasteljauStrukturValue">Wert: 0.50</span>
+            </div>
+            <br/>
+            <div>
+                <label for="decasteljau_big">DeCasteljau-Bezierkurve im Bereich t &#8712; [-1,2] anzeigen</label>
+                <input type="checkbox" id="decasteljau_big" name="decasteljau_big" onchange="OnChangeDeCasteljauTRange()">
             </div>
         </div>
         <br/>

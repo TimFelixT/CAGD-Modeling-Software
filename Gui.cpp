@@ -47,6 +47,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnCreateCurve"] = BindJSCallback(&Gui::OnCreateCurve);
 	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
 	global["OnCenterCurve"] = BindJSCallback(&Gui::OnCenterCurve);
+	global["OnChangeDeCasteljauTRange"] = BindJSCallback(&Gui::OnChangeDeCasteljauTRange);
 
 	//Flächen
 	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
@@ -274,6 +275,16 @@ void Gui::OnDeleteCurve(const JSObject& thisObject, const JSArgs& args) {
 	cout << curveIndex << endl;
 
 	viewPanel->allCurves.erase(viewPanel->allCurves.begin() + curveIndex);
+	updateDisplay();
+}
+
+void Gui::OnChangeDeCasteljauTRange(const JSObject& thisObject, const JSArgs& args) {
+	for (CurveBezier* c : viewPanel->allCurves) {
+		if (dynamic_cast<DeCasteljau*>(c)) {
+			dynamic_cast<DeCasteljau*>(c)->toggleTRange();
+			c->setInitialized(false);
+		}
+	}
 	updateDisplay();
 }
 

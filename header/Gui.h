@@ -53,6 +53,7 @@ private:
     void OnIncreaseSurfaceT(const JSObject&, const JSArgs&);
     void OnDecreaseSurfaceT(const JSObject&, const JSArgs&);
     void OnSurfacePointEdited(const JSObject&, const JSArgs&);
+    void OnSplitSurface(const JSObject&, const JSArgs&);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

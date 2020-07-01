@@ -55,6 +55,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnIncreaseSurfaceT"] = BindJSCallback(&Gui::OnIncreaseSurfaceT);
 	global["OnDecreaseSurfaceT"] = BindJSCallback(&Gui::OnDecreaseSurfaceT);
 	global["OnSurfacePointEdited"] = BindJSCallback(&Gui::OnSurfacePointEdited);
+	global["OnSplitSurface"] = BindJSCallback(&Gui::OnSplitSurface);
 
 	loadData();
 }
@@ -336,6 +337,19 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 	}
 	//s.updateBezierSurface();
 	//updateDisplay();
+}
+
+void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
+	int surfaceIndex = args[0].ToInteger();
+	float splitT = args[1].ToNumber();
+
+	if (surfaceIndex == -1) {
+		cout << "Keine gueltige Eingabe zur Unterteilung!" << endl;
+	} else {
+		// Hier aufteilen
+
+	}
+
 }
 
 

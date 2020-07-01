@@ -300,6 +300,17 @@
             let panel = document.createElement("div");
             panel.classList.add("panel");
             s.appendChild(panel);
+            let btnPanel = document.createElement("div");
+            panel.appendChild(btnPanel);
+
+            splitLabel = document.createElement("label");
+            splitLabel.innerText = "Bezierfläche unterteilen  ";
+            btnPanel.appendChild(splitLabel);
+            splitInput = document.createElement("input");
+            splitInput.setAttribute("type", "text");
+            splitInput.setAttribute("placeholder", "0.25");
+            splitInput.addEventListener("change", function(){ splitSurface(this.value, panel.getAttribute("data-index")); });
+            btnPanel.appendChild(splitInput);
 
             for (let i=0; i < arguments.length; i+=4) {
                 /* Ein Kontrollpunkt */
@@ -326,6 +337,19 @@
             let value = input.value;
             let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
             OnSurfacePointEdited(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex); 
+        }
+        function splitSurface(value, bezierCurveIndex){
+            let correctInput = true;
+            if (isNaN(value)) {
+                correctInput = false;
+            } else if (Number(value) >= 1 || Number(value) <= 0) {
+                    correctInput = false;
+            }
+            if (correctInput) {
+                OnSplitSurface(bezierCurveIndex, value);
+            } else {
+                OnSplitSurface(-1, -1);
+            }
         }
     </script>
 </head>
@@ -362,6 +386,7 @@
                 <input type="radio" id="decasteljau" name="drawtype" value="decasteljau" checked="checked" onchange='OnToggleBezier()'>
             </div>
         </div>
+        <br/>
         <div id="einstellungen_bezierkurve" style="border-style: solid; border-width: 1px; padding:5px;">
             <h3>Einstellungen - Bezierkurve</h3>
             <br/>
@@ -392,7 +417,7 @@
             </div>
             <br/>
             <div>
-                <label for="decasteljau_big">DeCasteljau-Bezierkurve im Bereich t &#8712; [-1,2] anzeigen</label>
+                <label for="decasteljau_big">DeCasteljau-Bezierkurve im Intervall t &#8712; [-1,2] anzeigen</label>
                 <input type="checkbox" id="decasteljau_big" name="decasteljau_big" onchange="OnChangeDeCasteljauTRange()">
             </div>
         </div>

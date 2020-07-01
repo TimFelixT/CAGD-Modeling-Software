@@ -52,6 +52,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnToggleSurface"] = BindJSCallback(&Gui::OnToggleSurface);
 	global["OnIncreaseSurfaceT"] = BindJSCallback(&Gui::OnIncreaseSurfaceT);
 	global["OnDecreaseSurfaceT"] = BindJSCallback(&Gui::OnDecreaseSurfaceT);
+	global["OnSplitSurface"] = BindJSCallback(&Gui::OnSplitSurface);
 
 	loadData();
 }
@@ -267,6 +268,24 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 		cout << "Keine Korrekte Eingabe zur Unterteilung!" << endl;
 	}
 }
+
+void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
+	vector<float> t_vec;
+	vector<CurveBezier*>u_1, u_2, u_3, u_4, v_1, v_2, v_3, v_4;
+
+	viewPanel->subdivisionSurface(0.5, 0.5, u_1, u_2, u_3, u_4, v_1, v_2, v_3, v_4);
+	
+	Bezier_Surface* s1 = new Bezier_Surface(viewPanel->program, u_1, v_1);
+	Bezier_Surface* s2 = new Bezier_Surface(viewPanel->program, u_2, v_2);
+	Bezier_Surface* s3 = new Bezier_Surface(viewPanel->program, u_3, v_3);
+	Bezier_Surface* s4 = new Bezier_Surface(viewPanel->program, u_4, v_4);
+	viewPanel->allSurfaces.clear();
+	viewPanel->allSurfaces.push_back(s1);
+	viewPanel->allSurfaces.push_back(s2);
+	viewPanel->allSurfaces.push_back(s3);
+	viewPanel->allSurfaces.push_back(s4);
+}
+
 void Gui::OnCenterCurve(const JSObject& thisObject, const JSArgs& args) {
 	int curveIndex = args[0].ToInteger();
 	CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));

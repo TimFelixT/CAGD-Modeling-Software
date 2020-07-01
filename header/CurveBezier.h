@@ -6,6 +6,7 @@
 class CurveBezier {
 public:
 	CurveBezier(PolyObject* pobj, cg::GLSLProgram*);
+	CurveBezier(std::vector<PointVector> verts, cg::GLSLProgram* prog);
 	~CurveBezier();
 	void init();
 	void draw(glm::mat4x4);

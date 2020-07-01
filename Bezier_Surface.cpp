@@ -15,6 +15,17 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog)
 	calculateBezierSurface();
 }
 
+Bezier_Surface::Bezier_Surface(cg::GLSLProgram* prog, vector<CurveBezier*> u_curves_in, vector<CurveBezier*> v_curves_in)
+{
+	t = 2;
+	ObjFileParser parser;
+	controlStructure = new PolyObject(prog);
+	u_curves = u_curves_in;
+	v_curves = v_curves_in;
+	buildControlStructure();
+	calculateBezierSurface();
+}
+
 Bezier_Surface::~Bezier_Surface()
 {
 }
@@ -364,6 +375,125 @@ void Bezier_Surface::calculateBezierSurface()
 		bezierSurface->pushVertice(u_curves[i]->getCurveVertices().at(n - 1));
 		bezierSurface->pushColor();
 	}
+}
+
+void Bezier_Surface::subdivisionSurface(float u, float v, vector<CurveBezier*> u_curves1, vector<CurveBezier*> v_curves1, vector<CurveBezier*> u_curves2, vector<CurveBezier*> v_curves2, vector<CurveBezier*> u_curves3, vector<CurveBezier*> v_curves3, vector<CurveBezier*> u_curves4, vector<CurveBezier*> v_curves4) {
+	PolyObject po = PolyObject(controlStructure->getProgram());
+
+	std::vector<PointVector> tmp1;
+	std::vector<PointVector> tmp2;
+	std::vector<PointVector> tmp3;
+	std::vector<PointVector> tmp4;
+
+	
+	subdivision(u, u_curves[0]->getControlVertices(), tmp1, tmp2);	
+	u_curves1.push_back(new CurveBezier(tmp1, controlStructure->getProgram()));
+	u_curves2.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+
+	subdivision(u, u_curves[2]->getControlVertices(), tmp3, tmp4);
+	u_curves3.push_back(new CurveBezier(tmp3, controlStructure->getProgram()));
+	u_curves4.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+
+	subdivision(v, v_curves[0]->getControlVertices(), tmp1, tmp2);
+	v_curves1.push_back(new CurveBezier(tmp1, controlStructure->getProgram()));
+	v_curves2.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+
+	subdivision(v, v_curves[2]->getControlVertices(), tmp3, tmp4);
+	v_curves3.push_back(new CurveBezier(tmp3, controlStructure->getProgram()));
+	v_curves4.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+
+	subdivision(u, u_curves[1]->getControlVertices(), tmp1, tmp2);
+	tmp3.clear();
+	tmp3.push_back(u_curves1.at(0)->getControlVertices()[2]);
+	tmp3.push_back(tmp1.at(2));
+	tmp3.push_back(u_curves3.at(0)->getControlVertices()[2]);
+
+	subdivision(v, tmp3, tmp4, tmp2);
+	
+	v_curves1.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+	v_curves1.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+	v_curves2.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+	v_curves2.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+
+	v_curves3.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+	v_curves3.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+	v_curves4.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+	v_curves4.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+
+	tmp3.clear();
+	tmp3.push_back(v_curves1.at(0)->getControlVertices()[2]);
+	tmp3.push_back(tmp4.at(2));
+	tmp3.push_back(v_curves2.at(0)->getControlVertices()[2]);
+
+	subdivision(v, tmp3, tmp4, tmp2);
+
+	u_curves1.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+	u_curves1.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+	u_curves3.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+	u_curves3.push_back(new CurveBezier(tmp4, controlStructure->getProgram()));
+
+	u_curves2.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+	u_curves2.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+	u_curves4.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+	u_curves4.push_back(new CurveBezier(tmp2, controlStructure->getProgram()));
+
+	tmp3.clear();
+	tmp3.push_back(v_curves1.at(0)->getControlVertices()[1]);
+	tmp3.push_back(v_curves1.at(2)->getControlVertices()[1]);
+	tmp3.push_back(v_curves2.at(0)->getControlVertices()[1]);
+
+	subdivision(u, tmp3, tmp4, tmp2);
+	
+	u_curves1[1] = new CurveBezier(tmp4, controlStructure->getProgram());
+	u_curves3[1] = new CurveBezier(tmp2, controlStructure->getProgram());
+	
+	tmp3.clear();
+	tmp3.push_back(v_curves3.at(0)->getControlVertices()[1]);
+	tmp3.push_back(v_curves3.at(2)->getControlVertices()[1]);
+	tmp3.push_back(v_curves4.at(0)->getControlVertices()[1]);
+
+	subdivision(u, tmp3, tmp4, tmp2);
+
+	u_curves2[1] = new CurveBezier(tmp4, controlStructure->getProgram());
+	u_curves4[1] = new CurveBezier(tmp2, controlStructure->getProgram());
+
+	tmp3.clear();
+	tmp3.push_back(u_curves1.at(0)->getControlVertices()[1]);
+	tmp3.push_back(u_curves1.at(2)->getControlVertices()[1]);
+	tmp3.push_back(u_curves2.at(0)->getControlVertices()[1]);
+
+	subdivision(v, tmp3, tmp4, tmp2);
+
+	v_curves1[1] = new CurveBezier(tmp4, controlStructure->getProgram());
+	v_curves3[1] = new CurveBezier(tmp2, controlStructure->getProgram());
+
+	tmp3.clear();
+	tmp3.push_back(u_curves3.at(0)->getControlVertices()[1]);
+	tmp3.push_back(u_curves3.at(2)->getControlVertices()[1]);
+	tmp3.push_back(u_curves4.at(0)->getControlVertices()[1]);
+
+	subdivision(v, tmp3, tmp4, tmp2);
+
+	v_curves2[1] = new CurveBezier(tmp4, controlStructure->getProgram());
+	v_curves4[1] = new CurveBezier(tmp2, controlStructure->getProgram());
+
+}
+
+void Bezier_Surface::subdivision(float t, std::vector<PointVector> & input, std::vector<PointVector> & newVertices1, std::vector<PointVector> & newVertices2) {
+	newVertices1.clear();
+	newVertices2.clear();
+	std::vector<PointVector> vertices = input;
+
+	for (int i = 0; i < vertices.size() - 1; i++) {
+		newVertices1.push_back(vertices[0]);
+		for (int j = 0; j < vertices.size() - 1 - i; j++) {
+			vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
+		}
+		newVertices2.push_back(vertices[vertices.size() - 1 - i]);
+
+	}
+	newVertices1.push_back(vertices[0]);
+	newVertices2.push_back(vertices[0]);
 }
 
 //void Bezier_Surface::calculateBezierSurface()

@@ -43,6 +43,7 @@ private:
     void OnToggleStructure(const JSObject&, const JSArgs&);
     void OnChangeStructureT(const JSObject&, const JSArgs&);
     void OnSplitCurve(const JSObject&, const JSArgs&);
+    void OnSplitSurface(const JSObject& thisObject, const JSArgs& args);
     void OnCreateCurve(const JSObject&, const JSArgs&);
     void OnDeleteCurve(const JSObject&, const JSArgs&);
     void OnCenterCurve(const JSObject&, const JSArgs&);

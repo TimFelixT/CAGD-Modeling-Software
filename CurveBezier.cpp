@@ -8,6 +8,12 @@ CurveBezier::CurveBezier(PolyObject* pobj, cg::GLSLProgram* prog) : program(prog
 	d_obj = new PolyObject(program);
 }
 
+CurveBezier::CurveBezier(std::vector<PointVector> verts, cg::GLSLProgram* prog) : program(prog) {
+	obj = new PolyObject();
+	obj->setVertices(verts);
+	d_obj = new PolyObject(program);
+}
+
 CurveBezier::~CurveBezier() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &indexBuffer);

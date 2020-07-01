@@ -65,7 +65,10 @@ private:
 	glm::vec3 selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);
 	PointVector* selectedPointVectorDecasteljau = nullptr;
 	glm::vec3 selectedPointNormalDecasteljau = glm::vec3(0.0f, 0.0f, 0.0f);
-	void selectPointPost(glm::vec3&, glm::vec3&, PolyObject* const&, bool, double&);
+	PointVector* selectedPointVectorSurface = nullptr;
+	glm::vec3 selectedPointNormalSurface = glm::vec3(0.0f, 0.0f, 0.0f);
+	void selectPointPostCurve(glm::vec3&, glm::vec3&, PolyObject* const&, bool, double&);
+	void selectPointPostSurface(glm::vec3&, glm::vec3&, PolyObject* const&, double&);
 
 	void updateBernstein();
 	void updateDecasteljau();

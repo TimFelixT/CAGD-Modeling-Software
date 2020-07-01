@@ -246,6 +246,8 @@ void Bezier_Surface::rotateZ()
 	}
 }
 
+
+
 void Bezier_Surface::calculateVCurves()
 {
 	v_curves.clear();
@@ -426,6 +428,8 @@ void Bezier_Surface::calculateBezierSurface()
 		bezierSurface->pushVertice(u_curves[i]->getCurveVertices().at(n - 1));
 		bezierSurface->pushColor();
 	}
+}
+void Bezier_Surface::updateBezierSurface() {
 }
 
 //void Bezier_Surface::calculateBezierSurface()

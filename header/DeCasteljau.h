@@ -9,8 +9,11 @@ public:
 	void calcRationalCurve() override;
 	void bezier_derivative() override;
 	void bezier_subdivision(vector<float> t_vec);
+	void toggleTRange();
 
 private:
 	PointVector deCasteljau(int k, int i, double t0, std::vector<PointVector> P);
+
+	bool t_range_toggle = false;
 };
 

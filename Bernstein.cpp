@@ -20,7 +20,7 @@ void Bernstein::bezier_derivative() {
 	std::vector<PointVector> controlVertices = obj->getVertices();
 
 	d_obj->clear();
-	d_obj->pushVertice(controlVertices[0]);
+	//d_obj->pushVertice(controlVertices[0]);
 	d_obj->pushColor();
 
 	int n = controlVertices.size() - 1;
@@ -38,12 +38,17 @@ void Bernstein::bezier_derivative() {
 			if (i < n) {
 				delta_point = controlVertices[i + 1].getVec3() - controlVertices[i].getVec3();
 
-				d_point = d_point + (binomialCoefficiant(n - 1, i) * pow(1 - t, n - 1 - i) * pow(t, i)) * delta_point;
+				d_point = d_point + (binomialCoefficiant(n - 1, i) * pow(1 - t, n - 1 - i) * pow(t, i-1)) * delta_point;
 			}
 			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i) * controlVertices[i].getVec3());
 		}
 		d_obj->pushVertice(PointVector(point, 0));
-		d_obj->pushVertice(n * PointVector(d_point, 0));
+
+		glm::vec3 d = ((float)n*d_point) - point;
+		d = glm::normalize(d) * (float)3;
+		d_point = point + d;
+
+		d_obj->pushVertice(PointVector(d_point, 0));
 		d_obj->pushColor();
 		d_obj->pushColor();
 	}

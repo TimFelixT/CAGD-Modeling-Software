@@ -27,6 +27,9 @@ public:
 	void rotateY();
 	void rotateZ();
 
+	void updateBezierSurface();
+
+
 private:
 	void calculateVCurves();
 	void calculateUCurves();
@@ -47,5 +50,8 @@ private:
 	PolyObject* bezierSurface;
 
 	int deg_m, deg_n, t;
+
+	friend class Gui;
+	friend class ViewPanel;
 };
 

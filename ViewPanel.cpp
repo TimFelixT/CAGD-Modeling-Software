@@ -304,7 +304,7 @@ void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
 				glm::vec3 newPoint = cameraPos + newRay;
 				selectedPointVectorSurface->setVec3(newPoint, 1);
-				//updateSurface();
+				updateSurface();
 			}
 		}
 	} else {
@@ -415,5 +415,12 @@ void ViewPanel::updateDecasteljau() {
 		if (dynamic_cast<DeCasteljau*>(b)) {
 			b->setInitialized(false);
 		}
+	}
+}
+
+void ViewPanel::updateSurface() {
+	for (Bezier_Surface* s : allSurfaces) {
+		s->buildControlStructure();
+		s->updateBezierSurface();
 	}
 }

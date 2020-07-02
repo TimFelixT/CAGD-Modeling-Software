@@ -57,6 +57,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnSurfacePointEdited"] = BindJSCallback(&Gui::OnSurfacePointEdited);
 	global["OnSplitSurface"] = BindJSCallback(&Gui::OnSplitSurface);
 	global["OnSurfaceDegreeIncrease"] = BindJSCallback(&Gui::OnSurfaceDegreeIncrease);
+	global["OnResetSurfaces"] = BindJSCallback(&Gui::OnResetSurfaces);
 
 	loadData();
 }
@@ -336,8 +337,9 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 		s.controlStructure->vertices.at(pointIndex).weight = value;
 		break;
 	}
-	//s.updateBezierSurface();
-	//updateDisplay();
+	s.buildControlStructure();
+	s.updateBezierSurface();
+	updateDisplay();
 }
 
 void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
@@ -370,6 +372,9 @@ void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args
 
 }
 
+void Gui::OnResetSurfaces(const JSObject& thisObject, const JSArgs& args) {
+	addSurfaces();
+}
 
 
 

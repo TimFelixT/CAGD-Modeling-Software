@@ -273,7 +273,22 @@
         }
         /* Bezierfläche Funktionen*/
         function resetSurfaces(){
+            let flaechen = document.querySelector("#flaeche");
+            flaechen.innerHTML = "";
+            let heading = document.createElement("h3");
+            heading.innerText = "Bezier - Fläche";
+            flaechen.appendChild(heading);
+            let updateBtn = document.createElement("button");
+            updateBtn.innerText = "Aktualisiere Kontrollpunkte";
+            updateBtn.addEventListener("click", function(){ resetSurfaces() });
+            //let createCurveBtn = document.createElement("button");
+            //createCurveBtn.innerText = "Neue Kurve hinzufügen";
+            //createCurveBtn.addEventListener("click", function(){ OnCreateCurve() });
 
+            flaechen.appendChild(updateBtn);
+            flaechen.appendChild(document.createElement("br"));
+            //kurven.appendChild(createCurveBtn);
+            OnResetSurfaces();
         }
         function changeSurfaceT(increase, label) {
             //0 = Increase, 1 = Decrease

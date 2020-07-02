@@ -5,6 +5,7 @@ class Bezier_Surface
 public:
 	//Konstruktoren
 	Bezier_Surface(char* filename, cg::GLSLProgram*);
+	Bezier_Surface(PolyObject*, int, int, int, cg::GLSLProgram*);
 
 	//Destruktor
 	~Bezier_Surface();
@@ -32,6 +33,9 @@ public:
 	void updateCurves();
 
 	void updateBezierSurface();
+
+	void subdivideU(float, float, vector<Bezier_Surface*>*);
+	void subdivideV(float, vector<Bezier_Surface*>*);
 
 
 private:

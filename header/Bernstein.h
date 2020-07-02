@@ -16,5 +16,7 @@ private:
 	long long binomialCoefficiant(long long, long long);
 	long long factorial(long long);
 
+
+	friend class Bezier_Surface;
 };
 

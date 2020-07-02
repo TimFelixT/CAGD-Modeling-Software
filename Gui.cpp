@@ -350,12 +350,12 @@ void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
 	if (surfaceIndex == -1) {
 		cout << "Keine gueltige Eingabe zur Unterteilung!" << endl;
 	} else {
-		// Hier aufteilen
-		cout << surfaceIndex << endl;
-		cout << splitU << endl;
-		cout << splitV << endl;
-
+		Bezier_Surface& s = *(viewPanel->allSurfaces.at(surfaceIndex));
+		s.subdivideU(splitU, splitV, &viewPanel->allSurfaces);
+		cout << "Test" << endl;
+		updateDisplay();
 	}
+
 
 }
 void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {

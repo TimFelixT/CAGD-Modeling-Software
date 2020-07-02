@@ -48,6 +48,8 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
 	global["OnCenterCurve"] = BindJSCallback(&Gui::OnCenterCurve);
 	global["OnChangeDeCasteljauTRange"] = BindJSCallback(&Gui::OnChangeDeCasteljauTRange);
+	global["OnDerivativeToggle"] = BindJSCallback(&Gui::OnDerivativeToggle);
+	global["OnDerivativeTChange"] = BindJSCallback(&Gui::OnDerivativeTChange);
 
 	//Flächen
 	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
@@ -308,6 +310,19 @@ void Gui::OnChangeDeCasteljauTRange(const JSObject& thisObject, const JSArgs& ar
 	updateDisplay();
 }
 
+void Gui::OnDerivativeToggle(const JSObject& thisObject, const JSArgs& args) {
+	viewPanel->derivative();
+}
+void Gui::OnDerivativeTChange(const JSObject& thisObject, const JSArgs& args) {
+	float t = args[0].ToNumber();
+	
+	for (CurveBezier* c : viewPanel->allCurves) {
+		c->derivative_t = t;
+		c->bezier_derivative();
+	}
+	updateDisplay();
+}
+
 void Gui::OnToggleSurface(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->toggleSurface();
 
@@ -364,34 +379,14 @@ void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
 	float splitU = args[1].ToNumber();
 	float splitV = args[2].ToNumber();
 
-	vector<float> t_vec;
-	vector<CurveBezier*>u_1, u_2, u_3, u_4, v_1, v_2, v_3, v_4;
-
-	viewPanel->subdivisionSurface(0.5, 0.5, u_1, v_1, u_2, v_2, u_3, v_3, u_4, v_4);
-
-	Bezier_Surface* s1 = new Bezier_Surface(viewPanel->program, u_1, v_1);
-	Bezier_Surface* s2 = new Bezier_Surface(viewPanel->program, u_2, v_2);
-	Bezier_Surface* s3 = new Bezier_Surface(viewPanel->program, u_3, v_3);
-	Bezier_Surface* s4 = new Bezier_Surface(viewPanel->program, u_4, v_4);
-
-	viewPanel->allSurfaces.clear();
-	viewPanel->allSurfaces.push_back(s1);
-	viewPanel->allSurfaces.push_back(s2);
-	viewPanel->allSurfaces.push_back(s3);
-	viewPanel->allSurfaces.push_back(s4);
-
 	if (surfaceIndex == -1) {
 		cout << "Keine gueltige Eingabe zur Unterteilung!" << endl;
 	} else {
 		// Hier aufteilen
-		
-
-		cout << surfaceIndex << endl;
-		cout << splitU << endl;
-		cout << splitV << endl;
-
-	}
-	updateDisplay();
+		Bezier_Surface& s = *(viewPanel->allSurfaces.at(surfaceIndex));
+		s.subdivideU(splitU, splitV, &viewPanel->allSurfaces);
+		updateDisplay();
+	}	
 }
 void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {
 	//0 = Increase u Richtung, 1 = Increase v Richtung

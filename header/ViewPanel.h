@@ -24,7 +24,6 @@ public:
 	void toggleSurface();
 	void degreeIncrease();
 	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
-	void subdivisionSurface(float u, float v, vector<CurveBezier*>& u_curves1, vector<CurveBezier*>& v_curves1, vector<CurveBezier*>& u_curves2, vector<CurveBezier*>& v_curves2, vector<CurveBezier*>& u_curves3, vector<CurveBezier*>& v_curves3, vector<CurveBezier*>& u_curves4, vector<CurveBezier*>& v_curves4);
 	void derivative();
 
 	void toggleFillSurface();

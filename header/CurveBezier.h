@@ -67,6 +67,8 @@ protected:
 
 	void centerCurve();
 
+	float derivative_t = 0.5;
+
 
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 

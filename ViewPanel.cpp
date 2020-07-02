@@ -68,9 +68,6 @@ void ViewPanel::subdivision(float t, std::vector<PointVector>& newCurveVerts, in
 	allCurves.at(curveIndex)->subdivision(t, newCurveVerts);
 }
 
-void ViewPanel::subdivisionSurface(float u, float v, vector<CurveBezier*>& u_curves1, vector<CurveBezier*>& v_curves1, vector<CurveBezier*>& u_curves2, vector<CurveBezier*>& v_curves2, vector<CurveBezier*>& u_curves3, vector<CurveBezier*>& v_curves3, vector<CurveBezier*>& u_curves4, vector<CurveBezier*>& v_curves4) {
-	surface->subdivisionSurface(u, v, u_curves1, v_curves1, u_curves2, v_curves2, u_curves3, v_curves3, u_curves4, v_curves4);
-}
 
 void ViewPanel::derivative() {
 	for (CurveBezier* b : allCurves) {

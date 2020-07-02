@@ -46,6 +46,9 @@ private:
     void OnDeleteCurve(const JSObject&, const JSArgs&);
     void OnCenterCurve(const JSObject&, const JSArgs&);
     void OnChangeDeCasteljauTRange(const JSObject&, const JSArgs&);
+    void OnDerivativeToggle(const JSObject&, const JSArgs&);
+    void OnDerivativeTChange(const JSObject&, const JSArgs&);
+
 
     //Flächen
     void OnToggleSurface(const JSObject&, const JSArgs&);

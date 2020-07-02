@@ -74,6 +74,7 @@
         var tValueBernstein = 0.5;
         var tValueDecasteljau = 0.5;
         var tSurface = 2;
+        var tDerivative = 0.5;
         /* TabLayout Functions */
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
@@ -265,6 +266,16 @@
                 }
                 span.innerText = "Wert: " + (Math.round(tValueDecasteljau * 100) / 100).toFixed(2);
             }
+        }
+        function changeDerivativeT(direction, span){
+            if (tDerivative < 0.96 && direction == 0) {
+                tDerivative += 0.05;
+                OnDerivativeTChange((Math.round(tDerivative * 100) / 100).toFixed(2));
+            } else if (tDerivative >= 0.05 && direction == 1) {
+                tDerivative -= 0.05;
+                OnDerivativeTChange((Math.round(tDerivative * 100) / 100).toFixed(2));
+            }
+            span.innerText = "Wert: " + (Math.round(tDerivative * 100) / 100).toFixed(2);
         } 
         function deleteCurve(bezierCurveIndex){
             OnDeleteCurve(bezierCurveIndex);
@@ -448,6 +459,16 @@
             <div>
                 <label for="decasteljau_big">DeCasteljau-Bezierkurve im Intervall t &#8712; [-1,2] anzeigen</label>
                 <input type="checkbox" id="decasteljau_big" name="decasteljau_big" onchange="OnChangeDeCasteljauTRange()">
+            </div>
+            <div>
+                <br/>
+                <button onclick='OnDerivativeToggle()'>Ableitungen an/auschalten</button>
+                <br/>
+                <label for="derivativeT">Ableitungs "T" verändern</label>
+                <br/>
+                <i class="arrow up" onclick="changeDerivativeT(0, document.querySelector('#derivativeT'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeDerivativeT(1, document.querySelector('#derivativeT'))"></i>
+                <span id="derivativeT">Wert: 0.50</span>
             </div>
         </div>
         <br/>

@@ -25,7 +25,7 @@ void Bernstein::bezier_derivative() {
 
 	int n = controlVertices.size() - 1;
 
-	for (float t = 0; t < 1; t += globalConstants.BEZIER_ACCURACY) {
+	for (float t = derivative_t; t == derivative_t; t += globalConstants.BEZIER_ACCURACY) {
 
 		glm::vec3 d_point(0.0f, 0.0f, 0.0f);
 		glm::vec3 point(0.0f, 0.0f, 0.0f);
@@ -42,12 +42,14 @@ void Bernstein::bezier_derivative() {
 			}
 			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i) * controlVertices[i].getVec3());
 		}
-		d_obj->pushVertice(PointVector(point, 0));
+
 
 		glm::vec3 d = ((float)n*d_point) - point;
 		d = glm::normalize(d) * (float)3;
 		d_point = point + d;
+		point = point - d;
 
+		d_obj->pushVertice(PointVector(point, 0));
 		d_obj->pushVertice(PointVector(d_point, 0));
 		d_obj->pushColor();
 		d_obj->pushColor();
@@ -57,6 +59,7 @@ void Bernstein::bezier_derivative() {
 	for (int i = 0; i < d_obj->getVertices().size() - 1; i++)
 	{
 		d_obj->pushIndex(i);
+		d_obj->pushIndex(i+1);
 	}
 }
 

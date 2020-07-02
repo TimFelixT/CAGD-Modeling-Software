@@ -149,6 +149,7 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 void Bezier_Surface::increaseTesselatingRate() {
 	if (t < 100) {
 		t++;
+		buildControlStructure();
 		updateBezierSurface();
 	}
 }
@@ -156,6 +157,7 @@ void Bezier_Surface::increaseTesselatingRate() {
 void Bezier_Surface::decreaseTesselatingRate() {
 	if (t > 1) {
 		t--;
+		buildControlStructure();
 		updateBezierSurface();
 	}
 }
@@ -266,16 +268,16 @@ void Bezier_Surface::rotateX()
 	controlStructure->rotateX();
 	for (CurveBezier* curve : u_curves) {
 		if (dynamic_cast<Bernstein*>(curve)) {
-			//curve->rotateX();
-			//curve->getControlStructure()->rotateX();
+			curve->rotateX();
+			curve->getControlStructure()->rotateX();
 			//curve->getDeCasteljauStructure()->rotateX();
 			curve->getDerativeStructure()->rotateX();
 		}
 	}
 	for (CurveBezier* curve : v_curves) {
 		if (dynamic_cast<Bernstein*>(curve)) {
-			//curve->rotateX();
-			//curve->getControlStructure()->rotateX();
+			curve->rotateX();
+			curve->getControlStructure()->rotateX();
 			//curve->getDeCasteljauStructure()->rotateX();
 			curve->getDerativeStructure()->rotateX();
 		}
@@ -288,8 +290,8 @@ void Bezier_Surface::rotateY()
 	controlStructure->rotateY();
 	for (CurveBezier* curve : u_curves) {
 		if (dynamic_cast<Bernstein*>(curve)) {
-			//curve->rotateY();
-			//curve->getControlStructure()->rotateY();
+			curve->rotateY();
+			curve->getControlStructure()->rotateY();
 			//curve->getDeCasteljauStructure()->rotateY();
 			curve->getDerativeStructure()->rotateY();
 		}
@@ -310,8 +312,8 @@ void Bezier_Surface::rotateZ()
 	controlStructure->rotateZ();
 	for (CurveBezier* curve : u_curves) {
 		if (dynamic_cast<Bernstein*>(curve)) {
-			//curve->rotateZ();
-			//curve->getControlStructure()->rotateZ();
+			curve->rotateZ();
+			curve->getControlStructure()->rotateZ();
 			//curve->getDeCasteljauStructure()->rotateZ();
 			curve->getDerativeStructure()->rotateZ();
 		}
@@ -621,7 +623,7 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 	for (CurveBezier* c : newVCurves) {
 		newSurface->v_curves.push_back(c);
 	}
-	for (CurveBezier* c : v_curves) {
+	for (CurveBezier* c : u_curves) {
 		PolyObject* controlPoints = new PolyObject(program);
 		controlPoints->setVertices(c->getControlVertices());
 		for (int i = 0; i < c->getControlVertices().size() - 1; i++) {

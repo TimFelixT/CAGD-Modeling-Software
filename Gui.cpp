@@ -48,6 +48,8 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnDeleteCurve"] = BindJSCallback(&Gui::OnDeleteCurve);
 	global["OnCenterCurve"] = BindJSCallback(&Gui::OnCenterCurve);
 	global["OnChangeDeCasteljauTRange"] = BindJSCallback(&Gui::OnChangeDeCasteljauTRange);
+	global["OnDerivativeToggle"] = BindJSCallback(&Gui::OnDerivativeToggle);
+	global["OnDerivativeTChange"] = BindJSCallback(&Gui::OnDerivativeTChange);
 
 	//Flächen
 	global["OnToggleShader"] = BindJSCallback(&Gui::OnToggleShader);
@@ -287,6 +289,19 @@ void Gui::OnChangeDeCasteljauTRange(const JSObject& thisObject, const JSArgs& ar
 			dynamic_cast<DeCasteljau*>(c)->toggleTRange();
 			c->setInitialized(false);
 		}
+	}
+	updateDisplay();
+}
+
+void Gui::OnDerivativeToggle(const JSObject& thisObject, const JSArgs& args) {
+	viewPanel->derivative();
+}
+void Gui::OnDerivativeTChange(const JSObject& thisObject, const JSArgs& args) {
+	float t = args[0].ToNumber();
+	
+	for (CurveBezier* c : viewPanel->allCurves) {
+		c->derivative_t = t;
+		c->bezier_derivative();
 	}
 	updateDisplay();
 }

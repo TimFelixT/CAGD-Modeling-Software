@@ -283,6 +283,11 @@ void PolyObject::setFaces(std::vector<std::vector<PointVector>> new_faces)
 	faces = new_faces;
 }
 
+void PolyObject::setIndices(std::vector<GLushort> in)
+{
+	indices = in;
+}
+
 void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
 }
@@ -302,4 +307,12 @@ void PolyObject::translate(PointVector tv) {
 }
 void PolyObject::clearVertices() {
 	vertices.clear();
+}
+void PolyObject::clearFaces() {
+	faces.clear();
+}
+
+void PolyObject::clearIndices()
+{
+	indices.clear();
 }

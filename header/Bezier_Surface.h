@@ -10,6 +10,8 @@ public:
 	~Bezier_Surface();
 
 	PolyObject* getBezierSurface();
+	vector<CurveBezier*> getUCurves();
+	vector<CurveBezier*> getVCurves();
 	vector<CurveBezier*> getCurves();
 
 	void init();
@@ -27,6 +29,8 @@ public:
 	void rotateY();
 	void rotateZ();
 
+	void updateCurves();
+
 	void updateBezierSurface();
 
 
@@ -36,9 +40,11 @@ private:
 
 	void buildControlStructure();
 
-	void updateBezierSurface();
-
 	void calculateBezierSurface();
+
+	void calcNormals();
+
+	cg::GLSLProgram* program;
 
 	vector<CurveBezier*> u_curves;
 	vector<CurveBezier*> v_curves;
@@ -48,6 +54,7 @@ private:
 
 	PolyObject* controlStructure;
 	PolyObject* bezierSurface;
+	PolyObject* normals;
 
 	int deg_m, deg_n, t;
 

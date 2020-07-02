@@ -36,6 +36,7 @@ public:
 	void setProgram(cg::GLSLProgram*);
 	void setColor(PointVector);
 	void setFaces(std::vector <std::vector<PointVector>>);
+	void setIndices(std::vector<GLushort>);
 
 	// Push functions
 	void pushFace(std::vector<PointVector>);
@@ -49,8 +50,9 @@ public:
 	void popIndex();
 
 	void clear();
-
 	void clearVertices();
+	void clearFaces();
+	void clearIndices();
 
 	void triangulatePolyNet();
 

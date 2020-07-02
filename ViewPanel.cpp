@@ -60,7 +60,7 @@ void ViewPanel::degreeIncrease() {
 
 	for (Bezier_Surface* s : allSurfaces) {
 		//s->degree_increase_u();
-		s->degree_increase_v();
+		//s->degree_increase_v();
 		s->degree_increase_u();
 	}
 }
@@ -75,7 +75,10 @@ void ViewPanel::derivative() {
 	}
 
 	for (Bezier_Surface* s : allSurfaces) {
-		for (CurveBezier* b : s->getCurves()) {
+		for (CurveBezier* b : s->getUCurves()) {
+			b->toggleDerivative();
+		}
+		for (CurveBezier* b : s->getVCurves()) {
 			b->toggleDerivative();
 		}
 	}

@@ -16,17 +16,6 @@ ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1
 	allCurves.push_back(bernstein_bezier);
 	allCurves.push_back(deCasteljau_bezier);
 	allSurfaces.push_back(surface);
-
-	vector<CurveBezier*> u1;
-	vector<CurveBezier*> u2;
-	vector<CurveBezier*> u3;
-	vector<CurveBezier*> u4;
-	vector<CurveBezier*> v1;
-	vector<CurveBezier*> v2;
-	vector<CurveBezier*> v3;
-	vector<CurveBezier*> v4;
-	surface->subdivisionSurface(0.2, 0.2, u1, u2, u3, u4, v1, v2, v3, v4);
-
 }
 
 
@@ -81,7 +70,7 @@ void ViewPanel::subdivision(float t, std::vector<PointVector>& newCurveVerts, in
 }
 
 void ViewPanel::subdivisionSurface(float u, float v, vector<CurveBezier*>& u_curves1, vector<CurveBezier*>& v_curves1, vector<CurveBezier*>& u_curves2, vector<CurveBezier*>& v_curves2, vector<CurveBezier*>& u_curves3, vector<CurveBezier*>& v_curves3, vector<CurveBezier*>& u_curves4, vector<CurveBezier*>& v_curves4) {
-	surface->subdivisionSurface(u, v, u_curves1, u_curves2, u_curves3, u_curves4, v_curves1, v_curves2, v_curves3, v_curves4);
+	surface->subdivisionSurface(u, v, u_curves1, v_curves1, u_curves2, v_curves2, u_curves3, v_curves3, u_curves4, v_curves4);
 }
 
 void ViewPanel::derivative() {

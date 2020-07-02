@@ -29,8 +29,10 @@ public:
 	void rotateZ();
 
 	void subdivision(float t, std::vector<PointVector>& input, std::vector<PointVector>& newVertices1, std::vector<PointVector>& newVertices2);
-	void subdivisionSurface(float u, float v, vector<CurveBezier*> u_curves1, vector<CurveBezier*> v_curves1, vector<CurveBezier*> u_curves2, vector<CurveBezier*> v_curves2, vector<CurveBezier*> u_curves3, vector<CurveBezier*> v_curves3, vector<CurveBezier*> u_curves4, vector<CurveBezier*> v_curves4);
 	void updateBezierSurface();
+
+	void subdivisionSurface(float u, float v, vector<CurveBezier*>& u_curves1, vector<CurveBezier*>& v_curves1, vector<CurveBezier*>& u_curves2, vector<CurveBezier*>& v_curves2, vector<CurveBezier*>& u_curves3, vector<CurveBezier*>& v_curves3, vector<CurveBezier*>& u_curves4, vector<CurveBezier*>& v_curves4);
+	void translatePoint(PointVector tmpCurve, PointVector middle, vector<CurveBezier*>& curveVerts);
 
 
 private:

@@ -5,7 +5,6 @@
 
 int lock = 0;
 /* TODO: bei neukalkulierung der bezier kurve auch die kontrollstruktur wieder zentrieren*/
-/* TODO: Fehler bei Graderhöhung finden (wieso schrumpft es bei größerem T? Und warum wird es dann flach? )*/
 /* TODO: Normalen richtig berechnen */
 
 Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(prog)
@@ -13,11 +12,9 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(
 	t = 2;
 	ObjFileParser parser;
 	controlStructure = new PolyObject(prog);
+	controlStructure->setColor(PointVector(0.0f, 1.0f, 0.0f, 0.0f));
 	parser.parseObjectFile(filename, controlStructure, &deg_m, &deg_n);
 	buildControlStructure();
-
-	calculateVCurves();
-	calculateUCurves();
 
 	//v_curves.clear();
 
@@ -37,10 +34,8 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(
 	//	v_curves.push_back(vcurve);
 	//}
 
-	calculateBezierSurface();
+	updateBezierSurface();
 	calcNormals();
-
-	rationalSurface(1, 1, 15);
 }
 
 Bezier_Surface::~Bezier_Surface()
@@ -166,8 +161,8 @@ void Bezier_Surface::rationalSurface(int w_i, int w_j, float weight)
 
 	/* Changing the weight of the specified vertice in the controlStructure */
 	faces[w_i][w_j].weight = weight;
-	faces[w_i * (deg_n + 2)][w_j].weight = weight;
-	verts[(w_i * (deg_n + 1)) + w_j].weight = weight;
+	faces[w_j * (deg_n + 1) + w_i][w_j].weight = weight;
+	verts[(w_i + (deg_m + 1)) + w_j].weight = weight;
 	controlStructure->setVertices(verts);
 	controlStructure->setFaces(faces);
 	controlStructure->setIndices(indices);
@@ -198,53 +193,25 @@ void Bezier_Surface::degree_increase_u()
 	deg_m++;
 
 	/* Cleaning */
+	vector<vector<PointVector>> faces = controlStructure->getFaces();
 	controlStructure->clearVertices();
 	controlStructure->clearFaces();
 	controlStructure->clearIndices();
 	vector<vector<PointVector>> new_vs(deg_m + 1);
 
-	/* Performing the degree increase on every u_curve */
-	for (int i = 0; i < u_curves.size(); i++) {
-		CurveBezier* curve = u_curves[i];
-		if (dynamic_cast<Bernstein*>(curve)) {
-			curve->degree_increase();
-		}
-
-		/* Updating the control structure by pushing the new u_curve */
-		controlStructure->pushFace(curve->getControlVertices());
-
-		/* Pushing the new points to the new v_curves */
-		for (int j = 0; j <= deg_m; j++) {
-			new_vs[j].push_back(u_curves[i]->getControlVertices()[j]);
-			controlStructure->pushVertice(curve->getControlVertices()[j]);
-		}
-	}
-
-	/* Updating the v_curves */
-	v_curves.clear();
-	for (vector<PointVector> f : new_vs) {
-		controlStructure->pushFace(f);
+	/* Performing the degree increase on each u-face in the controlStructure */
+	for (int i = 0; i <= deg_n; i++) {
+		vector<PointVector> face = faces[i];
 		PolyObject* obj = new PolyObject(program);
-		obj->setVertices(f);
-		Bernstein* b = new Bernstein(obj, obj->getProgram());
-		v_curves.push_back(b);
+		obj->setVertices(face);
+		Bernstein* ucurve = new Bernstein(obj, program);
+		ucurve->degree_increase();
+
+		controlStructure->pushFace(ucurve->getControlVertices());
+		for (int j = 0; j < ucurve->getControlVertices().size(); j++) {
+			controlStructure->pushVertice(ucurve->getControlVertices()[j]);
+		}
 	}
-
-	///* Updating indices in controlStructur for u_curves */
-	//for (int i = 0; i <= deg_n; i++) {
-	//	for (int j = 0; j < deg_m; j++) {
-	//		controlStructure->pushIndex((i * deg_m) + j);
-	//		controlStructure->pushIndex((i * deg_m) + j + 1);
-	//	}
-	//}
-
-	///* Updating indices in controlStructur for v_curves */
-	//for (int i = 0; i <= deg_m; i++) {
-	//	for (int j = 0; j < deg_n; j++) {
-	//		controlStructure->pushIndex(j * (deg_m + 1) + i);
-	//		controlStructure->pushIndex((j + 1) * (deg_m + 1) + i);
-	//	}
-	//}
 
 	/* Rebuilding the controlStructure and bezier surface */
 	buildControlStructure();
@@ -253,59 +220,32 @@ void Bezier_Surface::degree_increase_u()
 }
 void Bezier_Surface::degree_increase_v()
 {
-	/* TODO: Auf v kurve anpassen */
 	while (lock == 1) { /* wait */ }
 	lock = 1;
-	deg_m++;
+	deg_n++;
 
 	/* Cleaning */
+	vector<vector<PointVector>> faces = controlStructure->getFaces();
 	controlStructure->clearVertices();
 	controlStructure->clearFaces();
 	controlStructure->clearIndices();
-	vector<vector<PointVector>> new_vs(deg_m + 1);
-
-	/* Performing the degree increase on every u_curve */
-	for (int i = 0; i < u_curves.size(); i++) {
-		CurveBezier* curve = u_curves[i];
-		if (dynamic_cast<Bernstein*>(curve)) {
-			curve->degree_increase();
-		}
-
-		/* Updating the control structure by pushing the new u_curve */
-		controlStructure->pushFace(curve->getControlVertices());
-
-		/* Pushing the new points to the new v_curves */
-		for (int j = 0; j <= deg_m; j++) {
-			new_vs[j].push_back(u_curves[i]->getControlVertices()[j]);
-			controlStructure->pushVertice(curve->getControlVertices()[j]);
-		}
-	}
-
-	/* Updating the v_curves */
-	v_curves.clear();
-	for (vector<PointVector> f : new_vs) {
-		controlStructure->pushFace(f);
+	vector<PointVector> new_verts((deg_m + 1) * (deg_n + 1));
+	/* Performing the degree increase on each u-face in the controlStructure */
+	for (int i = 0; i <= deg_m; i++) {
+		int index = deg_n + i;
+		vector<PointVector> face = faces[deg_n + i];
 		PolyObject* obj = new PolyObject(program);
-		obj->setVertices(f);
-		Bernstein* b = new Bernstein(obj, obj->getProgram());
-		v_curves.push_back(b);
+		obj->setVertices(face);
+		Bernstein* vcurve = new Bernstein(obj, program);
+		vcurve->degree_increase();
+
+		controlStructure->pushFace(vcurve->getControlVertices());
+		for (int j = 0; j < vcurve->getControlVertices().size(); j++) {
+			int index = (deg_m + 1) * j + i;
+			new_verts[(deg_m + 1) * j + i] = vcurve->getControlVertices()[j];
+		}
 	}
-
-	///* Updating indices in controlStructur for u_curves */
-	//for (int i = 0; i <= deg_n; i++) {
-	//	for (int j = 0; j < deg_m; j++) {
-	//		controlStructure->pushIndex((i * deg_m) + j);
-	//		controlStructure->pushIndex((i * deg_m) + j + 1);
-	//	}
-	//}
-
-	///* Updating indices in controlStructur for v_curves */
-	//for (int i = 0; i <= deg_m; i++) {
-	//	for (int j = 0; j < deg_n; j++) {
-	//		controlStructure->pushIndex(j * (deg_m + 1) + i);
-	//		controlStructure->pushIndex((j + 1) * (deg_m + 1) + i);
-	//	}
-	//}
+	controlStructure->setVertices(new_verts);
 
 	/* Rebuilding the controlStructure and bezier surface */
 	buildControlStructure();
@@ -402,13 +342,13 @@ void Bezier_Surface::calculateVCurves()
 		/* Getting the vertices for current v_curve from the controlStructure faces */
 		vector<PointVector> vcontrol = controlStructure->getFaces().at(v + deg_n + 1);
 		PolyObject* v_obj = new PolyObject(program);
-		v_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
+		v_obj->setColor(PointVector(0.0f, 1.0f, 0.0f, 0.0f));
 		v_obj->setVertices(vcontrol);
 		v_obj->pushColor();
 
 		/* Creating the v_curve */
 		Bernstein* vcurve = new Bernstein(v_obj, v_obj->getProgram());
-		vcurve->getControlStructure()->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
+		vcurve->getControlStructure()->setColor(PointVector(0.0f, 1.0f, 0.0f, 0.0f));
 		vcurve->calcRationalCurve(t);
 		v_curves.push_back(vcurve);
 	}
@@ -429,7 +369,7 @@ void Bezier_Surface::calculateUCurves()
 
 		/* Creating a PolyObject to store the vertices */
 		PolyObject* u_obj = new PolyObject(program);
-		u_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
+		u_obj->setColor(PointVector(0.0f, 1.0f, 0.0f, 0.0f));
 
 		/* Determine the new u_curve controlVertices based on the curveVertices of the v_curves */
 		for (int u = 0; u <= deg_m; u++) {
@@ -526,46 +466,6 @@ void Bezier_Surface::updateBezierSurface() {
 			bezierSurface->pushIndex((n * (i + 1)) + j + 1);
 
 			/* Clock-wise */
-			bezierSurface->pushIndex((n * i) + j + 1);
-			bezierSurface->pushIndex((n * (i + 1)) + j);
-			bezierSurface->pushIndex((n * i) + j);
-
-			bezierSurface->pushIndex((n * i) + j + 1);
-			bezierSurface->pushIndex((n * (i + 1)) + j + 1);
-			bezierSurface->pushIndex((n * (i + 1)) + j);
-		}
-		bezierSurface->pushVertice(u_curves[i]->getCurveVertices().at(n - 1));
-		bezierSurface->pushColor();
-	}
-}
-
-
-void Bezier_Surface::calculateBezierSurface()
-{
-	//delete bezierSurface;
-	bezierSurface = new PolyObject(program);
-	bezierSurface->toggleFillSurface();
-	bezierSurface->setColor(PointVector(0.0f, 0.0f, 1.0f, 0.0f));
-
-	for (float i = 0; i < u_curves.size(); i++) {
-		int n = u_curves[i]->getCurveVertices().size();
-
-		for (float j = 0; j < n - 1; j++) {
-			bezierSurface->pushVertice(u_curves[i]->getCurveVertices().at(j));
-			bezierSurface->pushColor();
-
-			if ((n * (i + 1)) + j >= u_curves.size() * v_curves.size()) {
-				continue;
-			}
-			bezierSurface->pushIndex((n * i) + j + 1);
-			bezierSurface->pushIndex((n * i) + j);
-			bezierSurface->pushIndex((n * (i + 1)) + j);
-
-			bezierSurface->pushIndex((n * i) + j + 1);
-			bezierSurface->pushIndex((n * (i + 1)) + j);
-			bezierSurface->pushIndex((n * (i + 1)) + j + 1);
-
-
 			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j);
 			bezierSurface->pushIndex((n * i) + j);

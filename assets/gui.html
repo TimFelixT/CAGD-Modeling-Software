@@ -220,7 +220,6 @@
                 }
             });
             if (correctInput) {
-                console.log("correct");
                 OnSplitCurve(valueArr, bezierCurveIndex);
             } else {
                 OnSplitCurve(-1);
@@ -323,7 +322,7 @@
             btnPanel.appendChild(splitLabel);
             splitInput = document.createElement("input");
             splitInput.setAttribute("type", "text");
-            splitInput.setAttribute("placeholder", "0.25");
+            splitInput.setAttribute("placeholder", "0.25; 0.75");
             splitInput.addEventListener("change", function(){ splitSurface(this.value, panel.getAttribute("data-index")); });
             btnPanel.appendChild(splitInput);
             
@@ -362,17 +361,23 @@
             let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
             OnSurfacePointEdited(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex); 
         }
-        function splitSurface(value, bezierCurveIndex){
+        function splitSurface(values, bezierCurveIndex){
+            values = values.trim();
+            let valueArr = values.split(";");
             let correctInput = true;
-            if (isNaN(value)) {
-                correctInput = false;
-            } else if (Number(value) >= 1 || Number(value) <= 0) {
+            valueArr.forEach(element => {
+                if (isNaN(element)) {
                     correctInput = false;
-            }
-            if (correctInput) {
-                OnSplitSurface(bezierCurveIndex, value);
+                } else if (Number(element) >= 1 || Number(element) <= 0) {
+                    correctInput = false;
+                }
+            });
+            if (valueArr.length != 2){
+                OnSplitSurface(-1, -1, -1);
+            } else if (correctInput) {
+                OnSplitSurface(bezierCurveIndex, valueArr[0], valueArr[1]);
             } else {
-                OnSplitSurface(-1, -1);
+                OnSplitSurface(-1, -1, -1);
             }
         }
     </script>

@@ -344,12 +344,16 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 
 void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
 	int surfaceIndex = args[0].ToInteger();
-	float splitT = args[1].ToNumber();
+	float splitU = args[1].ToNumber();
+	float splitV = args[2].ToNumber();
 
 	if (surfaceIndex == -1) {
 		cout << "Keine gueltige Eingabe zur Unterteilung!" << endl;
 	} else {
 		// Hier aufteilen
+		cout << surfaceIndex << endl;
+		cout << splitU << endl;
+		cout << splitV << endl;
 
 	}
 

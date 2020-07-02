@@ -366,14 +366,11 @@ void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args
 	Bezier_Surface& s = *(viewPanel->allSurfaces.at(surfaceIndex));
 
 	if (uOrV == 0) {
-		//Hier Gradangebung für s in u Richtung aufrufen
-		cout << "u" << endl;
+		s.degree_increase_u();
 	} else {
-		//Hier Gradangebung für s in v Richtung aufrufen
-		cout << "v" << endl;
+		s.degree_increase_v();
 	}
-
-
+	updateDisplay();
 }
 
 void Gui::OnResetSurfaces(const JSObject& thisObject, const JSArgs& args) {

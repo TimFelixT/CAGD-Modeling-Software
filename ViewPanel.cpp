@@ -59,7 +59,6 @@ void ViewPanel::degreeIncrease() {
 	}
 
 	for (Bezier_Surface* s : allSurfaces) {
-		//s->degree_increase_u();
 		s->degree_increase_v();
 		s->degree_increase_u();
 	}
@@ -79,7 +78,10 @@ void ViewPanel::derivative() {
 	}
 
 	for (Bezier_Surface* s : allSurfaces) {
-		for (CurveBezier* b : s->getCurves()) {
+		for (CurveBezier* b : s->getUCurves()) {
+			b->toggleDerivative();
+		}
+		for (CurveBezier* b : s->getVCurves()) {
 			b->toggleDerivative();
 		}
 	}
@@ -306,7 +308,7 @@ void ViewPanel::dragPoint(glm::vec3& cameraPos, glm::vec3& rayVector) {
 				glm::vec3 newRay = glm::vec3(t * rayVector.x, t * rayVector.y, t * rayVector.z);
 				glm::vec3 newPoint = cameraPos + newRay;
 				selectedPointVectorSurface->setVec3(newPoint, 1);
-				//updateSurface();
+				updateSurface();
 			}
 		}
 	} else {
@@ -417,5 +419,12 @@ void ViewPanel::updateDecasteljau() {
 		if (dynamic_cast<DeCasteljau*>(b)) {
 			b->setInitialized(false);
 		}
+	}
+}
+
+void ViewPanel::updateSurface() {
+	for (Bezier_Surface* s : allSurfaces) {
+		s->buildControlStructure();
+		s->updateBezierSurface();
 	}
 }

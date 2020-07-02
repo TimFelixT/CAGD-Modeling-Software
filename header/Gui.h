@@ -42,7 +42,6 @@ private:
     void OnToggleStructure(const JSObject&, const JSArgs&);
     void OnChangeStructureT(const JSObject&, const JSArgs&);
     void OnSplitCurve(const JSObject&, const JSArgs&);
-    void OnSplitSurface(const JSObject& thisObject, const JSArgs& args);
     void OnCreateCurve(const JSObject&, const JSArgs&);
     void OnDeleteCurve(const JSObject&, const JSArgs&);
     void OnCenterCurve(const JSObject&, const JSArgs&);
@@ -54,7 +53,9 @@ private:
     void OnIncreaseSurfaceT(const JSObject&, const JSArgs&);
     void OnDecreaseSurfaceT(const JSObject&, const JSArgs&);
     void OnSurfacePointEdited(const JSObject&, const JSArgs&);
-    //void OnSplitSurface(const JSObject&, const JSArgs&);
+    void OnSplitSurface(const JSObject&, const JSArgs&);
+    void OnSurfaceDegreeIncrease(const JSObject&, const JSArgs&);
+    void OnResetSurfaces(const JSObject&, const JSArgs&);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

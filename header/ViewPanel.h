@@ -75,6 +75,7 @@ private:
 
 	void updateBernstein();
 	void updateDecasteljau();
+	void updateSurface();
 
 	double bernsteinT = 0.5;
 	double deCasteljauT = 0.5;

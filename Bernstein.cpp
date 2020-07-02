@@ -158,6 +158,55 @@ void Bernstein::calcCurve(int steps) {
 
 }
 
+void Bernstein::calcRationalCurve(int steps)
+{
+	std::vector<PointVector> controlVertices = obj->getVertices();
+
+	curveIndices.clear();
+	curveVertices.clear();
+	curveColors.clear();
+	curveBuffer.clear();
+
+	int c = 0;
+
+	for (float t = 0; t <= 1; t += (1.0f / (float)steps)) {
+
+		int n = controlVertices.size() - 1;
+		glm::vec3 point(0.0f, 0.0f, 0.0f);
+		//controlVertices[w_i].weight = weight;
+		float quot = 0;
+
+		for (int i = 0; i <= n; i++)
+		{
+			point = point + (controlVertices[i].weight * (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i].getVec3());
+			quot += (controlVertices[i].weight * (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)));
+		}
+
+		point /= quot;
+		PointVector p(point, 0);
+		curveVertices.push_back(p);
+		curveBuffer.push_back(p.getVec3());
+
+
+		if (t + (1.0f / (float)steps) > 1 && c < steps) {
+			t = 1 - (1.0f / (float)steps);
+		}
+		c++;
+	}
+
+
+	for (int i = 0; i < curveVertices.size(); i++)
+	{
+		if (i != curveVertices.size() - 1) {
+			curveIndices.push_back(i);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+			if (i < curveIndices.size())
+				curveIndices.push_back(i + 1);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+	}
+}
+
 void Bernstein::calcRationalCurve()
 {
 	std::vector<PointVector> controlVertices = obj->getVertices();

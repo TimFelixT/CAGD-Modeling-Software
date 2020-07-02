@@ -220,7 +220,6 @@
                 }
             });
             if (correctInput) {
-                console.log("correct");
                 OnSplitCurve(valueArr, bezierCurveIndex);
             } else {
                 OnSplitCurve(-1);
@@ -273,7 +272,22 @@
         }
         /* Bezierfläche Funktionen*/
         function resetSurfaces(){
+            let flaechen = document.querySelector("#flaeche");
+            flaechen.innerHTML = "";
+            let heading = document.createElement("h3");
+            heading.innerText = "Bezier - Fläche";
+            flaechen.appendChild(heading);
+            let updateBtn = document.createElement("button");
+            updateBtn.innerText = "Aktualisiere Kontrollpunkte";
+            updateBtn.addEventListener("click", function(){ resetSurfaces() });
+            //let createCurveBtn = document.createElement("button");
+            //createCurveBtn.innerText = "Neue Kurve hinzufügen";
+            //createCurveBtn.addEventListener("click", function(){ OnCreateCurve() });
 
+            flaechen.appendChild(updateBtn);
+            flaechen.appendChild(document.createElement("br"));
+            //kurven.appendChild(createCurveBtn);
+            OnResetSurfaces();
         }
         function changeSurfaceT(increase, label) {
             //0 = Increase, 1 = Decrease
@@ -308,9 +322,18 @@
             btnPanel.appendChild(splitLabel);
             splitInput = document.createElement("input");
             splitInput.setAttribute("type", "text");
-            splitInput.setAttribute("placeholder", "0.25");
+            splitInput.setAttribute("placeholder", "0.25; 0.75");
             splitInput.addEventListener("change", function(){ splitSurface(this.value, panel.getAttribute("data-index")); });
             btnPanel.appendChild(splitInput);
+            
+            let increaseDegreeUBtn = document.createElement("button");
+            increaseDegreeUBtn.innerText = "Gradanhebung in u Richtung";
+            increaseDegreeUBtn.addEventListener("click", function(){OnSurfaceDegreeIncrease(0, panel.getAttribute("data-index"))});
+            btnPanel.appendChild(increaseDegreeUBtn);
+            let increaseDegreeVBtn = document.createElement("button");
+            increaseDegreeVBtn.innerText = "Gradanhebung in v Richtung";
+            increaseDegreeVBtn.addEventListener("click", function(){OnSurfaceDegreeIncrease(1, panel.getAttribute("data-index"))});
+            btnPanel.appendChild(increaseDegreeVBtn);
 
             for (let i=0; i < arguments.length; i+=4) {
                 /* Ein Kontrollpunkt */
@@ -338,17 +361,23 @@
             let curveIndex = input.parentNode.parentNode.getAttribute("data-index");
             OnSurfacePointEdited(Math.floor(dataIndex/4), dataIndex%4, value, curveIndex); 
         }
-        function splitSurface(value, bezierCurveIndex){
+        function splitSurface(values, bezierCurveIndex){
+            values = values.trim();
+            let valueArr = values.split(";");
             let correctInput = true;
-            if (isNaN(value)) {
-                correctInput = false;
-            } else if (Number(value) >= 1 || Number(value) <= 0) {
+            valueArr.forEach(element => {
+                if (isNaN(element)) {
                     correctInput = false;
-            }
-            if (correctInput) {
-                OnSplitSurface(bezierCurveIndex, value);
+                } else if (Number(element) >= 1 || Number(element) <= 0) {
+                    correctInput = false;
+                }
+            });
+            if (valueArr.length != 2){
+                OnSplitSurface(-1, -1, -1);
+            } else if (correctInput) {
+                OnSplitSurface(bezierCurveIndex, valueArr[0], valueArr[1]);
             } else {
-                OnSplitSurface(-1, -1);
+                OnSplitSurface(-1, -1, -1);
             }
         }
     </script>

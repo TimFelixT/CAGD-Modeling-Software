@@ -655,7 +655,7 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	}
 
 	controlStructure->clearVertices();
-	for (int i = 0; i < deg_m +1; i++) {
+	for (int i = 0; i < deg_m + 1; i++) {
 		for (int j = 0; j < deg_n + 1; j++) {
 			newSurface->controlStructure->pushVertice(newUCurves[i]->getControlVertices()[j]);
 			newSurface->controlStructure->pushColor();

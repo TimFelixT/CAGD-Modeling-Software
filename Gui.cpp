@@ -303,7 +303,7 @@ void Gui::OnDeleteCurve(const JSObject& thisObject, const JSArgs& args) {
 void Gui::OnChangeDeCasteljauTRange(const JSObject& thisObject, const JSArgs& args) {
 	for (CurveBezier* c : viewPanel->allCurves) {
 		if (dynamic_cast<DeCasteljau*>(c)) {
-			//dynamic_cast<DeCasteljau*>(c)->toggleTRange();
+			dynamic_cast<DeCasteljau*>(c)->toggleTRange();
 			c->setInitialized(false);
 		}
 	}

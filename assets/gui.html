@@ -311,6 +311,15 @@
             splitInput.setAttribute("placeholder", "0.25");
             splitInput.addEventListener("change", function(){ splitSurface(this.value, panel.getAttribute("data-index")); });
             btnPanel.appendChild(splitInput);
+            
+            let increaseDegreeUBtn = document.createElement("button");
+            increaseDegreeUBtn.innerText = "Gradanhebung in u Richtung";
+            increaseDegreeUBtn.addEventListener("click", function(){OnSurfaceDegreeIncrease(0, panel.getAttribute("data-index"))});
+            btnPanel.appendChild(increaseDegreeUBtn);
+            let increaseDegreeVBtn = document.createElement("button");
+            increaseDegreeVBtn.innerText = "Gradanhebung in v Richtung";
+            increaseDegreeVBtn.addEventListener("click", function(){OnSurfaceDegreeIncrease(1, panel.getAttribute("data-index"))});
+            btnPanel.appendChild(increaseDegreeVBtn);
 
             for (let i=0; i < arguments.length; i+=4) {
                 /* Ein Kontrollpunkt */

@@ -61,6 +61,8 @@ private:
 	Bernstein* bernstein_bezier;
 	DeCasteljau* deCasteljau_bezier;
 
+	Bezier_Surface* surface;
+
 	PointVector* selectedPointVectorBernstein = nullptr;
 	glm::vec3 selectedPointNormalBernstein = glm::vec3(0.0f, 0.0f, 0.0f);
 	PointVector* selectedPointVectorDecasteljau = nullptr;

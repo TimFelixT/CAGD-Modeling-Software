@@ -8,6 +8,12 @@ CurveBezier::CurveBezier(PolyObject* pobj, cg::GLSLProgram* prog) : program(prog
 	d_obj = new PolyObject(program);
 }
 
+CurveBezier::CurveBezier(std::vector<PointVector> verts, cg::GLSLProgram* prog) : program(prog) {
+	obj = new PolyObject();
+	obj->setVertices(verts);
+	d_obj = new PolyObject(program);
+}
+
 CurveBezier::~CurveBezier() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &indexBuffer);
@@ -162,6 +168,8 @@ void CurveBezier::addPointEnd(PointVector point) {
 	obj->pushColor();
 	std::vector<GLushort> indicesobj = obj->getIndices();
 	GLushort index = indicesobj.at(indicesobj.size() - 1);
+	obj->pushIndex(index);
+	obj->pushIndex(index + 1);
 	initialized = false;
 
 

@@ -7,6 +7,7 @@ public:
 	Bezier_Surface(char* filename, cg::GLSLProgram*);
 	Bezier_Surface(PolyObject*, int, int, int, cg::GLSLProgram*);
 
+	Bezier_Surface(cg::GLSLProgram* prog, vector<CurveBezier*> u_curves_in, vector<CurveBezier*> v_curves_in);
 	//Destruktor
 	~Bezier_Surface();
 
@@ -30,9 +31,11 @@ public:
 	void rotateY();
 	void rotateZ();
 
-	void updateCurves();
 
+	void subdivision(float t, std::vector<PointVector>& input, std::vector<PointVector>& newVertices1, std::vector<PointVector>& newVertices2);
+	void updateCurves();
 	void updateBezierSurface();
+
 
 	void subdivideU(float, float, vector<Bezier_Surface*>*);
 	void subdivideV(float, vector<Bezier_Surface*>*);
@@ -43,8 +46,6 @@ private:
 	void calculateUCurves();
 
 	void buildControlStructure();
-
-	void calculateBezierSurface();
 
 	void calcNormals();
 

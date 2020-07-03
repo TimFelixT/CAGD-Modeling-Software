@@ -38,6 +38,7 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(
 	calcNormals();
 }
 
+
 Bezier_Surface::Bezier_Surface(PolyObject *controlStructure, int deg_n, int deg_m, int t, cg::GLSLProgram *prog) : program(prog) {
 	this->deg_n = deg_n;
 	this->deg_m = deg_m;
@@ -488,6 +489,87 @@ void Bezier_Surface::updateBezierSurface() {
 	}
 }
 
+void Bezier_Surface::subdivision(float t, std::vector<PointVector> & input, std::vector<PointVector> & newVertices1, std::vector<PointVector> & newVertices2) {
+	newVertices1.clear();
+	newVertices2.clear();
+	std::vector<PointVector> vertices = input;
+
+	for (int i = 0; i < vertices.size() - 1; i++) {
+		newVertices1.push_back(vertices[0]);
+		for (int j = 0; j < vertices.size() - 1 - i; j++) {
+			vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
+		}
+		newVertices2.push_back(vertices[vertices.size() - 1 - i]);
+
+	}
+	newVertices1.push_back(vertices[0]);
+	newVertices2.push_back(vertices[0]);
+}
+
+//void Bezier_Surface::calculateBezierSurface()
+//{
+//	bezierSurface = new PolyObject(obj->getProgram());
+//	static int tesselate_rate = 3;
+//	int k = 0;
+//	for (int y = 0; y <= deg_n; y++) {
+//		k = y / deg_n;
+//		for (int x = 0; x <= (deg_m * tesselate_rate); x++) {
+//			vector<PointVector> c_verts_u = u_curves[y]->getCurveVertices();
+//			PointVector new_vec = c_verts_u[(c_verts_u.size() / (deg_n * tesselate_rate)) * x];
+//			bezierSurface->pushVertice(new_vec);
+//
+//			//vector<PointVector> c_verts_v = v_curves[k]->getCurveVertices();
+//			//new_vec = c_verts_v[(c_verts_v.size() / (deg_m * tesselate_rate)) * y];
+//			//bezierSurface->pushVertice(new_vec);
+//
+//			//if (((tesselate_rate * deg_n) * y + x) % ((tesselate_rate * deg_n) * (y + 1)) != 0 || ((tesselate_rate * deg_n) * y + x) == 0) {
+//			if (y < (deg_n * tesselate_rate) && x < (deg_m * tesselate_rate)) {
+//				bezierSurface->pushIndex((tesselate_rate * deg_n + 1) * y + x);
+//				bezierSurface->pushIndex((tesselate_rate * deg_n + 1) * y + x + 1);
+//				bezierSurface->pushIndex((tesselate_rate * deg_n + 1) * (y + 1) + x);
+//
+//				bezierSurface->pushIndex((tesselate_rate * deg_n + 1) * y + x + 1);
+//				bezierSurface->pushIndex((tesselate_rate * deg_n + 1) * (y + 1) + x + 1);
+//				bezierSurface->pushIndex((tesselate_rate * deg_n + 1) * (y + 1) + x);
+//
+//				//}
+//			}
+//			bezierSurface->pushColor();
+//			//bezierSurface_vertices.push_back(u_curves[x + 1]->getCurveVertices().at((c_verts_u.size() / deg_n) * (y + 1)));
+//		}
+//	}
+//
+//	//}
+//	//tesselate_rate++;
+//	//bezierSurface->pushIndex(0);
+//	//bezierSurface->pushIndex(1);
+//	//bezierSurface->pushIndex(3);
+//	//bezierSurface->pushIndex(1);
+//	//bezierSurface->pushIndex(4);
+//	//bezierSurface->pushIndex(3);
+//	//bezierSurface->pushIndex(1);
+//	//bezierSurface->pushIndex(2);
+//	//bezierSurface->pushIndex(4);
+//	//bezierSurface->pushIndex(2);
+//	//bezierSurface->pushIndex(5);
+//	//bezierSurface->pushIndex(4);
+//
+//	//bezierSurface->pushIndex(3);
+//	//bezierSurface->pushIndex(4);
+//	//bezierSurface->pushIndex(6);
+//	//bezierSurface->pushIndex(4);
+//	//bezierSurface->pushIndex(7);
+//	//bezierSurface->pushIndex(6);
+//	//bezierSurface->pushIndex(4);
+//	//bezierSurface->pushIndex(5);
+//	//bezierSurface->pushIndex(7);
+//	//bezierSurface->pushIndex(5);
+//	//bezierSurface->pushIndex(8);
+//	//bezierSurface->pushIndex(7);
+//
+//
+//}
+
 void Bezier_Surface::calcNormals() {
 	normals = new PolyObject(program);
 	normals->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
@@ -521,7 +603,6 @@ void Bezier_Surface::calcNormals() {
 		}
 	}
 }
-
 
 void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSurfaces) {
 
@@ -574,7 +655,7 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	}
 
 	controlStructure->clearVertices();
-	for (int i = 0; i < deg_m +1; i++) {
+	for (int i = 0; i < deg_m + 1; i++) {
 		for (int j = 0; j < deg_n + 1; j++) {
 			newSurface->controlStructure->pushVertice(newUCurves[i]->getControlVertices()[j]);
 			newSurface->controlStructure->pushColor();
@@ -656,5 +737,3 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 
 	allSurfaces->push_back(newSurface);
 }
-
-

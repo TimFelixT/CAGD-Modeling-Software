@@ -5,7 +5,7 @@
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 
-	Bezier_Surface* surface = new Bezier_Surface("UB1_1.obj", prog);
+	surface = new Bezier_Surface("UB1_1.obj", prog);
 
 	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
 	deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
@@ -67,6 +67,7 @@ void ViewPanel::degreeIncrease() {
 void ViewPanel::subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex) {	
 	allCurves.at(curveIndex)->subdivision(t, newCurveVerts);
 }
+
 
 void ViewPanel::derivative() {
 	for (CurveBezier* b : allCurves) {

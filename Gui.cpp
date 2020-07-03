@@ -228,42 +228,59 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 		}
 		int curveIndex = args[1].ToInteger();
 
-		viewPanel->subdivision(t_vec[0], newCurve, curveIndex);
+		
+		CurveBezier& tmpCurve = *(viewPanel->allCurves.at(curveIndex));
 
-		PolyObject *po = new PolyObject(viewPanel->program);
-		po->setVertices(newCurve);
+		float u = 1;
+		float tmp = t_vec[0];
+		float fak = 1;
+		for (int i = 0; i < t_vec.size(); i++){
+			if(i != 0)fak *= (i + 1);
+			tmp = (t_vec[i] / u) / fak;
+			viewPanel->subdivision(tmp, newCurve, curveIndex);
 
-		PolyObject* controlPoints = new PolyObject(viewPanel->program);
-		controlPoints->setVertices(newCurve);
-		for (int i = 0; i < newCurve.size() - 1; i++) {
-			controlPoints->pushIndex(i);
-			controlPoints->pushIndex(i + 1);
+
+			PolyObject* po = new PolyObject(viewPanel->program);
+			po->setVertices(newCurve);
+
+			PolyObject* controlPoints = new PolyObject(viewPanel->program);
+			controlPoints->setVertices(newCurve);
+			for (int i = 0; i < newCurve.size() - 1; i++) {
+				controlPoints->pushIndex(i);
+				controlPoints->pushIndex(i + 1);
+				controlPoints->pushColor();
+			}
 			controlPoints->pushColor();
-		}
-		controlPoints->pushColor();
 
-		CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
-		if (dynamic_cast<Bernstein*>(&c)) {
-			Bernstein* b = new Bernstein(controlPoints,viewPanel->program);
-			b->obj->setVertices(newCurve);
-			b->setControlStructure(po);
-			b->setInitialized(false);
-			viewPanel->allCurves.push_back(b);
+			CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
+			if (dynamic_cast<Bernstein*>(&c)) {
+				Bernstein* b = new Bernstein(controlPoints, viewPanel->program);
+				b->obj->setVertices(newCurve);
+				b->setControlStructure(po);
+				b->setInitialized(false);
+				viewPanel->allCurves.push_back(b);
+			}
+			else {
+				DeCasteljau* d = new DeCasteljau(controlPoints, viewPanel->program);
+				d->obj->setVertices(newCurve);
+				d->setControlStructure(po);
+				d->setInitialized(false);
+				viewPanel->allCurves.push_back(d);
+			}
+			c.updateCurveBuffer();
+			c.initialized = false;
+			updateDisplay();
+			u = u - t_vec[i];
+			curveIndex++;
+			newCurve.clear();
 		}
-		else {
-			DeCasteljau* d = new DeCasteljau(controlPoints, viewPanel->program);
-			d->obj->setVertices(newCurve);					
-			d->setControlStructure(po);
-			d->setInitialized(false);
-			viewPanel->allCurves.push_back(d);
-		}
-		c.updateCurveBuffer();
-		c.initialized = false;
-		updateDisplay();
+		
+		
 	} else {
 		cout << "Keine Korrekte Eingabe zur Unterteilung!" << endl;
 	}
 }
+
 void Gui::OnCenterCurve(const JSObject& thisObject, const JSArgs& args) {
 	int curveIndex = args[0].ToInteger();
 	CurveBezier& c = *(viewPanel->allCurves.at(curveIndex));
@@ -364,13 +381,11 @@ void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
 	if (surfaceIndex == -1) {
 		cout << "Keine gueltige Eingabe zur Unterteilung!" << endl;
 	} else {
+		// Hier aufteilen
 		Bezier_Surface& s = *(viewPanel->allSurfaces.at(surfaceIndex));
 		s.subdivideU(splitU, splitV, &viewPanel->allSurfaces);
-		cout << "Test" << endl;
 		updateDisplay();
-	}
-
-
+	}	
 }
 void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args) {
 	//0 = Increase u Richtung, 1 = Increase v Richtung

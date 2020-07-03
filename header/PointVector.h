@@ -31,8 +31,8 @@ public:
 	float zCoor;
 	float homoCoor;
 	float weight = 1;
+	void normalize();
 
 private:
 	void printHomoCoorWarning(string);
-	void normalize();
 };

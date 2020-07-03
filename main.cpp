@@ -193,6 +193,8 @@ void glutMouse(int button, int state, int mousex, int mousey) {
 
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         viewPanel->dragPoint(eye, ray_wor);
+        viewPanel->drawStructure(0);
+        viewPanel->drawStructure(1);
         init();
     }
     if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) {

@@ -308,6 +308,7 @@ void Gui::OnDerivativeTChange(const JSObject& thisObject, const JSArgs& args) {
 
 void Gui::OnToggleSurface(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->toggleSurface();
+
 }
 
 void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {

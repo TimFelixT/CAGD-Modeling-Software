@@ -381,6 +381,7 @@ void ViewPanel::drawStructure(int curveType) {
 		}
 
 		deCasteljauStructure->clearVertices();
+		deCasteljauStructure->clearIndices();
 
 		for (int i = 0; i < vertices.size() - 1; i++) {
 			for (int j = 0; j < vertices.size() - 1 - i; j++) {

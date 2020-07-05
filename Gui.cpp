@@ -136,6 +136,13 @@ void Gui::OnAddNewPoint(const JSObject& thisObject, const JSArgs& args) {
 	c.addPointEnd(PointVector(x, y, z, homo));
 	c.updateCurveBuffer();
 	c.setInitialized(false);
+	
+	if (dynamic_cast<Bernstein*>(&c)) {
+		viewPanel->drawStructure(0);
+	}
+	else {
+		viewPanel->drawStructure(1);
+	}
 	updateDisplay();
 
 }
@@ -151,6 +158,12 @@ void Gui::OnDeleteLastPoint(const JSObject& thisObject, const JSArgs& args) {
 		c.deleteLastPoint();
 		c.updateCurveBuffer();
 		c.setInitialized(false);
+		if (dynamic_cast<Bernstein*>(&c)) {
+			viewPanel->drawStructure(0);
+		}
+		else {
+			viewPanel->drawStructure(1);
+		}
 		updateDisplay();
 	}
 
@@ -180,6 +193,12 @@ void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
 	}
 	c.updateCurveBuffer();
 	c.setInitialized(false);
+	if (dynamic_cast<Bernstein*>(&c)) {
+		viewPanel->drawStructure(0);
+	}
+	else {
+		viewPanel->drawStructure(1);
+	}
 	updateDisplay();
 }
 void Gui::OnToggleBezier(const JSObject& thisObject, const JSArgs& args) {
@@ -274,7 +293,11 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 			curveIndex++;
 			newCurve.clear();
 		}
-		
+		if (dynamic_cast<Bernstein*>(&tmpCurve)) {
+			viewPanel->drawStructure(0);
+		} else {
+			viewPanel->drawStructure(1);
+		}
 		
 	} else {
 		cout << "Keine Korrekte Eingabe zur Unterteilung!" << endl;

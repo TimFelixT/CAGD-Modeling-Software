@@ -258,7 +258,7 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 			if(i != 0)fak *= (i + 1);
 			tmp = (t_vec[i] / u) / fak;
 			viewPanel->subdivision(tmp, newCurve, curveIndex);
-
+			std::reverse(newCurve.begin(), newCurve.end());
 
 			PolyObject* po = new PolyObject(viewPanel->program);
 			po->setVertices(newCurve);

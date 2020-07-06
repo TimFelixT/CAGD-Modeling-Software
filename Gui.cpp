@@ -115,6 +115,7 @@ void Gui::addSurfaces() {
 				args.push_back(pv.zCoor);
 				args.push_back(pv.weight);
 			}
+			args.push_back(i);
 			JSValue result = addSurface(args);
 			args.clear();
 		}

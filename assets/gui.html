@@ -347,14 +347,18 @@
             btnPanel.appendChild(increaseDegreeVBtn);
 
             for (let i=0; i < arguments.length; i+=4) {
-                /* Ein Kontrollpunkt */
-                let pointcontainer = document.createElement("div");
-                pointcontainer.style.display = "inline-block;"
-                addSurfacePoint(pointcontainer, arguments[i], i);
-                addSurfacePoint(pointcontainer, arguments[i+1], i+1);
-                addSurfacePoint(pointcontainer, arguments[i+2], i+2);
-                addSurfacePoint(pointcontainer, arguments[i+3], i+3);
-                panel.appendChild(pointcontainer);
+                if (arguments[i+2] == undefined && arguments[i+3] == undefined) {
+                    panel.setAttribute("data-index", arguments[i]);
+                } else {
+                    /* Ein Kontrollpunkt */
+                    let pointcontainer = document.createElement("div");
+                    pointcontainer.style.display = "inline-block;"
+                    addSurfacePoint(pointcontainer, arguments[i], i);
+                    addSurfacePoint(pointcontainer, arguments[i+1], i+1);
+                    addSurfacePoint(pointcontainer, arguments[i+2], i+2);
+                    addSurfacePoint(pointcontainer, arguments[i+3], i+3);
+                    panel.appendChild(pointcontainer);
+                }
             }
         }
         function addSurfacePoint(pointcontainer, value, index){

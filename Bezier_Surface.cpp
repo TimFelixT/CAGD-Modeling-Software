@@ -220,6 +220,7 @@ void Bezier_Surface::degree_increase_u()
 		controlStructure->pushFace(ucurve->getControlVertices());
 		for (int j = 0; j < ucurve->getControlVertices().size(); j++) {
 			controlStructure->pushVertice(ucurve->getControlVertices()[j]);
+			controlStructure->pushColor();
 		}
 	}
 
@@ -253,6 +254,7 @@ void Bezier_Surface::degree_increase_v()
 		for (int j = 0; j < vcurve->getControlVertices().size(); j++) {
 			int index = (deg_m + 1) * j + i;
 			new_verts[(deg_m + 1) * j + i] = vcurve->getControlVertices()[j];
+			controlStructure->pushColor();
 		}
 	}
 	controlStructure->setVertices(new_verts);

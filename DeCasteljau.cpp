@@ -28,15 +28,19 @@ void DeCasteljau::bezier_derivative() {
 				prev_p = controlVertices[j];
 			}
 			if (i == n - 2 && j == 1) {
+				// Vorher gab es zwar die beiden Punkte, jedoch wurde nicht der Punkte an dem die Ableitung tatsächlich ist berechnet
+				// Das findet jetzt noch statt. Danach wird wieder der Vektor berechnet, normalisiert und verlängert. 
+
 				p = controlVertices[j];
+				prev_p = prev_p * (1 - derivative_t) + (p * derivative_t);
 				d_obj->pushVertice(prev_p);
 				glm::vec3 d = p.getVec3() - prev_p.getVec3();
-				d = glm::normalize(d) * (float)3;
+				d = glm::normalize(d) * (float)4;
 				p.setVec3((prev_p.getVec3() + d), 1);
-
 				d_obj->pushVertice(p);
 				d_obj->pushColor();
-				d_obj->pushColor();					
+				d_obj->pushColor();
+
 			}
 		}
 	}

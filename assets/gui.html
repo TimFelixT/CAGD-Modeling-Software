@@ -257,10 +257,10 @@
                 }
                 span.innerText = "Wert: " + (Math.round(tValueBernstein * 100) / 100).toFixed(2);
             } else {
-                if (tValueDecasteljau < 0.96 && direction == 0) {
+                if (tValueDecasteljau < 1.96 && direction == 0) {
                     tValueDecasteljau += 0.05;
                     OnChangeStructureT((Math.round(tValueDecasteljau * 100) / 100).toFixed(2), 1);
-                } else if (tValueDecasteljau >= 0.05 && direction == 1) {
+                } else if (tValueDecasteljau >= -0.95 && direction == 1) {
                     tValueDecasteljau -= 0.0500;
                     OnChangeStructureT((Math.round(tValueDecasteljau * 100) / 100).toFixed(2), 1);
                 }

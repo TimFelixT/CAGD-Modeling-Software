@@ -38,7 +38,7 @@ void Bernstein::bezier_derivative() {
 			if (i < n) {
 				delta_point = controlVertices[i + 1].getVec3() - controlVertices[i].getVec3();
 
-				d_point = d_point + (binomialCoefficiant(n - 1, i) * pow(1 - t, n - 1 - i) * pow(t, i-1)) * delta_point;
+				d_point = d_point + (binomialCoefficiant(n-1, i) * pow(1 - t, n - 3 - i) * pow(t, i-3)) * delta_point;
 			}
 			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i) * controlVertices[i].getVec3());
 		}
@@ -47,7 +47,6 @@ void Bernstein::bezier_derivative() {
 		glm::vec3 d = ((float)n*d_point) - point;
 		d = glm::normalize(d) * (float)3;
 		d_point = point + d;
-		point = point - d;
 
 		d_obj->pushVertice(PointVector(point, 0));
 		d_obj->pushVertice(PointVector(d_point, 0));

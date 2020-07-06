@@ -619,6 +619,8 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 
 		c->subdivision(u, newCurve);
 
+		std::reverse(newCurve.begin(), newCurve.end());
+
 		PolyObject* controlPoints = new PolyObject(program);
 		controlPoints->setVertices(newCurve);
 		for (int i = 0; i < newCurve.size() - 1; i++) {
@@ -686,6 +688,7 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 		newCurve.clear();
 
 		c->subdivision(v, newCurve);
+		std::reverse(newCurve.begin(), newCurve.end());
 
 		PolyObject* controlPoints = new PolyObject(program);
 		controlPoints->setVertices(newCurve);

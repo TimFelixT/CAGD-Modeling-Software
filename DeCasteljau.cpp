@@ -1,5 +1,6 @@
 #include "header/DeCasteljau.h"
 #include "header/GlobalConstants.h"
+#include "header/GlobalFunctions.h"
 
 
 DeCasteljau::DeCasteljau(PolyObject* pobj, cg::GLSLProgram* program) : CurveBezier(pobj, program)
@@ -19,7 +20,9 @@ void DeCasteljau::bezier_derivative() {
 	PointVector prev_p;
 	int n = controlVertices.size() - 1;
 
+	d_obj->setShowStructurePoints(true);
 	d_obj->clear();
+	d_obj->clearStructure();
 
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n - i; j++) {
@@ -35,12 +38,14 @@ void DeCasteljau::bezier_derivative() {
 				prev_p = prev_p * (1 - derivative_t) + (p * derivative_t);
 				d_obj->pushVertice(prev_p);
 				glm::vec3 d = p.getVec3() - prev_p.getVec3();
-				d = glm::normalize(d) * (float)4;
+				d = glm::normalize(d) * 4.0f;
 				p.setVec3((prev_p.getVec3() + d), 1);
 				d_obj->pushVertice(p);
 				d_obj->pushColor();
 				d_obj->pushColor();
 
+				d_obj->addStructurePoint(prev_p.getVec3());
+				d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
 			}
 		}
 	}

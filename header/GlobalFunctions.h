@@ -27,7 +27,9 @@ static struct GlobalFunctions {
 		}
 	}
 
-
+	glm::vec3 mixGlmVector(glm::vec3 v) {
+		return glm::vec3(v.z, v.x, v.y);
+	}
 
 } globalFunctions;
 #endif // !GLOBAL_FUNCTIONS

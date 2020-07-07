@@ -72,6 +72,12 @@ public:
 	void toggleFillSurface();
 	void setPoints(bool);
 
+	//Für die individuellen Punkte, die nicht alle gleich dem normalen PolyObject sind
+	// Keine Indizes nötig, da Punkte alle einzeln gezeichnet werden
+	void addStructureColor(glm::vec3);
+	void addStructurePoint(glm::vec3);
+	void clearStructure();
+	void setShowStructurePoints(bool);
 
 private:
 	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
@@ -91,6 +97,15 @@ private:
 	GLuint colorBuffer;
 	GLuint indexBuffer;
 
+
+
+	GLuint structureVao;
+	GLuint structurePositionBuffer;
+	GLuint structureColorBuffer;
+	vector<glm::vec3> structurePoints;
+	vector<glm::vec3> structureColors;
+	
+	
 	vector<glm::vec3> verts;
 	vector<glm::vec3> cols;
 
@@ -98,6 +113,8 @@ private:
 
 	bool showPoints = false;
 	bool fillSurface = false;
+
+	bool showStructurePoints = false;
 
 	friend class Gui;
 	friend class ViewPanel;

@@ -1,5 +1,6 @@
 #include "header/Bernstein.h"
 #include "header/GlobalConstants.h"
+#include "header/GlobalFunctions.h"
 
 
 Bernstein::Bernstein(PolyObject* pobj, cg::GLSLProgram* program) : CurveBezier(pobj, program)
@@ -23,6 +24,9 @@ void Bernstein::bezier_derivative() {
 	//d_obj->pushVertice(controlVertices[0]);
 	d_obj->pushColor();
 
+	d_obj->setShowStructurePoints(true);
+	d_obj->clearStructure();
+
 	int n = controlVertices.size() - 1;
 
 	for (float t = derivative_t; t == derivative_t; t += globalConstants.BEZIER_ACCURACY) {
@@ -45,13 +49,16 @@ void Bernstein::bezier_derivative() {
 
 
 		glm::vec3 d = ((float)n*d_point) - point;
-		d = glm::normalize(d) * (float)3;
+		d = glm::normalize(d) * 3.0f;
 		d_point = point + d;
 
 		d_obj->pushVertice(PointVector(point, 0));
 		d_obj->pushVertice(PointVector(d_point, 0));
 		d_obj->pushColor();
 		d_obj->pushColor();
+
+		d_obj->addStructurePoint(point);
+		d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
 	}
 
 

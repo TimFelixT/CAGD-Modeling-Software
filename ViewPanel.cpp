@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "header/Gui.h" //Vermeidet circular dependencies
 #include "header/GlobalConstants.h"
+#include "header/GlobalFunctions.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
 
@@ -382,12 +383,17 @@ void ViewPanel::drawStructure(int curveType) {
 
 		deCasteljauStructure->clearVertices();
 		deCasteljauStructure->clearIndices();
+		deCasteljauStructure->clearStructure();
+		deCasteljauStructure->setShowStructurePoints(true);
 
 		for (int i = 0; i < vertices.size() - 1; i++) {
 			for (int j = 0; j < vertices.size() - 1 - i; j++) {
 				vertices[j] = (vertices[j] * (1 - t)) + (vertices[j + 1] * t);
 				deCasteljauStructure->pushVertice(vertices[j]);
 				deCasteljauStructure->pushColor();
+
+				deCasteljauStructure->addStructurePoint(vertices[j].getVec3());
+				deCasteljauStructure->addStructureColor(globalFunctions.mixGlmVector(deCasteljauStructure->getColor().getVec3()));
 			}
 		}
 

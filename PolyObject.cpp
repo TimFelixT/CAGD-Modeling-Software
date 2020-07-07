@@ -84,6 +84,32 @@ void PolyObject::init() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), indices.data(), GL_STATIC_DRAW);
 
+	/*Anfang Structure Points*/
+	glGenVertexArrays(1, &structureVao);
+	glBindVertexArray(structureVao);
+
+	glGenBuffers(1, &structurePositionBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, structurePositionBuffer);
+	glBufferData(GL_ARRAY_BUFFER, structurePoints.size() * sizeof(glm::vec3), structurePoints.data(), GL_STATIC_DRAW);
+
+	pos = glGetAttribLocation(programId, "position");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glGenBuffers(1, &structureColorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, structureColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, structureColors.size() * sizeof(glm::vec3), structureColors.data(), GL_STATIC_DRAW);
+
+	pos = glGetAttribLocation(programId, "color");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	//Es wird ein Index Buffer gebraucht, kommt aber weil nur Punkte dargestellt werden nie zum Einsatz
+	//Statt einen neuen daher zu erstellen, habe ich den schon vorhandenen genommen
+	glGenBuffers(1, &indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), indices.data(), GL_STATIC_DRAW);
+	/*Ende Structure Points*/
+
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
 
@@ -109,7 +135,10 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	glDrawElements(GL_LINES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 	if (showPoints)
 		glDrawElements(GL_POINTS, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
-
+	if (showStructurePoints && structurePoints.size() > 0) {
+		glBindVertexArray(structureVao);
+		glDrawElements(GL_POINTS, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+	}
 	glBindVertexArray(0);
 }
 
@@ -315,4 +344,18 @@ void PolyObject::clearFaces() {
 void PolyObject::clearIndices()
 {
 	indices.clear();
+}
+
+void PolyObject::addStructureColor(glm::vec3 c) {
+	this->structureColors.push_back(c);
+}
+void PolyObject::addStructurePoint(glm::vec3 p) {
+	this->structurePoints.push_back(p);
+}
+void PolyObject::clearStructure() {
+	structureColors.clear();
+	structurePoints.clear();
+}
+void PolyObject::setShowStructurePoints(bool b) {
+	showStructurePoints = b;
 }

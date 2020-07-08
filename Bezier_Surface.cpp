@@ -452,9 +452,16 @@ void Bezier_Surface::updateBezierSurface() {
 	calculateUCurves();
 
 	/* Cleaning */
-	//delete bezierSurface;
-	bezierSurface = new PolyObject(program);
-	bezierSurface->toggleFillSurface();
+	if (bezierSurface != nullptr) {
+		bezierSurface->clearIndices();
+		bezierSurface->clearStructure();
+		bezierSurface->clearVertices();
+		bezierSurface->clearNormals();
+	}
+	else {
+		bezierSurface = new PolyObject(program);
+	}
+
 	bezierSurface->setColor(PointVector(0.0f, 0.0f, 1.0f, 0.0f));
 
 	/* Iterating through the curveVertices of each u_curve */

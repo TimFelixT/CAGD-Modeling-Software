@@ -189,8 +189,6 @@ void PolyObject::init() {
 
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
-
-
 }
 
 void PolyObject::draw(glm::mat4x4 mvp) {
@@ -251,7 +249,7 @@ void PolyObject::draw(glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 mode
 	int size;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 
-	if (fillSurface) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (programNr > 0) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -424,11 +422,6 @@ void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
 }
 
-void PolyObject::toggleFillSurface()
-{
-	this->fillSurface = !this->fillSurface;
-}
-
 void PolyObject::setPoints(bool show) {
 	showPoints = show;
 }
@@ -457,6 +450,10 @@ void PolyObject::clearFaces() {
 
 void PolyObject::clearIndices() {
 	indices.clear();
+}
+
+void PolyObject::clearNormals() {
+	normals.clear();
 }
 
 void PolyObject::addStructureColor(glm::vec3 c) {

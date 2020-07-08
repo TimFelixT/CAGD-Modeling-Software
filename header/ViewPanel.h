@@ -26,8 +26,6 @@ public:
 	void subdivision(float t, std::vector<PointVector>& newCurveVerts, int curveIndex);
 	void derivative();
 
-	void toggleFillSurface();
-
 	void polyObjRotX();
 	void polyObjRotY();
 	void polyObjRotZ();
@@ -44,8 +42,8 @@ public:
 
 	void setGui(Gui*);
 
-	bool show_surface_toggle = false;
 	bool bezier_toggle = false;
+	bool show_surface_toggle = false;
 	bool structure_toggle = false;
 
 private:

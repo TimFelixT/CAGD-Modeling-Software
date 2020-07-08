@@ -85,22 +85,6 @@ void ViewPanel::derivative() {
 	}
 }
 
-void ViewPanel::toggleFillSurface() {
-	for (Bezier_Surface* s : allSurfaces) {
-		s->getBezierSurface()->toggleFillSurface();
-	}
-}
-void ViewPanel::toggleProgramNr() {
-	static int c = 0;
-
-	if (c > 2) {
-		c = 0;
-	}
-	for (Bezier_Surface* s : allSurfaces) {
-		s->setBezierSurfaceProgramNr(c++);
-	}
-}
-
 void ViewPanel::draw() {
 	matrixStack.push(model);
 	matrixStack.push(model);

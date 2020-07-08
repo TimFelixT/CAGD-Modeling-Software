@@ -163,14 +163,6 @@ void glutKeyboard(unsigned char keycode, int x, int y)
         eye.z = eyeZ;
         init();
         break;
-    case 'f':
-        viewPanel->toggleFillSurface();
-        init();
-        break;
-    case 'p':
-        viewPanel->toggleProgramNr();
-        init();
-        break;
     }
     glutPostRedisplay();
 }

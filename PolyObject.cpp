@@ -422,11 +422,6 @@ void PolyObject::togglePoints() {
 	this->showPoints = !this->showPoints;
 }
 
-void PolyObject::toggleFillSurface()
-{
-	this->fillSurface = !this->fillSurface;
-}
-
 void PolyObject::setPoints(bool show) {
 	showPoints = show;
 }

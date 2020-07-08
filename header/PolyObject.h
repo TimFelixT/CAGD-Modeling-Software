@@ -74,7 +74,6 @@ public:
 	void translate(PointVector);
 
 	void togglePoints();
-	void toggleFillSurface();
 	void setPoints(bool);
 	void setProgramNr(unsigned int nr);
 
@@ -121,7 +120,6 @@ private:
 	void updateCurveBuffer();
 
 	bool showPoints = false;
-	bool fillSurface = false;
 	unsigned int programNr = 0;
 	bool showStructurePoints = false;
 

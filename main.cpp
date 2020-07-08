@@ -41,7 +41,7 @@ ViewPanel* viewPanel = new ViewPanel(&program);
 Gui* gui;
 
 float zNear = 0.001f;
-float zFar = 120.0f;
+float zFar = 240.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)

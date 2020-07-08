@@ -353,10 +353,10 @@ void Gui::OnToggleSurface(const JSObject& thisObject, const JSArgs& args) {
 
 void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {
 	int shaderIndex = args[0].ToInteger();
-	cout << "Shader: " << shaderIndex << endl;
-
-
-	//updateDisplay();
+	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		s->setBezierSurfaceProgramNr(shaderIndex);
+	}
+	updateDisplay();
 }
 void Gui::OnIncreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
 	for (int i = 0; i < viewPanel->allSurfaces.size(); i++) {

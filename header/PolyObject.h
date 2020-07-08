@@ -21,6 +21,9 @@ public:
 	PolyObject(PolyObject&&) = default;
 	PolyObject& operator=(const PolyObject&) = default;
 	PolyObject& operator=(PolyObject&&) = default;
+	void initGouraudShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess);
+	void initPhongShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess);
+	void initShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess);
 	~PolyObject();
 
 	// Getters
@@ -54,13 +57,15 @@ public:
 	void clearFaces();
 	void clearIndices();
 
+	void clearNormals();
+
 	void triangulatePolyNet();
 
 	// Drawing functions
 	virtual void init();
 	void draw(glm::mat4x4);
 
-	void draw(glm::mat4x4 mvp, GLenum mode);
+	void draw(glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 model, GLenum mode);
 
 	// Rotation functions
 	void rotateX();
@@ -69,8 +74,8 @@ public:
 	void translate(PointVector);
 
 	void togglePoints();
-	void toggleFillSurface();
 	void setPoints(bool);
+	void setProgramNr(unsigned int nr);
 
 	//Für die individuellen Punkte, die nicht alle gleich dem normalen PolyObject sind
 	// Keine Indizes nötig, da Punkte alle einzeln gezeichnet werden
@@ -92,6 +97,9 @@ private:
 	std::vector<GLushort> indices;
 
 	cg::GLSLProgram* program;
+	cg::GLSLProgram programGouraudShaded;
+	cg::GLSLProgram programPhongShaded;
+
 	GLuint vao;
 	GLuint positionBuffer;
 	GLuint colorBuffer;
@@ -112,8 +120,7 @@ private:
 	void updateCurveBuffer();
 
 	bool showPoints = false;
-	bool fillSurface = false;
-
+	unsigned int programNr = 0;
 	bool showStructurePoints = false;
 
 	friend class Gui;

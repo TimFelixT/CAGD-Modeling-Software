@@ -63,12 +63,31 @@ PointVector operator*(PointVector& ptVector, float scalar) {
 	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
 	return result;
 }
+PointVector operator/(PointVector& ptVector, float scalar){
+	PointVector result;
+	result.xCoor = ptVector.xCoor / scalar;
+	result.yCoor = ptVector.yCoor / scalar;
+	result.zCoor = ptVector.zCoor / scalar;
+	//result.homoCoor = ptVector.homoCoor / scalar;
+	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
+	return result;
+}
 PointVector operator*(float scalar, PointVector& ptVector) {
 	PointVector result;
 	result.xCoor = ptVector.xCoor * scalar;
 	result.yCoor = ptVector.yCoor * scalar;
 	result.zCoor = ptVector.zCoor * scalar;
 	result.homoCoor = ptVector.homoCoor * scalar;
+	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
+	return result;
+}
+
+PointVector operator/(float scalar, PointVector& ptVector){
+	PointVector result;
+	result.xCoor = ptVector.xCoor / scalar;
+	result.yCoor = ptVector.yCoor / scalar;
+	result.zCoor = ptVector.zCoor / scalar;
+	//result.homoCoor = ptVector.homoCoor / scalar;
 	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Skalarmultiplikation");
 	return result;
 }

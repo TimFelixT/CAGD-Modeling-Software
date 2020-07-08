@@ -14,7 +14,9 @@ public:
 	PointVector& operator=(const PointVector&);					//Zuweisungsoperator
 
 	friend PointVector operator*(PointVector&, float);			//Skalarmultiplikation
+	friend PointVector operator/(PointVector&, float);			//Skalarmultiplikation
 	friend PointVector operator*(float, PointVector&);			//Skalarmultiplikation
+	friend PointVector operator/(float, PointVector&);			//Skalarmultiplikation
 	friend PointVector operator-(PointVector&, PointVector&);	//Subtraktion
 	friend PointVector operator+(PointVector&, PointVector&);	//Addition
 	friend float operator*(PointVector&, PointVector&);			//Skalarprodukt

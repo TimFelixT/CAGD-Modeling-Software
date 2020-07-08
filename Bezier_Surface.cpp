@@ -16,24 +16,6 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(
 	parser.parseObjectFile(filename, controlStructure, &deg_m, &deg_n);
 	buildControlStructure();
 
-	//v_curves.clear();
-
-	//for (int u = 0; u < u_curves[0]->getCurveVertices().size(); u++) {
-	//	vector<PointVector> vcontrol;
-	//	PolyObject* v_obj = new PolyObject(program);
-	//	v_obj->setColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
-	//	for (int v = 0; v < u_curves.size(); v++) {
-	//		vcontrol.push_back(u_curves[v]->getCurveVertices().at(u));
-	//		v_obj->pushVertice(u_curves[v]->getCurveVertices().at(u));
-	//		v_obj->pushColor();
-	//	}
-	//	//v_obj->setVertices(vcontrol);
-
-	//	Bernstein* vcurve = new Bernstein(v_obj, program);
-	//	vcurve->setCurveVertices(vcontrol);
-	//	v_curves.push_back(vcurve);
-	//}
-
 	updateBezierSurface();
 	calcNormals();
 }
@@ -242,6 +224,7 @@ void Bezier_Surface::degree_increase_v()
 	controlStructure->clearFaces();
 	controlStructure->clearIndices();
 	vector<PointVector> new_verts((deg_m + 1) * (deg_n + 1));
+
 	/* Performing the degree increase on each u-face in the controlStructure */
 	for (int i = 0; i <= deg_m; i++) {
 		int index = deg_n + i;
@@ -540,7 +523,7 @@ void Bezier_Surface::calcNormals() {
 
 		PointVector normal_root = (vertices[indices[i]] + ((ca + cb) / 2));
 
-		PointVector normal = ca.crossProduct(cb);
+		PointVector normal = cb.crossProduct(ca);
 		normal.normalize();
 		bezierSurface->pushNormal(normal);
 

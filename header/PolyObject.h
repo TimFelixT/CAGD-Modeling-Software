@@ -104,7 +104,7 @@ private:
 	GLuint positionBuffer;
 	GLuint colorBuffer;
 	GLuint indexBuffer;
-
+	GLuint normalBuffer;
 
 
 	GLuint structureVao;
@@ -116,8 +116,11 @@ private:
 	
 	vector<glm::vec3> verts;
 	vector<glm::vec3> cols;
+	vector<glm::vec3> norms;
 
 	void updateCurveBuffer();
+
+	void updateNormalBuffer();
 
 	bool showPoints = false;
 	unsigned int programNr = 0;

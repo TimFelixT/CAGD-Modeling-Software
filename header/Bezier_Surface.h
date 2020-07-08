@@ -40,6 +40,8 @@ public:
 	void subdivideU(float, float, vector<Bezier_Surface*>*);
 	void subdivideV(float, vector<Bezier_Surface*>*);
 
+	void setBezierSurfaceProgramNr(unsigned int);
+
 
 private:
 	void calculateVCurves();

@@ -142,7 +142,7 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 		}
 	}
 	controlStructure->draw(projection * view * model);
-	bezierSurface->draw(projection * view * model, GL_TRIANGLES);
+	bezierSurface->draw(projection, view,  model, GL_TRIANGLES);
 
 	lock = 0;
 }
@@ -741,4 +741,9 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 	newSurface->updateBezierSurface();
 
 	allSurfaces->push_back(newSurface);
+}
+
+void Bezier_Surface::setBezierSurfaceProgramNr(unsigned int nr)
+{
+	bezierSurface->setProgramNr(nr);
 }

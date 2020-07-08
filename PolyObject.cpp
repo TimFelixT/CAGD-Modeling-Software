@@ -3,6 +3,7 @@
 #include "header/GlobalFunctions.h"
 #include <algorithm>
 #include <limits>
+#include <glm\gtc\matrix_inverse.hpp>
 
 //#include "header/GlobalFunctions.h"
 
@@ -11,6 +12,8 @@ PolyObject::PolyObject() {
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+	//initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 }
 
 PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog) {
@@ -19,6 +22,8 @@ PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog) {
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+	//initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 }
 
 PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
@@ -30,6 +35,8 @@ PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
 
 	ObjFileParser parser;
 	parser.parseObjectFile(filename, this, nullptr, nullptr);
+
+	//initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 }
 
 PolyObject::~PolyObject() {
@@ -39,7 +46,60 @@ PolyObject::~PolyObject() {
 	glDeleteBuffers(1, &positionBuffer);
 }
 
+static void initShader_(cg::GLSLProgram& program, const std::string& vert, const std::string& frag)
+{
+	if (!program.compileShaderFromFile(vert.c_str(), cg::GLSLShader::VERTEX))
+	{
+		throw std::runtime_error("COMPILE VERTEX: " + program.log());
+	}
+
+	if (!program.compileShaderFromFile(frag.c_str(), cg::GLSLShader::FRAGMENT))
+	{
+		throw std::runtime_error("COMPILE FRAGMENT: " + program.log());
+	}
+
+	if (!program.link())
+	{
+		throw std::runtime_error("LINK: " + program.log());
+	}
+}
+
+
+void PolyObject::initGouraudShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess) {
+
+	programGouraudShaded.use();
+	programGouraudShaded.setUniform("light", light);
+	programGouraudShaded.setUniform("lightI", lightI);
+	programGouraudShaded.setUniform("surfKa", surfKa);
+	programGouraudShaded.setUniform("surfKd", surfKd);
+	programGouraudShaded.setUniform("surfKs", surfKs);
+	programGouraudShaded.setUniform("surfShininess", surfShininess);
+}
+
+void PolyObject::initPhongShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess) {
+
+	programPhongShaded.use();
+	programPhongShaded.setUniform("light", light);
+	programPhongShaded.setUniform("lightI", lightI);
+	programPhongShaded.setUniform("surfKa", surfKa);
+	programPhongShaded.setUniform("surfKd", surfKd);
+	programPhongShaded.setUniform("surfKs", surfKs);
+	programPhongShaded.setUniform("surfShininess", surfShininess);
+}
+
+
+void PolyObject::initShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess)
+{
+	//initShader_(programSimple, "shader/simple.vert", "shader/simple.frag");
+	initShader_(programPhongShaded, "shader/shadedPhong.vert", "shader/shadedPhong.frag");
+	initPhongShader(lightI, light, surfKa, surfKd, surfKs, surfShininess);
+
+	initShader_(programGouraudShaded, "shader/shadedGouraud.vert", "shader/shadedGouraud.frag");
+	initGouraudShader(lightI, light, surfKa, surfKd, surfKs, surfShininess);
+}
+
 void PolyObject::init() {
+	initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 
 	this->verts.clear();
 	this->cols.clear();
@@ -47,12 +107,26 @@ void PolyObject::init() {
 	for (auto vert : vertices) {
 		verts.push_back(vert.getVec3());
 	}
-	
+
 	for (auto col : colors) {
 		cols.push_back(col.getVec3());
 	}
 
-	GLuint programId = program->getHandle();
+	GLuint programId;
+	switch (programNr) {
+	case 0:
+		//Wireframe
+		programId = program->getHandle();
+		break;
+	case 1:
+		//Gouraud
+		programId = programGouraudShaded.getHandle();
+		break;
+	case 2:
+		//Phong
+		programId = programPhongShaded.getHandle();
+		break;
+	}
 	GLuint pos;
 
 	// Step 0: Create vertex array object.
@@ -142,10 +216,35 @@ void PolyObject::draw(glm::mat4x4 mvp) {
 	glBindVertexArray(0);
 }
 
-void PolyObject::draw(glm::mat4x4 mvp, GLenum mode) {
+void PolyObject::draw(glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 model, GLenum mode) {
+	glm::mat4 mv = view * model;
+	// Create mvp.
+	glm::mat4 mvp = projection * mv;
 
-	program->use();
-	program->setUniform("mvp", mvp);
+	// Create normal matrix (nm) from model matrix.
+	glm::mat3 nm = glm::inverseTranspose(glm::mat3(model));
+
+	switch (programNr) {
+	case 0:
+		//Wireframe
+		program->use();
+		program->setUniform("mvp", mvp);
+		break;
+	case 1:
+		//Gouraud
+		programGouraudShaded.use();
+		programGouraudShaded.setUniform("modelviewMatrix", mv);
+		programGouraudShaded.setUniform("projectionMatrix", projection);
+		programGouraudShaded.setUniform("normalMatrix", nm);
+		break;
+	case 2:
+		//Phong
+		programPhongShaded.use();
+		programPhongShaded.setUniform("modelviewMatrix", mv);
+		programPhongShaded.setUniform("projectionMatrix", projection);
+		programPhongShaded.setUniform("normalMatrix", nm);
+		break;
+	}
 
 	glPointSize(5.0f);
 
@@ -329,20 +428,30 @@ void PolyObject::toggleFillSurface()
 void PolyObject::setPoints(bool show) {
 	showPoints = show;
 }
+
+void PolyObject::setProgramNr(unsigned int nr) {
+	// 0 -> Wireframe
+	// 1 -> Gouraud
+	// 2 -> Phong
+	if (nr == 0 || nr == 1 || nr == 2)
+		programNr = nr;
+}
+
 void PolyObject::translate(PointVector tv) {
-	for (PointVector &pt : vertices) {
+	for (PointVector& pt : vertices) {
 		pt = pt + tv;
 	}
 }
+
 void PolyObject::clearVertices() {
 	vertices.clear();
 }
+
 void PolyObject::clearFaces() {
 	faces.clear();
 }
 
-void PolyObject::clearIndices()
-{
+void PolyObject::clearIndices() {
 	indices.clear();
 }
 

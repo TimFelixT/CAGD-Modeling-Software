@@ -35,7 +35,7 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(
 	//}
 
 	updateBezierSurface();
-	calcNormals();
+	//calcNormals();
 }
 
 
@@ -127,7 +127,7 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 
 				if (b->isDerivative() == 1) {
 					b->getDerativeStructure()->draw(projection * view * model);
-					normals->draw(projection * view * model);
+					//normals->draw(projection * view * model);
 				}
 			}
 		}

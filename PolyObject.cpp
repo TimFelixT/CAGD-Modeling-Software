@@ -99,8 +99,11 @@ void PolyObject::initShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm
 }
 
 void PolyObject::init() {
-	initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
+	static int in = 0;
+	if(in == 0)
+		initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 
+	in++;
 	this->verts.clear();
 	this->cols.clear();
 

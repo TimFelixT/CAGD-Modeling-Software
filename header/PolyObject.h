@@ -57,6 +57,8 @@ public:
 	void clearFaces();
 	void clearIndices();
 
+	void clearNormals();
+
 	void triangulatePolyNet();
 
 	// Drawing functions

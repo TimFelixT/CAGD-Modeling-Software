@@ -28,6 +28,8 @@ public:
 
 	void toggleFillSurface();
 
+	void toggleProgramNr();
+
 	void polyObjRotX();
 	void polyObjRotY();
 	void polyObjRotZ();

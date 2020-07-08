@@ -190,7 +190,7 @@ void PolyObject::init() {
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
 
-	if (fillSurface) {
+	if (programNr > 0) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	else {
@@ -456,6 +456,10 @@ void PolyObject::clearFaces() {
 
 void PolyObject::clearIndices() {
 	indices.clear();
+}
+
+void PolyObject::clearNormals() {
+	normals.clear();
 }
 
 void PolyObject::addStructureColor(glm::vec3 c) {

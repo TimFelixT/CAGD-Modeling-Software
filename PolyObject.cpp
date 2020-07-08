@@ -190,12 +190,7 @@ void PolyObject::init() {
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
 
-	if (fillSurface) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	else {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
+
 }
 
 void PolyObject::draw(glm::mat4x4 mvp) {
@@ -255,7 +250,13 @@ void PolyObject::draw(glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 mode
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	int size;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+
+	if (fillSurface) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
 	glDrawElements(mode, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glBindVertexArray(0);
 }

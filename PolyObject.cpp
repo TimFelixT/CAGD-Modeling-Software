@@ -181,14 +181,17 @@ void PolyObject::draw(glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 mode
 
 void PolyObject::rotateX() {
 	globalFunctions.rotateXPointVector(vertices);
+	globalFunctions.rotateXGlmVector(structurePoints);
 	updateCurveBuffer();
 }
 void PolyObject::rotateY() {
 	globalFunctions.rotateYPointVector(vertices);
+	globalFunctions.rotateYGlmVector(structurePoints);
 	updateCurveBuffer();
 }
 void PolyObject::rotateZ() {
 	globalFunctions.rotateZPointVector(vertices);
+	globalFunctions.rotateZGlmVector(structurePoints);
 	updateCurveBuffer();
 }
 

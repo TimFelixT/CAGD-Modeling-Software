@@ -42,7 +42,6 @@ public:
 
 	void setBezierSurfaceProgramNr(unsigned int);
 
-
 private:
 	void calculateVCurves();
 	void calculateUCurves();

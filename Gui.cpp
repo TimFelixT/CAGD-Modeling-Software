@@ -356,6 +356,7 @@ void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {
 	for (Bezier_Surface* s : viewPanel->allSurfaces) {
 		s->setBezierSurfaceProgramNr(shaderIndex);
 	}
+	viewPanel->setShaderProgram(shaderIndex);
 	updateDisplay();
 }
 void Gui::OnIncreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {

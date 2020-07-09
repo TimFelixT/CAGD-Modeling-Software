@@ -21,9 +21,6 @@ public:
 	PolyObject(PolyObject&&) = default;
 	PolyObject& operator=(const PolyObject&) = default;
 	PolyObject& operator=(PolyObject&&) = default;
-	void initGouraudShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess);
-	void initPhongShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess);
-	void initShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess);
 	~PolyObject();
 
 	// Getters
@@ -84,6 +81,9 @@ public:
 	void clearStructure();
 	void setShowStructurePoints(bool);
 
+	//Shader
+	void setShaderProgram(cg::GLSLProgram*);
+
 private:
 	vector<vector<PointVector>> triangulatePolygon(vector<PointVector> face);
 	PointVector color;
@@ -97,8 +97,7 @@ private:
 	std::vector<GLushort> indices;
 
 	cg::GLSLProgram* program;
-	cg::GLSLProgram programGouraudShaded;
-	cg::GLSLProgram programPhongShaded;
+	cg::GLSLProgram* shaderProgram = program;
 
 	GLuint vao;
 	GLuint positionBuffer;

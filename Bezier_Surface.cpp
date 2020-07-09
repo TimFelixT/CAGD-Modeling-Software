@@ -475,6 +475,7 @@ void Bezier_Surface::updateBezierSurface() {
 			bezierSurface->pushIndex((n * (i + 1)) + j);
 			bezierSurface->pushIndex((n * i) + j);
 
+
 			/* 2nd Triangle Anti-clock-wise */
 			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j);
@@ -517,15 +518,108 @@ void Bezier_Surface::calcNormals() {
 	vector<GLushort> indices = bezierSurface->getIndices();
 	vector<PointVector> vertices = bezierSurface->getVertices();
 	int k = 0;
+	int n = v_curves.size() * v_curves[0]->getCurveVertices().size();
+
+	//for (int i = 0; i < u_curves.size() - 1; i++) {
+	//	vector<PointVector> d_u = u_curves[i]->calcDerivatives(t);
+	//	for (int j = 0; j < v_curves.size() - 1; j++) {
+	//		vector<PointVector> d_v = v_curves[j]->calcDerivatives(t);
+	//		PointVector normal = d_u[j].crossProduct(d_v[i]);
+	//		PointVector normal_root = (u_curves[i]->getCurveVertices()[j]);
+
+	//		//normal.normalize();
+	//		bezierSurface->pushNormal(normal);
+
+	//		normal = normal * 3;
+
+	//		normals->pushVertice(normal_root);
+	//		normals->pushVertice(normal_root + normal);
+	//		normals->pushColor();
+	//		normals->pushColor();
+	//		normals->pushIndex(k++);
+	//		normals->pushIndex(k++);
+	//	}
+	//}
+
+	//for (int i = 0; i < n; i++) {
+	//	if (i != (i + 1) * (v_curves.size() - 1) && i < (v_curves[0]->getCurveVertices().size() - 1) * v_curves.size()) {
+	//		PointVector ca = vertices[i + 1] - vertices[i];
+	//		PointVector cb = vertices[i + v_curves.size()] - vertices[i];
+
+	//		PointVector normal_root = (vertices[i]);
+
+	//		PointVector normal = cb.crossProduct(ca);
+	//		normal.normalize();
+	//		bezierSurface->pushNormal(normal);
+	//	}
+	//}
+
 	for (int i = 0; i < indices.size(); i += 6) {
 		PointVector ca = vertices[indices[i + 1]] - vertices[indices[i]];
 		PointVector cb = vertices[indices[i + 2]] - vertices[indices[i]];
 
-		PointVector normal_root = (vertices[indices[i]] + ((ca + cb) / 2));
+		//PointVector normal_root = (vertices[indices[i]] + ((ca + cb) / 2));
+		PointVector normal_root = (vertices[indices[i]]);
 
 		PointVector normal = cb.crossProduct(ca);
 		normal.normalize();
 		bezierSurface->pushNormal(normal);
+
+		normal = normal * 3;
+
+		normals->pushVertice(normal_root);
+		normals->pushVertice(normal_root + normal);
+		normals->pushColor();
+		normals->pushColor();
+		normals->pushIndex(k++);
+		normals->pushIndex(k++);
+
+		/*ca = vertices[indices[i + 4]] - vertices[indices[i + 3]];
+		cb = vertices[indices[i + 5]] - vertices[indices[i + 3]];
+
+		PointVector normal_root = (vertices[indices[i]] + ((ca + cb) / 2));
+		normal_root = (vertices[indices[i]]);
+
+		normal = cb.crossProduct(ca);
+		normal.normalize();
+		bezierSurface->pushNormal(normal);
+
+		normal = normal * 3;
+
+		normals->pushVertice(normal_root);
+		normals->pushVertice(normal_root + normal);
+		normals->pushColor();
+		normals->pushColor();
+		normals->pushIndex(k++);
+		normals->pushIndex(k++);*/
+
+		ca = vertices[indices[i]] - vertices[indices[i + 1]];
+		cb = vertices[indices[i + 2]] - vertices[indices[i + 1]];
+
+		normal_root = (vertices[indices[i + 1]]);
+
+		normal = ca.crossProduct(cb);
+		normal.normalize();
+		//bezierSurface->pushNormal(normal);
+
+		normal = normal * 3;
+
+		normals->pushVertice(normal_root);
+		normals->pushVertice(normal_root + normal);
+		normals->pushColor();
+		normals->pushColor();
+		normals->pushIndex(k++);
+		normals->pushIndex(k++);
+
+
+		ca = vertices[indices[i]] - vertices[indices[i + 2]];
+		cb = vertices[indices[i + 1]] - vertices[indices[i + 2]];
+
+		normal_root = (vertices[indices[i + 2]]);
+
+		normal = cb.crossProduct(ca);
+		normal.normalize();
+		//bezierSurface->pushNormal(normal);
 
 		normal = normal * 3;
 

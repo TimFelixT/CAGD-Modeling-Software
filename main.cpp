@@ -230,8 +230,6 @@ void mouseWheel (int button, int dir, int x, int y) {
 
 
 int main(int argc, char** argv) {
-
-
     // GLUT: Initialize freeglut library (window toolkit).
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(40, 40);
@@ -291,6 +289,7 @@ int main(int argc, char** argv) {
     gui = new Gui(viewPanel, glutPostRedisplay, &needInit);
     viewPanel->setGui(gui);
     std::thread th(&Gui::run, gui);
+    viewPanel->initShader(1.5f, glm::vec4(10.0f, 10.0f, 20.0f, 0.0f), glm::vec3(0.1745f, 0.01175f, 0.01175f), glm::vec3(0.61424f, 0.04136f, 0.04136f), glm::vec3(0.727811f, 0.626959f, 0.626959f), 50.0f);
     glutMainLoop();
     th.join();
 

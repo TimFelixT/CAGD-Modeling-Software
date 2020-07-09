@@ -46,6 +46,8 @@ void DeCasteljau::bezier_derivative() {
 
 				d_obj->addStructurePoint(prev_p.getVec3());
 				d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
+				d_obj->addStructurePoint(prev_p.getVec3());
+				d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
 			}
 		}
 	}

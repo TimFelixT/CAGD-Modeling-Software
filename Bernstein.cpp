@@ -59,6 +59,8 @@ void Bernstein::bezier_derivative() {
 
 		d_obj->addStructurePoint(point);
 		d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
+		d_obj->addStructurePoint(point);
+		d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
 	}
 }
 

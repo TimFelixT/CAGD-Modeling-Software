@@ -73,6 +73,7 @@ protected:
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 
 	friend class Gui;
+	friend class ViewPanel;
 private:
 	unsigned int derivative = 0;
 };

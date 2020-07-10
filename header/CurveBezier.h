@@ -48,6 +48,8 @@ public:
 	virtual void calcRationalCurve() {};
 	virtual void calcRationalCurve(int) {};
 
+	virtual vector<PointVector> calcDerivative(float) { return vector<PointVector>(); };
+
 protected:
 	PolyObject* obj;
 	PolyObject* d_obj;

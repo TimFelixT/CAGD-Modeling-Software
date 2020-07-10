@@ -117,21 +117,17 @@ void PolyObject::init() {
 	glBindBuffer(GL_ARRAY_BUFFER, structurePositionBuffer);
 	glBufferData(GL_ARRAY_BUFFER, structurePoints.size() * sizeof(glm::vec3), structurePoints.data(), GL_STATIC_DRAW);
 
-	//pos = glGetAttribLocation(programId, "position");
-	//glEnableVertexAttribArray(pos);
-	//glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	pos = glGetAttribLocation(programId, "position");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glGenBuffers(1, &structureColorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, structureColorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, structureColors.size() * sizeof(glm::vec3), structureColors.data(), GL_STATIC_DRAW);
 
-	//pos = glGetAttribLocation(programId, "color");
-	//glEnableVertexAttribArray(pos);
-	//glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	//pos = glGetAttribLocation(programId, "normals");
-	//glEnableVertexAttribArray(pos);
-	//glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	pos = glGetAttribLocation(programId, "color");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	//Es wird ein Index Buffer gebraucht, kommt aber weil nur Punkte dargestellt werden nie zum Einsatz
 	//Statt einen neuen daher zu erstellen, habe ich den schon vorhandenen genommen

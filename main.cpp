@@ -289,7 +289,7 @@ int main(int argc, char** argv) {
     gui = new Gui(viewPanel, glutPostRedisplay, &needInit);
     viewPanel->setGui(gui);
     std::thread th(&Gui::run, gui);
-    viewPanel->initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
+    viewPanel->initShader(0.5f, glm::vec4(10.0f, 10.0f, 10.0f, 0.0f), glm::vec3(0.1f, 0.4f, 0.6f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 1.0f);
     glutMainLoop();
     th.join();
 

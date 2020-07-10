@@ -372,6 +372,7 @@ void Bezier_Surface::calculateVCurves()
 		v_curves.push_back(vcurve);
 	}
 
+
 	lock = 0;
 }
 
@@ -483,21 +484,21 @@ void Bezier_Surface::updateBezierSurface() {
 			/* Tesselating */
 
 			/* 1st Triangle Anti-clock-wise */
-			bezierSurface->pushIndex((n * i) + j + 1);
-			bezierSurface->pushIndex((n * i) + j);
-			bezierSurface->pushIndex((n * (i + 1)) + j);
+			//bezierSurface->pushIndex((n * i) + j + 1);
+			//bezierSurface->pushIndex((n * i) + j);
+			//bezierSurface->pushIndex((n * (i + 1)) + j);
 
-			/* 1st Triangle Clock-wise */
+			///* 1st Triangle Clock-wise */
 			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j);
 			bezierSurface->pushIndex((n * i) + j);
 
 			/* 2nd Triangle Anti-clock-wise */
-			bezierSurface->pushIndex((n * i) + j + 1);
-			bezierSurface->pushIndex((n * (i + 1)) + j);
-			bezierSurface->pushIndex((n * (i + 1)) + j + 1);
+			//bezierSurface->pushIndex((n * i) + j + 1);
+			//bezierSurface->pushIndex((n * (i + 1)) + j);
+			//bezierSurface->pushIndex((n * (i + 1)) + j + 1);
 
-			/* 2nd Triangle Clock-wise */
+			///* 2nd Triangle Clock-wise */
 			bezierSurface->pushIndex((n * i) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j + 1);
 			bezierSurface->pushIndex((n * (i + 1)) + j);
@@ -525,7 +526,6 @@ void Bezier_Surface::subdivision(float t, std::vector<PointVector>& input, std::
 }
 
 void Bezier_Surface::calcNormals() {
-	// TODO: In die Mitte des Dreiecks schieben
 	if (normals != nullptr)
 		delete normals;
 	normals = new PolyObject(program);
@@ -534,25 +534,67 @@ void Bezier_Surface::calcNormals() {
 	vector<GLushort> indices = bezierSurface->getIndices();
 	vector<PointVector> vertices = bezierSurface->getVertices();
 	int k = 0;
-	for (int i = 0; i < indices.size(); i += 6) {
-		PointVector ca = vertices[indices[i + 1]] - vertices[indices[i]];
-		PointVector cb = vertices[indices[i + 2]] - vertices[indices[i]];
+	vector<PointVector> verts = bezierSurface->getVertices();
+	vector<GLushort> inds = bezierSurface->getIndices();
 
-		PointVector normal_root = (vertices[indices[i]] + ((ca + cb) / 2));
+	for (int i = 0; i < verts.size(); i++) {
+		for (int j = 0; j < inds.size(); j++) {
+			if (verts[i].getVec4() == verts[inds[j]].getVec4()) {
+				PointVector ca;
+				PointVector cb;
+				PointVector normal_root;
 
-		PointVector normal = ca.crossProduct(cb);
-		normal.normalize();
-		bezierSurface->pushNormal(normal);
+				if (j % 3 == 0) {
+					ca = verts[inds[j + 1]] - verts[inds[j]];
+					cb = verts[inds[j + 2]] - verts[inds[j]];
+					normal_root = verts[inds[j]];
+				}
+				else if (j % 3 == 1) {
+					ca = verts[inds[j]] - verts[inds[j - 1]];
+					cb = verts[inds[j + 1]] - verts[inds[j - 1]];
+					normal_root = verts[inds[j]];
+				}
+				else if (j % 3 == 2) {
+					ca = verts[inds[j - 2]] - verts[inds[j]];
+					cb = verts[inds[j - 1]] - verts[inds[j]];
+					normal_root = verts[inds[j]];
+				}
 
-		normal = normal * 3;
+				PointVector normal = ca.crossProduct(cb);
+				normal.normalize();
+				//normal.xCoor = abs(normal.xCoor);
+				bezierSurface->pushNormal(normal);
 
-		normals->pushVertice(normal_root);
-		normals->pushVertice(normal_root + normal);
-		normals->pushColor();
-		normals->pushColor();
-		normals->pushIndex(k++);
-		normals->pushIndex(k++);
+				normal = normal * 3;
+
+				normals->pushVertice(normal_root);
+				normals->pushVertice(normal_root + normal);
+				normals->pushColor();
+				normals->pushColor();
+				normals->pushIndex(k++);
+				normals->pushIndex(k++);
+			}
+		}
 	}
+	//for (int i = 0; i < indices.size(); i += 6) {
+	//	PointVector ca = vertices[indices[i + 1]] - vertices[indices[i]];
+	//	PointVector cb = vertices[indices[i + 2]] - vertices[indices[i]];
+
+	//	PointVector normal_root = (vertices[indices[i]] + ((ca + cb) / 2));
+
+	//	PointVector normal = ca.crossProduct(cb);
+	//	normal.normalize();
+	//	bezierSurface->pushNormal(normal);
+
+	//	normal = normal * 3;
+
+	//	normals->pushVertice(normal_root);
+	//	normals->pushVertice(normal_root + normal);
+	//	normals->pushColor();
+	//	normals->pushColor();
+	//	normals->pushIndex(k++);
+	//	normals->pushIndex(k++);
+	//}
 }
 
 void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSurfaces) {

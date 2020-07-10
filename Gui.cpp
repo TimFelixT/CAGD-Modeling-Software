@@ -343,6 +343,16 @@ void Gui::OnDerivativeTChange(const JSObject& thisObject, const JSArgs& args) {
 	for (CurveBezier* c : viewPanel->allCurves) {
 		c->derivative_t = t;
 		c->bezier_derivative();
+	}	
+	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		for (CurveBezier* c : s->getUCurves()) {
+			c->derivative_t = t;
+			c->bezier_derivative();
+		}
+		for (CurveBezier* c : s->getVCurves()) {
+			c->derivative_t = t;
+			c->bezier_derivative();
+		}
 	}
 	updateDisplay();
 }

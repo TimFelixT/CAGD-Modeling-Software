@@ -49,7 +49,7 @@ PolyObject::~PolyObject() {
 void PolyObject::init() {
 	this->verts.clear();
 	this->cols.clear();
-
+	updateNormalBuffer();
 	for (auto vert : vertices) {
 		verts.push_back(vert.getVec3());
 	}
@@ -85,6 +85,16 @@ void PolyObject::init() {
 
 	// Bind it to color.
 	pos = glGetAttribLocation(programId, "color");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	// Step 2: Create vertex buffer object for color attribute and bind it to...
+
+	glGenBuffers(1, &normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, norms.size() * sizeof(glm::vec3), norms.data(), GL_STATIC_DRAW);
+
+	// Bind it to normal.
+	pos = glGetAttribLocation(programId, "normal");
 	glEnableVertexAttribArray(pos);
 	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -199,6 +209,13 @@ void PolyObject::updateCurveBuffer() {
 	this->verts.clear();
 	for (auto& ptvector : vertices) {
 		verts.push_back(ptvector.getVec3());
+	}
+}
+
+void PolyObject::updateNormalBuffer() {
+	this->norms.clear();
+	for (auto& ptvector : normals) {
+		norms.push_back(ptvector.getVec3());
 	}
 }
 

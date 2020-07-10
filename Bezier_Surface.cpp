@@ -21,7 +21,7 @@ Bezier_Surface::Bezier_Surface(char* filename, cg::GLSLProgram* prog) : program(
 }
 
 
-Bezier_Surface::Bezier_Surface(PolyObject* controlStructure, int deg_n, int deg_m, int t, cg::GLSLProgram* prog) : program(prog) {
+Bezier_Surface::Bezier_Surface(PolyObject* controlStructure, int deg_m, int deg_n, int t, cg::GLSLProgram* prog) : program(prog) {
 	this->deg_n = deg_n;
 	this->deg_m = deg_m;
 	this->controlStructure = controlStructure;
@@ -313,8 +313,8 @@ void Bezier_Surface::rotateZ()
 	}
 	for (CurveBezier* curve : v_curves) {
 		if (dynamic_cast<Bernstein*>(curve)) {
-			//curve->rotateZ();
-			//curve->getControlStructure()->rotateZ();
+			curve->rotateZ();
+			curve->getControlStructure()->rotateZ();
 			//curve->getDeCasteljauStructure()->rotateZ();
 			curve->getDerativeStructure()->rotateZ();
 		}
@@ -587,9 +587,25 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	PolyObject* newPo = new PolyObject(program);
 	Bezier_Surface* newSurface = new Bezier_Surface(newPo, deg_m, deg_n, this->t, program);
 
+	vector<CurveBezier*> oldUCurves;
 	vector<CurveBezier*> newUCurves;
 
-	for (CurveBezier* c : u_curves) {
+
+	for (int i = 0; i < deg_n + 1; i++) {
+		PolyObject* controlStr = new PolyObject(program);
+		Bernstein* b = new Bernstein(controlStr, program);
+		for (int j = 0; j < deg_m + 1; j++) {
+			controlStr->pushVertice(controlStructure->getFaces()[i][j]);
+			controlStr->pushColor();
+		}
+		for (int i = 0; i < controlStr->getVertices().size() -1; i++) {
+			controlStructure->pushIndex(i);
+			controlStructure->pushIndex(i + 1);
+		}
+		oldUCurves.push_back(b);
+	}
+
+	for (CurveBezier* c : oldUCurves) {
 		vector<PointVector> newCurve;
 		newCurve.clear();
 
@@ -616,37 +632,24 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	for (CurveBezier* c : newUCurves) {
 		newSurface->u_curves.push_back(c);
 	}
-	for (CurveBezier* c : v_curves) {
-		PolyObject* controlPoints = new PolyObject(program);
-		controlPoints->setVertices(c->getControlVertices());
-		for (int i = 0; i < c->getControlVertices().size() - 1; i++) {
-			controlPoints->pushIndex(i);
-			controlPoints->pushIndex(i + 1);
-			controlPoints->pushColor();
-		}
-		PolyObject* po = new PolyObject(program);
-		po->setVertices(c->getControlVertices());
-		Bernstein* b = new Bernstein(controlPoints, program);
-		b->obj->setVertices(c->getControlVertices());
-		b->setControlStructure(po);
-		b->setInitialized(false);
-		b->calcRationalCurve(t);
-		newSurface->v_curves.push_back(b);
-	}
 
 	controlStructure->clearVertices();
-	for (int i = 0; i < deg_m + 1; i++) {
-		for (int j = 0; j < deg_n + 1; j++) {
+	for (int i = 0; i < deg_n + 1; i++) {
+		for (int j = 0; j < deg_m + 1; j++) {
 			newSurface->controlStructure->pushVertice(newUCurves[i]->getControlVertices()[j]);
 			newSurface->controlStructure->pushColor();
-			controlStructure->pushVertice(u_curves[i]->getControlVertices()[j]);
+			controlStructure->pushVertice(oldUCurves[i]->getControlVertices()[j]);
 		}
 	}
 	buildControlStructure();
 	updateBezierSurface();
+	calcNormals();
 	newSurface->buildControlStructure();
 	newSurface->updateBezierSurface();
+	newSurface->calcNormals();
 	allSurfaces->push_back(newSurface);
+
+
 
 	subdivideV(v, allSurfaces);
 	newSurface->subdivideV(v, allSurfaces);
@@ -657,9 +660,25 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 	PolyObject* newPo = new PolyObject(program);
 	Bezier_Surface* newSurface = new Bezier_Surface(newPo, deg_m, deg_n, this->t, program);
 
+	vector<CurveBezier*> oldVCurves;
 	vector<CurveBezier*> newVCurves;
 
-	for (CurveBezier* c : v_curves) {
+
+	for (int j = 0; j < deg_m + 1; j++) {
+		PolyObject* controlStr = new PolyObject(program);
+		Bernstein* b = new Bernstein(controlStr, program);
+		for (int i = 0; i < deg_n + 1; i++) {
+			controlStr->pushVertice(controlStructure->getFaces()[i][j]);
+			controlStr->pushColor();
+		}
+		for (int i = 0; i < controlStr->getVertices().size() - 1; i++) {
+			controlStructure->pushIndex(i);
+			controlStructure->pushIndex(i + 1);
+		}
+		oldVCurves.push_back(b);
+	}
+
+	for (CurveBezier* c : oldVCurves) {
 		vector<PointVector> newCurve;
 		newCurve.clear();
 
@@ -685,36 +704,22 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 	for (CurveBezier* c : newVCurves) {
 		newSurface->v_curves.push_back(c);
 	}
-	for (CurveBezier* c : u_curves) {
-		PolyObject* controlPoints = new PolyObject(program);
-		controlPoints->setVertices(c->getControlVertices());
-		for (int i = 0; i < c->getControlVertices().size() - 1; i++) {
-			controlPoints->pushIndex(i);
-			controlPoints->pushIndex(i + 1);
-			controlPoints->pushColor();
-		}
-		PolyObject* po = new PolyObject(program);
-		po->setVertices(c->getControlVertices());
-		Bernstein* b = new Bernstein(controlPoints, program);
-		b->obj->setVertices(c->getControlVertices());
-		b->setControlStructure(po);
-		b->setInitialized(false);
-		b->calcRationalCurve(t);
-		newSurface->u_curves.push_back(b);
-	}
 
 	controlStructure->clearVertices();
-	for (int i = 0; i < deg_m + 1; i++) {
-		for (int j = 0; j < deg_n + 1; j++) {
+	for (int j = 0; j < deg_n + 1; j++) {
+		for (int i = 0; i < deg_m + 1; i++) {
 			newSurface->controlStructure->pushVertice(newVCurves[i]->getControlVertices()[j]);
 			newSurface->controlStructure->pushColor();
-			controlStructure->pushVertice(v_curves[i]->getControlVertices()[j]);
+			controlStructure->pushVertice(oldVCurves[i]->getControlVertices()[j]);
 		}
 	}
+
 	buildControlStructure();
 	updateBezierSurface();
+	calcNormals();
 	newSurface->buildControlStructure();
 	newSurface->updateBezierSurface();
+	newSurface->calcNormals();
 
 	allSurfaces->push_back(newSurface);
 }
@@ -723,3 +728,5 @@ void Bezier_Surface::setBezierSurfaceProgramNr(unsigned int nr)
 {
 	bezierSurface->setProgramNr(nr);
 }
+
+

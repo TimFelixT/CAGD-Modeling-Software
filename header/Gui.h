@@ -59,6 +59,7 @@ private:
     void OnSplitSurface(const JSObject&, const JSArgs&);
     void OnSurfaceDegreeIncrease(const JSObject&, const JSArgs&);
     void OnResetSurfaces(const JSObject&, const JSArgs&);
+    void OnToggleSurfaceDerivative(const JSObject&, const JSArgs&);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

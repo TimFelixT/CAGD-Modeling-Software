@@ -5,7 +5,7 @@
 #include "header/GlobalFunctions.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	surface = new Bezier_Surface("UB1_1.obj", prog);
+	surface = new Bezier_Surface("beziersurf.obj", prog);
 
 	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
 	deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
@@ -239,7 +239,7 @@ void ViewPanel::selectPointPostSurface(glm::vec3& cameraPos, glm::vec3& rayVecto
 	}
 	if (distance < globalConstants.SELECTION_OFFSET) {
 		selectedPointNormalSurface = rayVector;
-		cout << "Selected Surface Point: " << selectedPointVectorSurface->xCoor << "   " << selectedPointVectorSurface->yCoor << "   " << selectedPointVectorSurface->zCoor << endl;
+		cout << "Selected Surface Point: " << selectedPointVectorSurface->xCoor << "   " << selectedPointVectorSurface->yCoor << "   " << selectedPointVectorSurface->zCoor << "   " << selectedPointVectorSurface->weight << endl;
 	} else {
 		selectedPointVectorSurface = nullptr;
 		selectedPointNormalSurface = glm::vec3(0.0f, 0.0f, 0.0f);

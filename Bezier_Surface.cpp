@@ -330,8 +330,8 @@ void Bezier_Surface::rotateZ()
 	}
 	for (CurveBezier* curve : v_curves) {
 		if (dynamic_cast<Bernstein*>(curve)) {
-			//curve->rotateZ();
-			//curve->getControlStructure()->rotateZ();
+			curve->rotateZ();
+			curve->getControlStructure()->rotateZ();
 			//curve->getDeCasteljauStructure()->rotateZ();
 			curve->getDerativeStructure()->rotateZ();
 		}

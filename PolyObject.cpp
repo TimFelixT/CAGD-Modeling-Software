@@ -82,6 +82,16 @@ void PolyObject::init() {
 	pos = glGetAttribLocation(programId, "color");
 	glEnableVertexAttribArray(pos);
 	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	// Step 2: Create vertex buffer object for color attribute and bind it to...
+
+	glGenBuffers(1, &normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, norms.size() * sizeof(glm::vec3), norms.data(), GL_STATIC_DRAW);
+
+	// Bind it to normal.
+	pos = glGetAttribLocation(programId, "normal");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	if (normals.size() > 0 && programNr > 0) {
 		glGenBuffers(1, &normalBuffer);

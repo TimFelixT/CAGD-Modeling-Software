@@ -7,7 +7,9 @@ public:
 	Bernstein(PolyObject* pobj, cg::GLSLProgram*);
 	~Bernstein();
 	void bezier_derivative() override;
-	vector<PointVector> calcDerivatives(int steps);
+
+	vector<PointVector> calcDerivative(float steps);
+
 	PointVector calcPoint(vector<PointVector> controlVertices, float t);
 	void calcCurve() override;
 	void calcCurve(int);

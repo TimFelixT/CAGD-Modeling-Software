@@ -64,13 +64,13 @@ void Bernstein::bezier_derivative() {
 	}
 }
 
-vector<PointVector> Bernstein::calcDerivatives(int steps) {
+vector<PointVector> Bernstein::calcDerivative(float steps) {
 	vector<PointVector> derivs;
 	std::vector<PointVector> controlVertices = obj->getVertices();
 
 	int n = controlVertices.size() - 1;
 
-	for (float t = 0; t < 1; t += (1.0f / (float)steps)) {
+	for (float t = 0; t < 1; t += (1.0f/steps)) {
 
 		glm::vec3 d_point(0.0f, 0.0f, 0.0f);
 		glm::vec3 point(0.0f, 0.0f, 0.0f);
@@ -82,20 +82,14 @@ vector<PointVector> Bernstein::calcDerivatives(int steps) {
 			glm::vec3 delta_point;
 			if (i < n) {
 				delta_point = controlVertices[i + 1].getVec3() - controlVertices[i].getVec3();
-				float a = binomialCoefficiant(n - 1, i);
-				float b = pow(1 - t, n - 2 - i);
-				float c = 0;
-				if (i - 2 >= 0)
-					c = pow(t, i - 2);
-				else
-					c = pow(t, 1.0f / abs(i - 2));
-				d_point = d_point + (binomialCoefficiant(n - 1, i) * pow(1 - t, n - 2 - i) * c) * delta_point;
+
+				d_point = d_point + (binomialCoefficiant(n-1, i) * pow(1 - t, n - 2 - i) * pow(t, i-2)) * delta_point;
 			}
 			point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i) * controlVertices[i].getVec3());
 		}
 
 
-		glm::vec3 d = ((float)n * d_point) - point;
+		glm::vec3 d = ((float)n*d_point) - point;
 		d = glm::normalize(d) * 3.0f;
 		d_point = point + d;
 

@@ -47,7 +47,8 @@ public:
 	virtual void bezier_derivative() {};
 	virtual void calcRationalCurve() {};
 	virtual void calcRationalCurve(int) {};
-	virtual vector<PointVector> calcDerivatives(int) { return vector<PointVector>(); };
+
+	virtual vector<PointVector> calcDerivative(float) { return vector<PointVector>(); };
 
 protected:
 	PolyObject* obj;

@@ -446,7 +446,7 @@ void Bezier_Surface::updateBezierSurface() {
 		bezierSurface = new PolyObject(program);
 	}
 
-	bezierSurface->setColor(PointVector(0.0f, 0.0f, 1.0f, 0.0f));
+	bezierSurface->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
 
 	/* Iterating through the curveVertices of each u_curve */
 	for (float i = 0; i < u_curves.size(); i++) {

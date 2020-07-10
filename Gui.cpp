@@ -405,6 +405,7 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 		s.controlStructure->vertices.at(pointIndex).weight = value;
 		break;
 	}
+	cout << "PointIndex: " << pointIndex << " CoordIndex: " << coorIndex << " Value: " << value << endl;;
 	s.buildControlStructure();
 	s.updateBezierSurface();
 	updateDisplay();

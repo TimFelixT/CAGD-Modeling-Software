@@ -46,12 +46,18 @@ public:
 	bool show_surface_toggle = false;
 	bool structure_toggle = false;
 
+	void initShader(float, glm::vec4, glm::vec3, glm::vec3, glm::vec3, float);
+
 private:
 	std::stack <glm::mat4x4> matrixStack;
 	cg::GLSLProgram* program;
 	glm::mat4x4 view;
 	glm::mat4x4 projection;
 	glm::mat4x4 model;
+
+
+	cg::GLSLProgram programGouraudShaded;
+	cg::GLSLProgram programPhongShaded;
 
 	vector<CurveBezier*> allCurves;
 	vector<Bezier_Surface*> allSurfaces;
@@ -81,4 +87,11 @@ private:
 
 	Gui* gui;
 	friend class Gui;
+
+
+	void setShaderProgram(int);
+	void initShader_(cg::GLSLProgram&, const std::string&, const std::string&);
+	void initGouraudShader(float, glm::vec4, glm::vec3, glm::vec3, glm::vec3, float);
+	void initPhongShader(float, glm::vec4, glm::vec3, glm::vec3, glm::vec3, float);
+
 };

@@ -5,7 +5,6 @@
 #include "header/GlobalFunctions.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-
 	surface = new Bezier_Surface("UB1_1.obj", prog);
 
 	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
@@ -424,5 +423,69 @@ void ViewPanel::updateSurface() {
 	for (Bezier_Surface* s : allSurfaces) {
 		s->buildControlStructure();
 		s->updateBezierSurface();
+	}
+}
+
+
+
+
+//Shader Methoden
+void ViewPanel::initShader_(cg::GLSLProgram& program, const std::string& vert, const std::string& frag) {
+	if (!program.compileShaderFromFile(vert.c_str(), cg::GLSLShader::VERTEX))
+	{
+		throw std::runtime_error("COMPILE VERTEX: " + program.log());
+	}
+
+	if (!program.compileShaderFromFile(frag.c_str(), cg::GLSLShader::FRAGMENT))
+	{
+		throw std::runtime_error("COMPILE FRAGMENT: " + program.log());
+	}
+
+	if (!program.link())
+	{
+		throw std::runtime_error("LINK: " + program.log());
+	}
+}
+void ViewPanel::initGouraudShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess) {
+	programGouraudShaded.use();
+	programGouraudShaded.setUniform("light", light);
+	programGouraudShaded.setUniform("lightI", lightI);
+	programGouraudShaded.setUniform("surfKa", surfKa);
+	programGouraudShaded.setUniform("surfKd", surfKd);
+	programGouraudShaded.setUniform("surfKs", surfKs);
+	programGouraudShaded.setUniform("surfShininess", surfShininess);
+}
+void ViewPanel::initPhongShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess) {
+	programPhongShaded.use();
+	programPhongShaded.setUniform("light", light);
+	programPhongShaded.setUniform("lightI", lightI);
+	programPhongShaded.setUniform("surfKa", surfKa);
+	programPhongShaded.setUniform("surfKd", surfKd);
+	programPhongShaded.setUniform("surfKs", surfKs);
+	programPhongShaded.setUniform("surfShininess", surfShininess);
+}
+void ViewPanel::initShader(float lightI, glm::vec4 light, glm::vec3 surfKa, glm::vec3 surfKd, glm::vec3 surfKs, float surfShininess)
+{
+	initShader_(programPhongShaded, "shader/shadedPhong.vert", "shader/shadedPhong.frag");
+	initPhongShader(lightI, light, surfKa, surfKd, surfKs, surfShininess);
+
+	initShader_(programGouraudShaded, "shader/shadedGouraud.vert", "shader/shadedGouraud.frag");
+	initGouraudShader(lightI, light, surfKa, surfKd, surfKs, surfShininess);
+}
+
+void ViewPanel::setShaderProgram(int shaderIndex) {
+	for (Bezier_Surface* s : allSurfaces) {
+		switch (shaderIndex) {
+		case 0:
+			s->getBezierSurface()->setShaderProgram(program);
+			break;
+		case 1:
+			s->getBezierSurface()->setShaderProgram(&programGouraudShaded);
+			break;
+		case 2:
+			s->getBezierSurface()->setShaderProgram(&programPhongShaded);
+			break;
+		}
+
 	}
 }

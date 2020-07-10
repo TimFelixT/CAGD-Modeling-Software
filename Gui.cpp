@@ -60,6 +60,8 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnSplitSurface"] = BindJSCallback(&Gui::OnSplitSurface);
 	global["OnSurfaceDegreeIncrease"] = BindJSCallback(&Gui::OnSurfaceDegreeIncrease);
 	global["OnResetSurfaces"] = BindJSCallback(&Gui::OnResetSurfaces);
+	global["OnToggleSurfaceDerivative"] = BindJSCallback(&Gui::OnToggleSurfaceDerivative);
+
 
 	loadData();
 }
@@ -356,6 +358,7 @@ void Gui::OnToggleShader(const JSObject& thisObject, const JSArgs& args) {
 	for (Bezier_Surface* s : viewPanel->allSurfaces) {
 		s->setBezierSurfaceProgramNr(shaderIndex);
 	}
+	viewPanel->setShaderProgram(shaderIndex);
 	updateDisplay();
 }
 void Gui::OnIncreaseSurfaceT(const JSObject& thisObject, const JSArgs& args) {
@@ -430,14 +433,23 @@ void Gui::OnResetSurfaces(const JSObject& thisObject, const JSArgs& args) {
 	addSurfaces();
 }
 
-
-
 void Gui::updateDisplay() {
 	*needInit = true;
 	glutPostRedisplay();
 }
 
+void Gui::OnToggleSurfaceDerivative(const JSObject& thisObject, const JSArgs& args) {
+	static bool toggle = false;
+	toggle = !toggle;
 
+	double uValue = args[0];
+	double vValue = args[1];
+
+	if (toggle) {
+		cout << uValue << endl;
+		cout << vValue << endl;
+	}
+}
 
 
 

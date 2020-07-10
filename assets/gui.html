@@ -75,6 +75,9 @@
         var tValueDecasteljau = 0.5;
         var tSurface = 2;
         var tDerivative = 0.5;
+
+        var uDerivative = 0.5;
+        var vDerivative = 0.5;
         /* TabLayout Functions */
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
@@ -395,6 +398,24 @@
                 OnSplitSurface(-1, -1, -1);
             }
         }
+        function changeDerivativeU(direction, label) {
+            //0 = Increase, 1 = Decrease
+            if (uDerivative < 0.96 && direction == 0) {
+                uDerivative += 0.05;
+            } else if (uDerivative >= 0.05 && direction == 1) {
+                uDerivative -= 0.05;
+            }
+            label.innerText = "Wert U: " + (Math.round(uDerivative * 100) / 100).toFixed(2);
+        }
+        function changeDerivativeV(direction, label) {
+            //0 = Increase, 1 = Decrease
+            if (vDerivative < 0.96 && direction == 0) {
+                vDerivative += 0.05;
+            } else if (vDerivative >= 0.05 && direction == 1) {
+                vDerivative -= 0.05;
+            }
+            label.innerText = "Wert V: " + (Math.round(vDerivative * 100) / 100).toFixed(2);
+        }
     </script>
 </head>
 
@@ -492,6 +513,20 @@
                 <i class="arrow up" onclick="changeSurfaceT(0, document.querySelector('#surfaceTSpan'))" style="margin-right:10px;"></i>
                 <i class="arrow down" onclick="changeSurfaceT(1, document.querySelector('#surfaceTSpan'))"></i>
                 <span id="surfaceTSpan">Wert: 2</span>
+            </div>
+            <div>
+                <br/>
+                <label>Ableitungs "U" und "V" verändern</label>
+                <br/>
+                <i class="arrow up" onclick="changeDerivativeU(0, document.querySelector('#uDerivativeSpan'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeDerivativeU(1, document.querySelector('#uDerivativeSpan'))"></i>
+                <span id="uDerivativeSpan">Wert U: 0.50</span>
+                <br/>
+                <i class="arrow up" onclick="changeDerivativeV(0, document.querySelector('#vDerivativeSpan'))" style="margin-right:10px;"></i>
+                <i class="arrow down" onclick="changeDerivativeV(1, document.querySelector('#vDerivativeSpan'))"></i>
+                <span id="vDerivativeSpan">Wert V: 0.50</span>
+                <br/>
+                <button onclick='OnToggleSurfaceDerivative(uDerivative, vDerivative)'>Flächenableitung an Stelle U, V anzeigen</button>
             </div>
         </div>
     </div>

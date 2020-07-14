@@ -550,6 +550,26 @@ void Bezier_Surface::subdivision(float t, std::vector<PointVector>& input, std::
 	newVertices2.push_back(vertices[0]);
 }
 
+PointVector Bezier_Surface::getNormal(float u, float v) {
+	vector<PointVector> u_verts;
+	vector<PointVector> v_verts;
+
+	for (int i = 0; i < v_curves.size(); i++) {
+		vector<PointVector> u_curve;
+		for (int j = 0; j < v_curves[0]->getControlVertices().size(); j++) {
+			u_curve.push_back(v_curves[j]->getControlVertices()[i]);
+		}
+		v_verts.push_back(calcPoint_bernstein(u_curve, u));
+		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v));
+	}
+
+	PointVector ca = calcDerivative_bernstein(u_verts, u) - calcPoint_bernstein(u_verts, u);
+	PointVector cb = calcDerivative_bernstein(v_verts, v) - calcPoint_bernstein(v_verts, v);
+	PointVector norm = ca.crossProduct(cb);
+	norm.normalize();
+	return norm;
+}
+
 void Bezier_Surface::calcTangent(float u, float v) {
 	if (u_deriv != nullptr)
 		delete u_deriv;

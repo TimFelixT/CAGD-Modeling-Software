@@ -76,6 +76,8 @@ private:
 
 	PointVector calcDriftVector(int, PointVector&);
 
+	bool drawSurfaceControlStructure = true;
+
 	friend class Gui;
 	friend class ViewPanel;
 };

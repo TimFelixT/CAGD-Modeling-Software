@@ -5,7 +5,7 @@
 #include "header/GlobalFunctions.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	surface = new Bezier_Surface("UB1_1.obj", prog);
+	surface = new Bezier_Surface("beziersurf.obj", prog);
 
 	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
 	deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);
@@ -239,7 +239,7 @@ void ViewPanel::selectPointPostSurface(glm::vec3& cameraPos, glm::vec3& rayVecto
 	}
 	if (distance < globalConstants.SELECTION_OFFSET) {
 		selectedPointNormalSurface = rayVector;
-		cout << "Selected Surface Point: " << selectedPointVectorSurface->xCoor << "   " << selectedPointVectorSurface->yCoor << "   " << selectedPointVectorSurface->zCoor << endl;
+		cout << "Selected Surface Point: " << selectedPointVectorSurface->xCoor << "   " << selectedPointVectorSurface->yCoor << "   " << selectedPointVectorSurface->zCoor << "   " << selectedPointVectorSurface->weight << endl;
 	} else {
 		selectedPointVectorSurface = nullptr;
 		selectedPointNormalSurface = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -390,18 +390,47 @@ void ViewPanel::drawStructure(int curveType) {
 			}
 		}
 
+		/*Anfang: Zum Anzeigen des Endpunktes in der Struktur*/
+		std::vector<PointVector> controlVertices = b->obj->getVertices();
+		PointVector p;
+		PointVector prev_p;
+		int n = controlVertices.size() - 1;
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n - i; j++) {
+				controlVertices[j] = (controlVertices[j] * (1 - t)) + (controlVertices[j + 1] * t);
+				if (i == n - 2 && j == 0) {
+					prev_p = controlVertices[j];
+				}
+				if (i == n - 2 && j == 1) {
+					p = controlVertices[j];
+					prev_p = prev_p * (1 - t) + (p * t);
+					deCasteljauStructure->addStructurePoint(prev_p.getVec3());
+					deCasteljauStructure->addStructureColor(globalFunctions.mixGlmVector(deCasteljauStructure->getColor().getVec3()));
+				}
+			}
+		}
+		/*Ende: Zum Anzeigen des Endpunktes in der Struktur*/
+
 		int k = 0;
 
 		for (int i = vertices.size() - 2; i > 0; i--) {
 			for (int j = 0; j < i; j++) {
 				deCasteljauStructure->pushIndex(k);
 				deCasteljauStructure->pushIndex(k + 1);
+				deCasteljauStructure->pushIndex(k);
+				deCasteljauStructure->pushIndex(k + 1);
 				k++;
 			}
 			k++;
 		}
+		deCasteljauStructure->pushIndex(deCasteljauStructure->structurePoints.size()-1);
 	}
 }
+
+
+
+
 
 void ViewPanel::updateBernstein() {
 	for (CurveBezier* b : allCurves) {

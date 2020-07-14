@@ -212,6 +212,10 @@
     <CopyFileToFolders Include="libs\ultralight\bin\WebCore.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <None Include="shader\shadedGouraud.frag" />
+    <None Include="shader\shadedGouraud.vert" />
+    <None Include="shader\shadedPhong.frag" />
+    <None Include="shader\shadedPhong.vert" />
     <None Include="shader\simple.frag" />
     <None Include="shader\simple.vert" />
   </ItemGroup>

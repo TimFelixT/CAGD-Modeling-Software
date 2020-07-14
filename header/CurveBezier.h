@@ -30,6 +30,7 @@ public:
 	void rotateX();
 	void rotateY();
 	void rotateZ();
+	void translate(PointVector);
 
 
 	void addPointEnd(PointVector point);
@@ -47,6 +48,8 @@ public:
 	virtual void bezier_derivative() {};
 	virtual void calcRationalCurve() {};
 	virtual void calcRationalCurve(int) {};
+
+	virtual vector<PointVector> calcDerivative(float) { return vector<PointVector>(); };
 
 protected:
 	PolyObject* obj;
@@ -73,6 +76,7 @@ protected:
 	bool initialized = false;	//Soll aktuell nur einmal gerendert werden, muss ggf. aber angepasst werden, wenn Kontrollpunkte verändert werden
 
 	friend class Gui;
+	friend class ViewPanel;
 private:
 	unsigned int derivative = 0;
 };

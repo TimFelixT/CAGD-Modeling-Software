@@ -61,6 +61,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnSurfaceDegreeIncrease"] = BindJSCallback(&Gui::OnSurfaceDegreeIncrease);
 	global["OnResetSurfaces"] = BindJSCallback(&Gui::OnResetSurfaces);
 	global["OnToggleSurfaceDerivative"] = BindJSCallback(&Gui::OnToggleSurfaceDerivative);
+	global["OnToggleSurfaceNormals"] = BindJSCallback(&Gui::OnToggleSurfaceNormals);
 
 
 	loadData();
@@ -345,6 +346,16 @@ void Gui::OnDerivativeTChange(const JSObject& thisObject, const JSArgs& args) {
 	for (CurveBezier* c : viewPanel->allCurves) {
 		c->derivative_t = t;
 		c->bezier_derivative();
+	}	
+	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		for (CurveBezier* c : s->getUCurves()) {
+			c->derivative_t = t;
+			c->bezier_derivative();
+		}
+		for (CurveBezier* c : s->getVCurves()) {
+			c->derivative_t = t;
+			c->bezier_derivative();
+		}
 	}
 	updateDisplay();
 }
@@ -395,6 +406,7 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 		s.controlStructure->vertices.at(pointIndex).weight = value;
 		break;
 	}
+	cout << "PointIndex: " << pointIndex << " CoordIndex: " << coorIndex << " Value: " << value << endl;;
 	s.buildControlStructure();
 	s.updateBezierSurface();
 	updateDisplay();
@@ -448,6 +460,16 @@ void Gui::OnToggleSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 	if (toggle) {
 		cout << uValue << endl;
 		cout << vValue << endl;
+	}
+}
+
+void Gui::OnToggleSurfaceNormals(const JSObject& thisObject, const JSArgs& args) {
+	static bool toggle = false;
+	toggle = !toggle;
+
+
+	if (toggle) {
+		cout << "Toggle OnToggleSurfaceNormals" << endl;
 	}
 }
 

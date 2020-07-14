@@ -12,8 +12,6 @@ PolyObject::PolyObject() {
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-
-	//initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 }
 
 PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog) {
@@ -22,8 +20,6 @@ PolyObject::PolyObject(cg::GLSLProgram* prog) : program(prog) {
 	color.xCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.yCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.zCoor = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-
-	//initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 }
 
 PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
@@ -35,8 +31,6 @@ PolyObject::PolyObject(char* filename, cg::GLSLProgram* prog) : program(prog) {
 
 	ObjFileParser parser;
 	parser.parseObjectFile(filename, this, nullptr, nullptr);
-
-	//initShader(1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.5f, 0.5f, 0.5f), 15.0f);
 }
 
 PolyObject::~PolyObject() {
@@ -49,6 +43,7 @@ PolyObject::~PolyObject() {
 void PolyObject::init() {
 	this->verts.clear();
 	this->cols.clear();
+	updateNormalBuffer();
 
 	for (auto vert : vertices) {
 		verts.push_back(vert.getVec3());
@@ -81,12 +76,33 @@ void PolyObject::init() {
 	// Step 2: Create vertex buffer object for color attribute and bind it to...
 	glGenBuffers(1, &colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, cols.size() * sizeof(glm::vec3), cols.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, cols.size() * sizeof(glm::vec3), cols.data(), GL_STATIC_DRAW);	
 
 	// Bind it to color.
 	pos = glGetAttribLocation(programId, "color");
 	glEnableVertexAttribArray(pos);
 	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	// Step 2: Create vertex buffer object for color attribute and bind it to...
+
+	glGenBuffers(1, &normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, norms.size() * sizeof(glm::vec3), norms.data(), GL_STATIC_DRAW);
+
+	// Bind it to normal.
+	pos = glGetAttribLocation(programId, "normal");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	if (normals.size() > 0 && programNr > 0) {
+		glGenBuffers(1, &normalBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+		glBufferData(GL_ARRAY_BUFFER, norms.size() * sizeof(glm::vec3), norms.data(), GL_STATIC_DRAW);
+
+		// Bind it to normals.
+		pos = glGetAttribLocation(programId, "normal");
+		glEnableVertexAttribArray(pos);
+		glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	}
 
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
 	glGenBuffers(1, &indexBuffer);
@@ -112,6 +128,7 @@ void PolyObject::init() {
 	pos = glGetAttribLocation(programId, "color");
 	glEnableVertexAttribArray(pos);
 	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 	//Es wird ein Index Buffer gebraucht, kommt aber weil nur Punkte dargestellt werden nie zum Einsatz
 	//Statt einen neuen daher zu erstellen, habe ich den schon vorhandenen genommen
 	glGenBuffers(1, &indexBuffer);
@@ -182,16 +199,28 @@ void PolyObject::draw(glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 mode
 void PolyObject::rotateX() {
 	globalFunctions.rotateXPointVector(vertices);
 	globalFunctions.rotateXGlmVector(structurePoints);
+	for (vector<PointVector> &v: faces) {
+		globalFunctions.rotateXPointVector(v);
+	}
+
 	updateCurveBuffer();
 }
 void PolyObject::rotateY() {
 	globalFunctions.rotateYPointVector(vertices);
 	globalFunctions.rotateYGlmVector(structurePoints);
+	for (vector<PointVector>& v : faces) {
+		globalFunctions.rotateYPointVector(v);
+	}
+
 	updateCurveBuffer();
 }
 void PolyObject::rotateZ() {
 	globalFunctions.rotateZPointVector(vertices);
 	globalFunctions.rotateZGlmVector(structurePoints);
+	for (vector<PointVector>& v : faces) {
+		globalFunctions.rotateZPointVector(v);
+	}
+
 	updateCurveBuffer();
 }
 
@@ -199,6 +228,13 @@ void PolyObject::updateCurveBuffer() {
 	this->verts.clear();
 	for (auto& ptvector : vertices) {
 		verts.push_back(ptvector.getVec3());
+	}
+}
+
+void PolyObject::updateNormalBuffer() {
+	this->norms.clear();
+	for (auto& ptvector : normals) {
+		norms.push_back(ptvector.getVec3());
 	}
 }
 
@@ -358,9 +394,12 @@ void PolyObject::setProgramNr(unsigned int nr) {
 }
 
 void PolyObject::translate(PointVector tv) {
-	for (PointVector& pt : vertices) {
-		pt = pt + tv;
+	globalFunctions.translatePointVector(vertices, tv);
+	globalFunctions.translateGlmVector(structurePoints, tv.getVec3());
+	for (vector<PointVector>& v : faces) {
+		globalFunctions.translatePointVector(v, tv);
 	}
+	updateCurveBuffer();
 }
 
 void PolyObject::clearVertices() {

@@ -570,6 +570,20 @@ PointVector Bezier_Surface::getNormal(float u, float v) {
 	return norm;
 }
 
+PointVector Bezier_Surface::getPoint(float u, float v) {
+	vector<PointVector> u_verts;
+
+	for (int i = 0; i < v_curves.size(); i++) {
+		vector<PointVector> u_curve;
+		for (int j = 0; j < v_curves[0]->getControlVertices().size(); j++) {
+			u_curve.push_back(v_curves[j]->getControlVertices()[i]);
+		}
+		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v));
+	}
+
+	return calcPoint_bernstein(u_verts, u);
+}
+
 void Bezier_Surface::calcTangent() {
 	if (u_deriv != nullptr)
 		delete u_deriv;
@@ -586,12 +600,15 @@ void Bezier_Surface::calcTangent() {
 	vector<PointVector> v_verts;
 
 	for (int i = 0; i < v_curves.size(); i++) {
+		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v_der));
+	}
+	
+	for (int i = 0; i < v_curves[0]->getControlVertices().size(); i++) {
 		vector<PointVector> u_curve;
-		for (int j = 0; j < v_curves[0]->getControlVertices().size(); j++) {
+		for (int j = 0; j < v_curves.size(); j++) {
 			u_curve.push_back(v_curves[j]->getControlVertices()[i]);
 		}
 		v_verts.push_back(calcPoint_bernstein(u_curve, u_der));
-		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v_der));
 	}
 
 	/* Derivative in u-direction */
@@ -623,6 +640,31 @@ void Bezier_Surface::calcTangent() {
 	normal->pushColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 	normal->pushColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 }
+//
+//void Bezier_Surface::calcNormals() {
+//	if (normals != nullptr)
+//		delete normals;
+//	normals = new PolyObject(program);
+//	normals->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
+//
+//	PointVector norm_root;
+//	PointVector norm;
+//	int c = 0;
+//	for (float u = 0; u <= 1.0f; u += 1.0f / t) {
+//		for (float v = 0; v <= 1.0f; v += 1.0f / t) {
+//			norm_root = getPoint(u, v);
+//			norm = getNormal(u, v);
+//
+//			normals->pushVertice(norm_root);
+//			normals->pushVertice(norm_root + (norm * 3));
+//			bezierSurface->pushNormal(norm);
+//			normals->pushColor();
+//			normals->pushColor();
+//			normals->pushIndex(c++);
+//			normals->pushIndex(c++);
+//		}
+//	}
+//}
 
 void Bezier_Surface::calcNormals() {
 	/** if (normals != nullptr)
@@ -639,7 +681,7 @@ void Bezier_Surface::calcNormals() {
 
 	for (int i = 0; i < verts.size(); i++) {
 		for (int j = 0; j < inds.size(); j++) {
-			if (verts[i].getVec4() == verts[inds[j]].getVec4()) {
+			if (&verts[i] == &verts[inds[j]]) {
 				PointVector ca;
 				PointVector cb;
 				PointVector normal_root;
@@ -655,14 +697,13 @@ void Bezier_Surface::calcNormals() {
 					normal_root = verts[inds[j]];
 				}
 				else if (j % 3 == 2) {
-					ca = verts[inds[j - 2]] - verts[inds[j]];
-					cb = verts[inds[j - 1]] - verts[inds[j]];
+					ca = verts[inds[j - 1]] - verts[inds[j - 2]];
+					cb = verts[inds[j]] - verts[inds[j - 2]];
 					normal_root = verts[inds[j]];
 				}
 
 				PointVector normal = ca.crossProduct(cb);
 				normal.normalize();
-				//normal.xCoor = abs(normal.xCoor);
 				bezierSurface->pushNormal(normal);
 
 				normal = normal * 3;
@@ -860,7 +901,6 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, b
 	newSurface->buildControlStructure();
 	newSurface->updateBezierSurface();
 	newSurface->calcNormals();
-
 
 
 	if (_direction) {

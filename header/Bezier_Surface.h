@@ -45,6 +45,7 @@ public:
 	void subdivideV(float, vector<Bezier_Surface*>*, bool, PointVector&);
 
 	void setBezierSurfaceProgramNr(unsigned int);
+	void setBezier(bool);
 
 private:
 	void calculateVCurves();
@@ -70,6 +71,7 @@ private:
 	PolyObject* u_deriv;
 	PolyObject* v_deriv;
 
+	bool bezier_toggle = false;
 	bool showUVnormal = false;
 	int deg_m, deg_n, t;
 	float u_der = 0.5f, v_der = 0.5f;

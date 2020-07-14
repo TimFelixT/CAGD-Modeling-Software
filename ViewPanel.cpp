@@ -43,6 +43,10 @@ void ViewPanel::setGui(Gui* g) {
 
 void ViewPanel::toggleBezierCurve() {
 	bezier_toggle = !bezier_toggle;
+	for (Bezier_Surface* s : allSurfaces) {
+		s->setBezier(bezier_toggle);
+		s->updateBezierSurface();
+	}
 }
 void ViewPanel::toggleStructure() {
 	structure_toggle = !structure_toggle;

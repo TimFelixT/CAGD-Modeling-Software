@@ -312,9 +312,9 @@ void PolyObject::pushColor(PointVector _color)
 }
 
 void PolyObject::pushNormal(PointVector normal) {
-	glm::vec3 norm = glm::normalize(normal.getVec3());
+	//glm::vec3 norm = glm::normalize(normal.getVec3());
 
-	normals.push_back(PointVector(norm.x, norm.y, norm.z, 0));
+	normals.push_back(normal);
 }
 
 PointVector PolyObject::getColor()

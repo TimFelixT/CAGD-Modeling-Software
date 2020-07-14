@@ -452,15 +452,13 @@ void Gui::updateDisplay() {
 }
 
 void Gui::OnToggleSurfaceDerivative(const JSObject& thisObject, const JSArgs& args) {
-	static bool toggle = false;
-	toggle = !toggle;
-
 	double uValue = args[0];
 	double vValue = args[1];
 
-	if (toggle) {
-		cout << uValue << endl;
-		cout << vValue << endl;
+	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		s->showUVnormal = !s->showUVnormal;
+		s->u_der = uValue;
+		s->v_der = vValue;
 	}
 }
 void Gui::OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& args) {

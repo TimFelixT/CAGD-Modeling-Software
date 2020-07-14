@@ -5,7 +5,7 @@
 #include "header/GlobalFunctions.h"
 
 ViewPanel::ViewPanel(cg::GLSLProgram* prog) : program(prog), model(glm::mat4x4(1.0f)) {
-	surface = new Bezier_Surface("beziersurf.obj", prog);
+	surface = new Bezier_Surface("UB1_1.obj", prog);
 
 	bernstein_bezier = new Bernstein(new PolyObject("testObject.obj", prog), prog);
 	deCasteljau_bezier = new DeCasteljau(new PolyObject("testObject.obj", prog), prog);

@@ -295,7 +295,9 @@ void Gui::OnSplitCurve(const JSObject& thisObject, const JSArgs& args) {
 			c.initialized = false;
 			updateDisplay();
 			u = u - t_vec[i];
-			curveIndex++;
+
+			curveIndex = viewPanel->allCurves.size()-1;
+
 			newCurve.clear();
 		}
 		if (dynamic_cast<Bernstein*>(&tmpCurve)) {

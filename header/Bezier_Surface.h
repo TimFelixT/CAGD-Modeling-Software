@@ -39,7 +39,7 @@ public:
 
 
 	void subdivideU(float, float, vector<Bezier_Surface*>*);
-	void subdivideV(float, vector<Bezier_Surface*>*, bool);
+	void subdivideV(float, vector<Bezier_Surface*>*, bool, PointVector);
 
 	void setBezierSurfaceProgramNr(unsigned int);
 
@@ -70,6 +70,8 @@ private:
 	bool showUVnormal = false;
 	int deg_m, deg_n, t;
 	float u_der = 0.5f, v_der = 0.5f;
+
+	PointVector calcDriftVector(int deg_m, int deg_n, PointVector);
 
 	friend class Gui;
 	friend class ViewPanel;

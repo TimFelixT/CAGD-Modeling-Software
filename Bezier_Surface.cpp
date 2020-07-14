@@ -744,13 +744,14 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	newSurface->calcNormals();
 	allSurfaces->push_back(newSurface);
 
+	PointVector normal;
+	//TODO setzen der Normale
 
-
-	subdivideV(v, allSurfaces, true);
-	newSurface->subdivideV(v, allSurfaces, false);
+	subdivideV(v, allSurfaces, true, normal);
+	newSurface->subdivideV(v, allSurfaces, false, normal);
 }
 
-void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, bool _direction) {
+void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, bool _direction, PointVector normal) {
 
 	PolyObject* newPo = new PolyObject(program);
 	Bezier_Surface* newSurface = new Bezier_Surface(newPo, deg_m, deg_n, this->t, program);
@@ -827,6 +828,11 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, b
 
 	allSurfaces->push_back(newSurface);
 }
+
+PointVector Bezier_Surface::calcDriftVector(int deg_m, int deg_n, PointVector) {
+	return PointVector();
+}
+
 
 void Bezier_Surface::setBezierSurfaceProgramNr(unsigned int nr)
 {

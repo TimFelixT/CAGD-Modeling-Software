@@ -406,6 +406,7 @@
                 uDerivative -= 0.05;
             }
             label.innerText = "Wert U: " + (Math.round(uDerivative * 100) / 100).toFixed(2);
+            OnChangeSurfaceDerivative(uDerivative, vDerivative)
         }
         function changeDerivativeV(direction, label) {
             //0 = Increase, 1 = Decrease
@@ -415,6 +416,7 @@
                 vDerivative -= 0.05;
             }
             label.innerText = "Wert V: " + (Math.round(vDerivative * 100) / 100).toFixed(2);
+            OnChangeSurfaceDerivative(uDerivative, vDerivative)
         }
     </script>
 </head>
@@ -526,7 +528,7 @@
                 <i class="arrow down" onclick="changeDerivativeV(1, document.querySelector('#vDerivativeSpan'))"></i>
                 <span id="vDerivativeSpan">Wert V: 0.50</span>
                 <br/>
-                <button onclick='OnToggleSurfaceDerivative(uDerivative, vDerivative)'>Flächenableitung an Stelle U, V anzeigen</button>
+                <button onclick='OnToggleSurfaceDerivative()'>Flächenableitung an Stelle U, V anzeigen</button>
                 <br/>
                 <br/>
                 <button onclick='OnToggleSurfaceNormals()'>Normalen der Flächen anzeigen</button>

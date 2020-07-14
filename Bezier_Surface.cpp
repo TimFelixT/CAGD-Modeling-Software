@@ -2,6 +2,7 @@
 #include "header/ObjFileParser.h"
 #include "header/DeCasteljau.h"
 #include "header/Bernstein.h"
+#include "header/Bezier_Operations.h"
 
 int lock = 0;
 /* TODO: bei neukalkulierung der bezier kurve auch die kontrollstruktur wieder zentrieren*/
@@ -66,6 +67,9 @@ void Bezier_Surface::init()
 		//curve->getDeCasteljauStructure()->init();
 	}
 
+	normal->init();
+	u_deriv->init();
+	v_deriv->init();
 	normals->init();
 	bezierSurface->init();
 	controlStructure->init();
@@ -122,6 +126,11 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 				b->getDerativeStructure()->draw(projection * view * model);
 			}
 		}
+	}
+	if (showUVnormal) {
+		normal->draw(projection * view * model);
+		u_deriv->draw(projection * view * model);
+		v_deriv->draw(projection * view * model);
 	}
 	controlStructure->draw(projection * view * model);
 	bezierSurface->draw(projection, view, model, GL_TRIANGLES);
@@ -251,6 +260,9 @@ void Bezier_Surface::degree_increase_v()
 
 void Bezier_Surface::rotateX()
 {
+	normal->rotateX();
+	u_deriv->rotateX();
+	v_deriv->rotateX();
 	bezierSurface->rotateX();
 	controlStructure->rotateX();
 	normals->rotateX();
@@ -275,6 +287,10 @@ void Bezier_Surface::rotateX()
 
 void Bezier_Surface::rotateY()
 {
+
+	normal->rotateY();
+	u_deriv->rotateY();
+	v_deriv->rotateY();
 	normals->rotateY();
 	bezierSurface->rotateY();
 	controlStructure->rotateY();
@@ -299,6 +315,9 @@ void Bezier_Surface::rotateY()
 
 void Bezier_Surface::rotateZ()
 {
+	normal->rotateZ();
+	u_deriv->rotateZ();
+	v_deriv->rotateZ();
 	normals->rotateZ();
 	bezierSurface->rotateZ();
 	controlStructure->rotateZ();
@@ -455,6 +474,7 @@ void Bezier_Surface::updateBezierSurface() {
 	/* Recalculating the bezier curves */
 	calculateVCurves();
 	calculateUCurves();
+	calcTangent(u_der, v_der);
 
 	/* Cleaning */
 	if (bezierSurface != nullptr) {
@@ -528,6 +548,80 @@ void Bezier_Surface::subdivision(float t, std::vector<PointVector>& input, std::
 	}
 	newVertices1.push_back(vertices[0]);
 	newVertices2.push_back(vertices[0]);
+}
+
+PointVector Bezier_Surface::getNormal(float u, float v) {
+	vector<PointVector> u_verts;
+	vector<PointVector> v_verts;
+
+	for (int i = 0; i < v_curves.size(); i++) {
+		vector<PointVector> u_curve;
+		for (int j = 0; j < v_curves[0]->getControlVertices().size(); j++) {
+			u_curve.push_back(v_curves[j]->getControlVertices()[i]);
+		}
+		v_verts.push_back(calcPoint_bernstein(u_curve, u));
+		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v));
+	}
+
+	PointVector ca = calcDerivative_bernstein(u_verts, u) - calcPoint_bernstein(u_verts, u);
+	PointVector cb = calcDerivative_bernstein(v_verts, v) - calcPoint_bernstein(v_verts, v);
+	PointVector norm = ca.crossProduct(cb);
+	norm.normalize();
+	return norm;
+}
+
+void Bezier_Surface::calcTangent(float u, float v) {
+	if (u_deriv != nullptr)
+		delete u_deriv;
+	if (v_deriv != nullptr)
+		delete v_deriv;
+	if (normal != nullptr)
+		delete normal;
+
+	u_deriv = new PolyObject(program);
+	v_deriv = new PolyObject(program);
+	normal = new PolyObject(program);
+
+	vector<PointVector> u_verts;
+	vector<PointVector> v_verts;
+
+	for (int i = 0; i < v_curves.size(); i++) {
+		vector<PointVector> u_curve;
+		for (int j = 0; j < v_curves[0]->getControlVertices().size(); j++) {
+			u_curve.push_back(v_curves[j]->getControlVertices()[i]);
+		}
+		v_verts.push_back(calcPoint_bernstein(u_curve, u));
+		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v));
+	}
+
+	/* Derivative in u-direction */
+	u_deriv->pushVertice(calcPoint_bernstein(v_verts, v));
+	u_deriv->pushVertice(calcDerivative_bernstein(v_verts, v));
+	u_deriv->pushColor(PointVector(1.0f, 0.0f, 0.0f, 0.0f));
+	u_deriv->pushColor(PointVector(1.0f, 0.0f, 0.0f, 0.0f));
+
+	/* Derivative in v-direction */
+	v_deriv->pushVertice(calcPoint_bernstein(u_verts, u));
+	v_deriv->pushVertice(calcDerivative_bernstein(u_verts, u));
+	v_deriv->pushColor(PointVector(0.0f, 0.0f, 1.0f, 0.0f));
+	v_deriv->pushColor(PointVector(0.0f, 0.0f, 1.0f, 0.0f));
+
+	/* Fill the derivatives with indices */
+	for (int i = 0; i < 2; i++) {
+		u_deriv->pushIndex(i);
+		v_deriv->pushIndex(i);
+		normal->pushIndex(i);
+	}
+	PointVector ca = v_deriv->getVertices()[1] - v_deriv->getVertices()[0];
+	PointVector cb = u_deriv->getVertices()[1] - u_deriv->getVertices()[0];
+
+	normal->pushVertice(v_deriv->getVertices()[0]);
+	PointVector n = ca.crossProduct(cb);
+	n.normalize();
+	n = n * 3;
+	normal->pushVertice(v_deriv->getVertices()[0] + n);
+	normal->pushColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
+	normal->pushColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 }
 
 void Bezier_Surface::calcNormals() {
@@ -619,7 +713,7 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 			controlStr->pushVertice(controlStructure->getFaces()[i][j]);
 			controlStr->pushColor();
 		}
-		for (int i = 0; i < controlStr->getVertices().size() -1; i++) {
+		for (int i = 0; i < controlStr->getVertices().size() - 1; i++) {
 			controlStructure->pushIndex(i);
 			controlStructure->pushIndex(i + 1);
 		}

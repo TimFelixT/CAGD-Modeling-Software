@@ -33,6 +33,7 @@ public:
 
 
 	void subdivision(float t, std::vector<PointVector>& input, std::vector<PointVector>& newVertices1, std::vector<PointVector>& newVertices2);
+	PointVector getNormal(float u, float v);
 	void calcTangent(float u, float v);
 	void updateCurves();
 	void updateBezierSurface();

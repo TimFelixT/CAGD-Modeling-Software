@@ -7,6 +7,7 @@ public:
 	~DeCasteljau();
 	void calcCurve() override;
 	void calcRationalCurve() override;
+	void calcRationalCurve(int) override;
 	void bezier_derivative() override;
 	void bezier_subdivision(vector<float> t_vec);
 	void toggleTRange();

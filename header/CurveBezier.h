@@ -50,9 +50,9 @@ public:
 	virtual void calcRationalCurve(int) {};
 
 	virtual vector<PointVector> calcDerivative(float) { return vector<PointVector>(); };
+	PolyObject* obj;
 
 protected:
-	PolyObject* obj;
 	PolyObject* d_obj;
 	PolyObject* deCasteljauStructure;
 

@@ -133,7 +133,7 @@ void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x
 		u_deriv->draw(projection * view * model);
 		v_deriv->draw(projection * view * model);
 	}
-	controlStructure->draw(projection * view * model);
+	if (drawSurfaceControlStructure) controlStructure->draw(projection * view * model);
 	bezierSurface->draw(projection, view, model, GL_TRIANGLES);
 
 	lock = 0;
@@ -688,7 +688,7 @@ void Bezier_Surface::calcTangent() {
 //}
 
 void Bezier_Surface::calcNormals() {
-	if (normals != nullptr)
+	/** if (normals != nullptr)
 		delete normals;
 	normals = new PolyObject(program);
 	normals->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
@@ -731,6 +731,49 @@ void Bezier_Surface::calcNormals() {
 
 				normals->pushVertice(normal_root);
 				normals->pushVertice(normal_root + normal);
+				normals->pushColor();
+				normals->pushColor();
+				normals->pushIndex(k++);
+				normals->pushIndex(k++);
+			}
+		}
+	} **/
+
+	if (normals != nullptr)
+		delete normals;
+	normals = new PolyObject(program);
+	normals->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
+	vector<PointVector> vertices = bezierSurface->getVertices();
+	vector<GLushort> indices = bezierSurface->getIndices();
+	int k = 0;
+
+	for (int i = 0; i < vertices.size(); i++) {
+		for (int j = 0; j < indices.size(); j++) {
+			if (&vertices[i] == &vertices[indices[j]]) {
+				PointVector normal;
+				PointVector a;
+				PointVector b;
+
+				if (j % 3 == 0) {
+					a = vertices[indices[j + 2]] - vertices[i];
+					b = vertices[indices[j + 1]] - vertices[i];
+				}
+				else if (j % 3 == 1) {
+					a = vertices[indices[j - 1]] - vertices[i];
+					b = vertices[indices[j + 1]] - vertices[i];
+				}
+				else {
+					a = vertices[indices[j - 1]] - vertices[i];
+					b = vertices[indices[j - 2]] - vertices[i];
+				}
+
+				normal = b.crossProduct(a);
+				normal.normalize();
+
+				bezierSurface->pushNormal(normal);
+				PointVector tmp = normal * 3;
+				normals->pushVertice(vertices[indices[j]]);
+				normals->pushVertice(vertices[indices[j]] + tmp);
 				normals->pushColor();
 				normals->pushColor();
 				normals->pushIndex(k++);

@@ -35,13 +35,14 @@ public:
 	void subdivision(float t, std::vector<PointVector>& input, std::vector<PointVector>& newVertices1, std::vector<PointVector>& newVertices2);
 	PointVector getNormal(float u, float v);
 	PointVector getPoint(float u, float v);
+
 	void calcTangent();
 	void updateCurves();
 	void updateBezierSurface();
 
 
 	void subdivideU(float, float, vector<Bezier_Surface*>*);
-	void subdivideV(float, vector<Bezier_Surface*>*, bool);
+	void subdivideV(float, vector<Bezier_Surface*>*, bool, PointVector&);
 
 	void setBezierSurfaceProgramNr(unsigned int);
 
@@ -72,6 +73,8 @@ private:
 	bool showUVnormal = false;
 	int deg_m, deg_n, t;
 	float u_der = 0.5f, v_der = 0.5f;
+
+	PointVector calcDriftVector(int, PointVector&);
 
 	friend class Gui;
 	friend class ViewPanel;

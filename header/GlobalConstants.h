@@ -8,5 +8,7 @@ static struct GlobalConstants {
 
 	const float SELECTION_OFFSET = 2;		//Der Abstand bei dem ein Punkt noch immer ausgewählt wird
 
+	const float DRIFT_RANGE = 2;
+
 } globalConstants;
 #endif // !GLOBAL_CONSTANTS

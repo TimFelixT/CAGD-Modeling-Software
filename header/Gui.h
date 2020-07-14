@@ -62,6 +62,7 @@ private:
     void OnToggleSurfaceDerivative(const JSObject&, const JSArgs&);
     void OnToggleSurfaceNormals(const JSObject&, const JSArgs&);
     void OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& args);
+    void OnToggleSurfaceControlStructure(const JSObject& thisObject, const JSArgs& args);
 
     /* OpenGL Funktionspointer */
     void (*glutPostRedisplay)();

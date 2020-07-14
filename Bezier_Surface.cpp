@@ -321,6 +321,27 @@ void Bezier_Surface::rotateZ()
 	}
 }
 
+void Bezier_Surface::translate(PointVector v) {
+	normals->translate(v);
+	bezierSurface->translate(v);
+	controlStructure->translate(v);
+
+	for (CurveBezier* curve : u_curves) {
+		if (dynamic_cast<Bernstein*>(curve)) {
+			curve->translate(v);
+			curve->getControlStructure()->translate(v);
+			curve->getDerativeStructure()->translate(v);
+		}
+	}
+	for (CurveBezier* curve : v_curves) {
+		if (dynamic_cast<Bernstein*>(curve)) {
+			curve->translate(v);
+			curve->getControlStructure()->translate(v);
+			curve->getDerativeStructure()->translate(v);
+		}
+	}
+}
+
 void Bezier_Surface::updateCurves() {
 
 	/* Recalculating the bezier curves */
@@ -651,11 +672,11 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 
 
 
-	subdivideV(v, allSurfaces);
-	newSurface->subdivideV(v, allSurfaces);
+	subdivideV(v, allSurfaces, true);
+	newSurface->subdivideV(v, allSurfaces, false);
 }
 
-void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
+void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, bool _direction) {
 
 	PolyObject* newPo = new PolyObject(program);
 	Bezier_Surface* newSurface = new Bezier_Surface(newPo, deg_m, deg_n, this->t, program);
@@ -720,6 +741,15 @@ void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces) {
 	newSurface->buildControlStructure();
 	newSurface->updateBezierSurface();
 	newSurface->calcNormals();
+
+	if (_direction) {
+		translate(PointVector(-1.0f, -1.0f, 0, 0));
+		newSurface->translate(PointVector(-1.0f, 1.0f, 0, 0));
+	} else {
+		translate(PointVector(1.0f, -1.0f, 0, 0));
+		newSurface->translate(PointVector(1.0f, 1.0f, 0, 0));
+	}
+
 
 	allSurfaces->push_back(newSurface);
 }

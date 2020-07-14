@@ -30,6 +30,7 @@ public:
 	void rotateX();
 	void rotateY();
 	void rotateZ();
+	void translate(PointVector);
 
 
 	void subdivision(float t, std::vector<PointVector>& input, std::vector<PointVector>& newVertices1, std::vector<PointVector>& newVertices2);
@@ -38,7 +39,7 @@ public:
 
 
 	void subdivideU(float, float, vector<Bezier_Surface*>*);
-	void subdivideV(float, vector<Bezier_Surface*>*);
+	void subdivideV(float, vector<Bezier_Surface*>*, bool);
 
 	void setBezierSurfaceProgramNr(unsigned int);
 

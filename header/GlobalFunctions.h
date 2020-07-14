@@ -42,6 +42,17 @@ static struct GlobalFunctions {
 			vector[i] = glm::rotateZ(vector[i], globalConstants.DEFAULT_ROTATION * ((float)M_PI / 180));
 		}
 	}
+	void translatePointVector(std::vector<PointVector>& vector, PointVector trans) {
+		for (int i = 0; i < vector.size(); i++) {
+			vector[i] = vector[i] + trans;
+		}
+	}
+	void translateGlmVector(std::vector<glm::vec3>& vector, glm::vec3 trans) {
+		for (int i = 0; i < vector.size(); i++) {
+			vector[i] = vector[i] + trans;
+		}
+	}
+
 
 	glm::vec3 mixGlmVector(glm::vec3 v) {
 		return glm::vec3(v.z, v.x, v.y);

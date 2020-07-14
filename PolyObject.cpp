@@ -394,9 +394,12 @@ void PolyObject::setProgramNr(unsigned int nr) {
 }
 
 void PolyObject::translate(PointVector tv) {
-	for (PointVector& pt : vertices) {
-		pt = pt + tv;
+	globalFunctions.translatePointVector(vertices, tv);
+	globalFunctions.translateGlmVector(structurePoints, tv.getVec3());
+	for (vector<PointVector>& v : faces) {
+		globalFunctions.translatePointVector(v, tv);
 	}
+	updateCurveBuffer();
 }
 
 void PolyObject::clearVertices() {

@@ -406,6 +406,7 @@
                 uDerivative -= 0.05;
             }
             label.innerText = "Wert U: " + (Math.round(uDerivative * 100) / 100).toFixed(2);
+            OnChangeSurfaceDerivative(uDerivative, vDerivative)
         }
         function changeDerivativeV(direction, label) {
             //0 = Increase, 1 = Decrease
@@ -415,6 +416,7 @@
                 vDerivative -= 0.05;
             }
             label.innerText = "Wert V: " + (Math.round(vDerivative * 100) / 100).toFixed(2);
+            OnChangeSurfaceDerivative(uDerivative, vDerivative)
         }
     </script>
 </head>

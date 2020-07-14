@@ -62,6 +62,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnResetSurfaces"] = BindJSCallback(&Gui::OnResetSurfaces);
 	global["OnToggleSurfaceDerivative"] = BindJSCallback(&Gui::OnToggleSurfaceDerivative);
 	global["OnToggleSurfaceNormals"] = BindJSCallback(&Gui::OnToggleSurfaceNormals);
+	global["OnChangeSurfaceDerivative"] = BindJSCallback(&Gui::OnChangeSurfaceDerivative);
 
 
 	loadData();
@@ -462,6 +463,17 @@ void Gui::OnToggleSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 		cout << vValue << endl;
 	}
 }
+void Gui::OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& args) {
+	double uValue = args[0];
+	double vValue = args[1];
+
+	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		//
+	}
+
+	updateDisplay();
+}
+
 
 void Gui::OnToggleSurfaceNormals(const JSObject& thisObject, const JSArgs& args) {
 	static bool toggle = false;

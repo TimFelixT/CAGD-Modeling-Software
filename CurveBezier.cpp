@@ -153,6 +153,11 @@ void CurveBezier::rotateZ() {
 	globalFunctions.rotateZPointVector(curveVertices);
 	updateCurveBuffer();
 }
+void CurveBezier::translate(PointVector v) {
+	globalFunctions.translatePointVector(curveVertices, v);
+	updateCurveBuffer();
+}
+
 void CurveBezier::updateCurveBuffer() {
 	curveBuffer.clear();
 	for (auto& ptvector : curveVertices) {

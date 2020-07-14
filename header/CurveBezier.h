@@ -30,6 +30,7 @@ public:
 	void rotateX();
 	void rotateY();
 	void rotateZ();
+	void translate(PointVector);
 
 
 	void addPointEnd(PointVector point);

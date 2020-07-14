@@ -61,6 +61,7 @@ void Gui::OnDOMReady(ultralight::View* caller) {
 	global["OnSurfaceDegreeIncrease"] = BindJSCallback(&Gui::OnSurfaceDegreeIncrease);
 	global["OnResetSurfaces"] = BindJSCallback(&Gui::OnResetSurfaces);
 	global["OnToggleSurfaceDerivative"] = BindJSCallback(&Gui::OnToggleSurfaceDerivative);
+	global["OnToggleSurfaceNormals"] = BindJSCallback(&Gui::OnToggleSurfaceNormals);
 
 
 	loadData();
@@ -457,6 +458,16 @@ void Gui::OnToggleSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 		s->showUVnormal = !s->showUVnormal;
 		s->u_der = uValue;
 		s->v_der = vValue;
+	}
+}
+
+void Gui::OnToggleSurfaceNormals(const JSObject& thisObject, const JSArgs& args) {
+	static bool toggle = false;
+	toggle = !toggle;
+
+
+	if (toggle) {
+		cout << "Toggle OnToggleSurfaceNormals" << endl;
 	}
 }
 

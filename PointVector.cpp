@@ -174,3 +174,14 @@ void PointVector::normalize() {
 	yCoor /= length;
 	zCoor /= length;
 }
+
+void PointVector::print() {
+	cout << "PointVector: " << endl;
+	cout << "X: " << xCoor << endl;
+	cout << "Y: " << yCoor << endl;
+	cout << "Z: " << zCoor << endl;
+	cout << "H: " << homoCoor << endl;
+	cout << "W: " << weight << endl;
+	cout << endl;
+	cout << endl;
+}

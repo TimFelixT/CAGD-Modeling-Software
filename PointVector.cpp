@@ -99,7 +99,7 @@ PointVector operator-(PointVector& ptVec1, PointVector& ptVec2) {
 	result.yCoor = ptVec1.yCoor - ptVec2.yCoor;
 	result.zCoor = ptVec1.zCoor - ptVec2.zCoor;
 	result.homoCoor = ptVec1.homoCoor - ptVec2.homoCoor;
-	if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Subtraktion");
+	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Subtraktion");
 	return result;
 }
 
@@ -110,7 +110,7 @@ PointVector operator+(PointVector& ptVec1, PointVector& ptVec2) {
 	result.yCoor = ptVec1.yCoor + ptVec2.yCoor;
 	result.zCoor = ptVec1.zCoor + ptVec2.zCoor;
 	result.homoCoor = ptVec1.homoCoor + ptVec2.homoCoor;
-	if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Addition");
+	//if (result.homoCoor != 0 && result.homoCoor != 1) result.printHomoCoorWarning("Addition");
 	return result;
 }
 
@@ -124,8 +124,8 @@ float operator*(PointVector& ptVec1, PointVector& ptVec2) {
 //Kreuzprodukt
 PointVector PointVector::crossProduct(PointVector& ptVec2) {
 	PointVector result;
-	if (this->homoCoor != 0) result.printHomoCoorWarning("Kreuzprodukt Vektor 1");
-	if (ptVec2.homoCoor != 0) result.printHomoCoorWarning("Kreuzprodukt Vektor 2");
+	//if (this->homoCoor != 0) result.printHomoCoorWarning("Kreuzprodukt Vektor 1");
+	//if (ptVec2.homoCoor != 0) result.printHomoCoorWarning("Kreuzprodukt Vektor 2");
 	result.xCoor = (this->yCoor * ptVec2.zCoor) - (this->zCoor * ptVec2.yCoor);
 	result.yCoor = (this->zCoor * ptVec2.xCoor) - (this->xCoor * ptVec2.zCoor);
 	result.zCoor = (this->xCoor * ptVec2.yCoor) - (this->yCoor * ptVec2.xCoor);
@@ -173,4 +173,15 @@ void PointVector::normalize() {
 	xCoor /= length;
 	yCoor /= length;
 	zCoor /= length;
+}
+
+void PointVector::print() {
+	cout << "PointVector: " << endl;
+	cout << "X: " << xCoor << endl;
+	cout << "Y: " << yCoor << endl;
+	cout << "Z: " << zCoor << endl;
+	cout << "H: " << homoCoor << endl;
+	cout << "W: " << weight << endl;
+	cout << endl;
+	cout << endl;
 }

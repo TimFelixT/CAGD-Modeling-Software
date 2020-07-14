@@ -35,6 +35,8 @@ public:
 	float weight = 1;
 	void normalize();
 
+	void print();
+
 private:
 	void printHomoCoorWarning(string);
 };

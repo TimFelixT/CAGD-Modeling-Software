@@ -25,7 +25,6 @@ public:
 	void rationalSurface(int w_i, int w_j, float weight);
 	void degree_increase_u();
 	void degree_increase_v();
-	void divide();
 
 	void rotateX();
 	void rotateY();
@@ -33,6 +32,7 @@ public:
 
 
 	void subdivision(float t, std::vector<PointVector>& input, std::vector<PointVector>& newVertices1, std::vector<PointVector>& newVertices2);
+	void calcTangent(float u, float v);
 	void updateCurves();
 	void updateBezierSurface();
 
@@ -62,7 +62,13 @@ private:
 	PolyObject* bezierSurface;
 	PolyObject* normals;
 
+	PolyObject* normal;
+	PolyObject* u_deriv;
+	PolyObject* v_deriv;
+
+	bool showUVnormal = false;
 	int deg_m, deg_n, t;
+	float u_der = 0.5f, v_der = 0.5f;
 
 	friend class Gui;
 	friend class ViewPanel;

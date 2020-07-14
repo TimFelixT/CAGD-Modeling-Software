@@ -49,8 +49,16 @@ PointVector calcDerivative_bernstein(vector<PointVector> controlVertices, float 
 		glm::vec3 delta_point;
 		if (i < n) {
 			delta_point = controlVertices[i + 1].getVec3() - controlVertices[i].getVec3();
-
-			d_point = d_point + (binomialCoefficiant(n - 1, i) * pow(1 - t, n - 2 - i) * pow(t, i - 2)) * delta_point;
+			float b1 = binomialCoefficiant(n - 1, i);
+			float b2 = pow(1 - t, n - 2 - i);
+			float b3;
+			if (t == 0) {
+				b3 = 1;
+			}
+			else {
+				b3 = pow(t, i - 2);
+			}
+			d_point = d_point + (b1 * b2 * b3) * delta_point;
 		}
 		point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i) * controlVertices[i].getVec3());
 	}

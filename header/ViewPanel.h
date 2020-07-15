@@ -48,6 +48,8 @@ public:
 
 	void initShader(float, glm::vec4, glm::vec3, glm::vec3, glm::vec3, float);
 
+	bool lockDraw = false;
+
 private:
 	std::stack <glm::mat4x4> matrixStack;
 	cg::GLSLProgram* program;

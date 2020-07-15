@@ -41,7 +41,7 @@ public:
 	void updateBezierSurface();
 
 
-	void subdivideU(float, float, vector<Bezier_Surface*>*);
+	void subdivideU(float, float, vector<Bezier_Surface*>*, bool*);
 	void subdivideV(float, vector<Bezier_Surface*>*, bool, PointVector&);
 
 	void setBezierSurfaceProgramNr(unsigned int);

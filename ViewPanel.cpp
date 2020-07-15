@@ -90,6 +90,9 @@ void ViewPanel::derivative() {
 }
 
 void ViewPanel::draw() {
+
+	while (lockDraw) {}
+
 	matrixStack.push(model);
 	matrixStack.push(model);
 	if (show_surface_toggle) {

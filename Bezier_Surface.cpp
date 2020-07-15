@@ -526,13 +526,16 @@ PointVector Bezier_Surface::getNormal(float u, float v) {
 	vector<PointVector> v_verts;
 
 	for (int i = 0; i < v_curves.size(); i++) {
+		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v));
+	}
+	for (int i = 0; i < v_curves[0]->getControlVertices().size(); i++) {
 		vector<PointVector> u_curve;
-		for (int j = 0; j < v_curves[0]->getControlVertices().size(); j++) {
+		for (int j = 0; j < v_curves.size(); j++) {
 			u_curve.push_back(v_curves[j]->getControlVertices()[i]);
 		}
 		v_verts.push_back(calcPoint_bernstein(u_curve, u));
-		u_verts.push_back(calcPoint_bernstein(v_curves[i]->getControlVertices(), v));
 	}
+
 
 	PointVector ca = calcDerivative_bernstein(u_verts, u) - calcPoint_bernstein(u_verts, u);
 	PointVector cb = calcDerivative_bernstein(v_verts, v) - calcPoint_bernstein(v_verts, v);
@@ -669,7 +672,9 @@ void Bezier_Surface::calcNormals() {
 	}
 }
 
-void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSurfaces) {
+void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSurfaces, bool* lock) {
+	*lock = true;
+
 
 	PolyObject* newPo = new PolyObject(program);
 	Bezier_Surface* newSurface = new Bezier_Surface(newPo, deg_m, deg_n, this->t, program);
@@ -750,12 +755,15 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	newSurface->buildControlStructure();
 	newSurface->updateBezierSurface();
 	newSurface->calcNormals();
-	allSurfaces->push_back(newSurface);
 
 	PointVector normal = getNormal(u, v);
 
 	subdivideV(v, allSurfaces, true, normal);
 	newSurface->subdivideV(v, allSurfaces, false, normal);
+
+	allSurfaces->push_back(newSurface);
+
+	*lock = false;
 }
 
 void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, bool _direction, PointVector& normal) {

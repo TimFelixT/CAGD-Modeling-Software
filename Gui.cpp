@@ -427,7 +427,8 @@ void Gui::OnSplitSurface(const JSObject& thisObject, const JSArgs& args) {
 	} else {
 		// Hier aufteilen
 		Bezier_Surface& s = *(viewPanel->allSurfaces.at(surfaceIndex));
-		s.subdivideU(splitU, splitV, &viewPanel->allSurfaces);
+		s.subdivideU(splitU, splitV, &viewPanel->allSurfaces, &viewPanel->lockDraw);
+
 		updateDisplay();
 	}	
 }
@@ -465,12 +466,14 @@ void Gui::OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 	double uValue = args[0];
 	double vValue = args[1];
 
+	viewPanel->lockDraw = true;
 	for (Bezier_Surface* s : viewPanel->allSurfaces) {
 		s->updateBezierSurface();
 		s->u_der = uValue;
 		s->v_der = vValue;
 		s->calcTangent();
 	}
+	viewPanel->lockDraw = false;
 	updateDisplay();
 }
 

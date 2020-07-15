@@ -19,7 +19,7 @@ void Gui::loadData() {
 void Gui::run() {
 	app = App::Create();
 	window = Window::Create(app->main_monitor(), 900, 600, false, kWindowFlags_Titled);
-	window->SetTitle("CADG Gui");
+	window->SetTitle("CAGD Gui");
 	app->set_window(*window);
 	overlay = Overlay::Create(*window, window->width(), window->height(), 0, 0);
 	overlay->view()->set_load_listener(this);

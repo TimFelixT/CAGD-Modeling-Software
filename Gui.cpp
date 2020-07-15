@@ -465,6 +465,7 @@ void Gui::OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 	double vValue = args[1];
 
 	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		s->updateBezierSurface();
 		s->u_der = uValue;
 		s->v_der = vValue;
 		s->calcTangent();

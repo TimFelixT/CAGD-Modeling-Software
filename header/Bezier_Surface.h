@@ -46,6 +46,7 @@ public:
 
 	void setBezierSurfaceProgramNr(unsigned int);
 	void setBezier(bool);
+	void setShowNormals(bool);
 
 private:
 	void calculateVCurves();
@@ -73,6 +74,7 @@ private:
 
 	bool bezier_toggle = false;
 	bool showUVnormal = false;
+	bool showNormals = false;
 	int deg_m, deg_n, t;
 	float u_der = 0.5f, v_der = 0.5f;
 

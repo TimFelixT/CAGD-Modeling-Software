@@ -465,6 +465,7 @@ void Gui::OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 	double vValue = args[1];
 
 	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		s->updateBezierSurface();
 		s->u_der = uValue;
 		s->v_der = vValue;
 		s->calcTangent();
@@ -476,11 +477,10 @@ void Gui::OnChangeSurfaceDerivative(const JSObject& thisObject, const JSArgs& ar
 void Gui::OnToggleSurfaceNormals(const JSObject& thisObject, const JSArgs& args) {
 	static bool toggle = false;
 	toggle = !toggle;
-
-
-	if (toggle) {
-		cout << "Toggle OnToggleSurfaceNormals" << endl;
+	for (Bezier_Surface* s : viewPanel->allSurfaces) {
+		s->setShowNormals(toggle);
 	}
+	glutPostRedisplay();
 }
 
 void Gui::OnToggleSurfaceControlStructure(const JSObject& thisObject, const JSArgs& args) {

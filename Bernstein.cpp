@@ -62,6 +62,11 @@ void Bernstein::bezier_derivative() {
 		d_obj->addStructurePoint(point);
 		d_obj->addStructureColor(globalFunctions.mixGlmVector(d_obj->getColor().getVec3()));
 	}
+	for (int i = 0; i < d_obj->getVertices().size() - 1; i++)
+	{
+		d_obj->pushIndex(i);
+		d_obj->pushIndex(i + 1);
+	}
 }
 
 vector<PointVector> Bernstein::calcDerivative(float steps) {

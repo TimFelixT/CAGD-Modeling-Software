@@ -41,7 +41,7 @@ ViewPanel* viewPanel = new ViewPanel(&program);
 Gui* gui;
 
 float zNear = 0.001f;
-float zFar = 120.0f;
+float zFar = 240.0f;
 float eyeX = 0.0f;
 float eyeY = 0.0f;
 float eyeZ = 30.0f; // for view matrix (zoom)
@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 
-    glutCreateWindow("CADG");
+    glutCreateWindow("CAGD");
     glutID = glutGetWindow();
 
 

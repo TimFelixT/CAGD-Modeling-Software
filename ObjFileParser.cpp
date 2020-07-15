@@ -92,41 +92,6 @@ void parseCurveBezier(fstream* file, PolyObject* polyObj, int* deg_m, int* deg_n
 	}
 }
 
-//
-//bool ObjFileParser::parseObjectFile(const char* filename, vector<PolyObject*>* polyObjs)
-//{
-//	fstream file(filename);
-//
-//	if (!file.good())
-//	{
-//		string logString = "could not open file \"" + string(filename) + "\"";
-//		return false;
-//	}
-//
-//	string line;
-//	vector<PointVector> vertices;
-//
-//	while (getline(file, line))
-//	{
-//		cout << line << endl;
-//		if (isVertex(line)) {
-//			vertices.push_back(parseVertice(line));
-//		}
-//		if (isDegree(line)) {
-//
-//		}
-//		if (isCurveBezier(line)) {
-//			parseCurveBezier(&file, polyObjs, &vertices);
-//			file.close();
-//			return true;
-//		}
-//	}
-//
-//	file.close();
-//	return true;
-//}
-
-
 bool ObjFileParser::parseObjectFile(const char* filename, PolyObject* polyObj, int* deg_n = 0, int* deg_m = 0)
 {
 	fstream file(filename);

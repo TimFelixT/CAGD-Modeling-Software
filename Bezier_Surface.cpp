@@ -79,54 +79,9 @@ void Bezier_Surface::init()
 void Bezier_Surface::draw(bool bezier_toggle, glm::mat4x4 projection, glm::mat4x4 view, glm::mat4x4 model) {
 	while (lock == 1) { /* wait */ }
 	lock = 1;
-	for (CurveBezier* b : u_curves) {
-		//Doppelte Verschachtelung nötig, da sonst nicht alle fälle abgedeckt
-		if (bezier_toggle) {
-			if (dynamic_cast<Bernstein*>(b)) {
-				//b->draw(projection * view * model);
-				//b->getControlStructure()->draw(projection * view * model);
-				//b->getDeCasteljauStructure()->draw(projection * view * model);
 
-				if (b->isDerivative() == 1) {
-					b->getDerativeStructure()->draw(projection * view * model);
-				}
-			}
-		}
-		else if (dynamic_cast<DeCasteljau*>(b)) {
-			//b->draw(projection * view * model);
-			//b->getControlStructure()->draw(projection * view * model);
-			//b->getDeCasteljauStructure()->draw(projection * view * model);
-
-			if (b->isDerivative() == 1) {
-				b->getDerativeStructure()->draw(projection * view * model);
-			}
-		}
-	}
-
-	for (CurveBezier* b : v_curves) {
-		//Doppelte Verschachtelung nötig, da sonst nicht alle fälle abgedeckt
-		if (bezier_toggle) {
-			if (dynamic_cast<Bernstein*>(b)) {
-				//b->draw(projection * view * model);
-				//b->getControlStructure()->draw(projection * view * model);
-				////b->getDeCasteljauStructure()->draw(projection * view * model);
-
-				if (b->isDerivative() == 1) {
-					b->getDerativeStructure()->draw(projection * view * model);
-					normals->draw(projection * view * model);
-				}
-			}
-		}
-		else if (dynamic_cast<DeCasteljau*>(b)) {
-			//b->draw(projection * view * model);
-			//b->getControlStructure()->draw(projection * view * model);
-			////b->getDeCasteljauStructure()->draw(projection * view * model);
-
-			if (b->isDerivative() == 1) {
-				b->getDerativeStructure()->draw(projection * view * model);
-				normals->draw(projection * view * model);
-			}
-		}
+	if (showNormals) {
+		normals->draw(projection * view * model);
 	}
 	if (showUVnormal) {
 		normal->draw(projection * view * model);
@@ -940,6 +895,11 @@ void Bezier_Surface::setBezierSurfaceProgramNr(unsigned int nr)
 void Bezier_Surface::setBezier(bool bezier)
 {
 	bezier_toggle = bezier;
+}
+
+void Bezier_Surface::setShowNormals(bool show)
+{
+	showNormals = show;
 }
 
 

@@ -134,6 +134,54 @@ void DeCasteljau::calcRationalCurve()
 	}
 }
 
+
+void DeCasteljau::calcRationalCurve(int step)
+{
+	std::vector<PointVector> controlVertices = obj->getVertices();
+	PointVector p;
+
+	curveIndices.clear();
+	curveVertices.clear();
+	curveColors.clear();
+	curveBuffer.clear();
+
+	for (int w_i = 0; w_i < controlVertices.size(); w_i++) {
+		controlVertices.at(w_i) = controlVertices.at(w_i) * controlVertices.at(w_i).weight;
+	}
+
+	float t_start;
+	float t_end;
+	if (t_range_toggle) {
+		t_start = -1;
+		t_end = 2;
+	} else {
+		t_start = 0;
+		t_end = 1;
+	}
+
+	for (;t_start <= t_end; t_start += 1.0f / (float)step) {
+		p = deCasteljau(controlVertices.size() - 1, 0, t_start, controlVertices);
+		p.xCoor = p.xCoor / p.homoCoor;
+		p.yCoor = p.yCoor / p.homoCoor;
+		p.zCoor = p.zCoor / p.homoCoor;
+		p.homoCoor = p.homoCoor / p.homoCoor;
+
+		curveVertices.push_back(p);
+		curveBuffer.push_back(p.getVec3());
+	}
+
+
+	for (int i = 0; i <= curveVertices.size(); i++)
+	{
+		if (i != curveVertices.size() - 1) {
+			curveIndices.push_back(i);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+			curveIndices.push_back(i + 1);
+			curveColors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+	}
+}
+
 PointVector DeCasteljau::deCasteljau(int k, int i, double t0, std::vector<PointVector> P)
 {
 	if (k == 0)	return P[i];

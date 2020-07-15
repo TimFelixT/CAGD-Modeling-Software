@@ -46,6 +46,7 @@ void ViewPanel::toggleBezierCurve() {
 	for (Bezier_Surface* s : allSurfaces) {
 		s->setBezier(bezier_toggle);
 		s->updateBezierSurface();
+		s->calcNormals();
 	}
 }
 void ViewPanel::toggleStructure() {
@@ -456,7 +457,6 @@ void ViewPanel::updateSurface() {
 	for (Bezier_Surface* s : allSurfaces) {
 		s->buildControlStructure();
 		s->updateBezierSurface();
-		s->calcNormals();
 	}
 }
 

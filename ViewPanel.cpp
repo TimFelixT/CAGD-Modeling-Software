@@ -456,6 +456,7 @@ void ViewPanel::updateSurface() {
 	for (Bezier_Surface* s : allSurfaces) {
 		s->buildControlStructure();
 		s->updateBezierSurface();
+		s->calcNormals();
 	}
 }
 

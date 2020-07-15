@@ -413,6 +413,7 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 	cout << "PointIndex: " << pointIndex << " CoordIndex: " << coorIndex << " Value: " << value << endl;;
 	s.buildControlStructure();
 	s.updateBezierSurface();
+	s.calcNormals();
 	updateDisplay();
 }
 

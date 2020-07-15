@@ -274,8 +274,8 @@ void Bezier_Surface::rotateY()
 		curve->getDerativeStructure()->rotateY();
 	}
 	for (CurveBezier* curve : v_curves) {
-		//curve->rotateY();
-		//curve->getControlStructure()->rotateY();
+		curve->rotateY();
+		curve->getControlStructure()->rotateY();
 		//curve->getDeCasteljauStructure()->rotateY();
 		curve->getDerativeStructure()->rotateY();
 	}

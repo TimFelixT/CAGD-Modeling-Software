@@ -669,7 +669,9 @@ void Bezier_Surface::calcNormals() {
 	}
 }
 
-void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSurfaces) {
+void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSurfaces, bool* lock) {
+	*lock = true;
+
 
 	PolyObject* newPo = new PolyObject(program);
 	Bezier_Surface* newSurface = new Bezier_Surface(newPo, deg_m, deg_n, this->t, program);
@@ -750,12 +752,15 @@ void Bezier_Surface::subdivideU(float u, float v, vector<Bezier_Surface*>* allSu
 	newSurface->buildControlStructure();
 	newSurface->updateBezierSurface();
 	newSurface->calcNormals();
-	allSurfaces->push_back(newSurface);
 
 	PointVector normal = getNormal(u, v);
 
 	subdivideV(v, allSurfaces, true, normal);
 	newSurface->subdivideV(v, allSurfaces, false, normal);
+
+	allSurfaces->push_back(newSurface);
+
+	*lock = false;
 }
 
 void Bezier_Surface::subdivideV(float v, vector<Bezier_Surface*>* allSurfaces, bool _direction, PointVector& normal) {

@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 
-    glutCreateWindow("CADG");
+    glutCreateWindow("CAGD");
     glutID = glutGetWindow();
 
 

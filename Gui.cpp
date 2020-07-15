@@ -209,7 +209,7 @@ void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
 }
 void Gui::OnToggleBezier(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->toggleBezierCurve();
-	glutPostRedisplay();
+	updateDisplay();
 }
 void Gui::OnToggleHighlightControlpoints(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->showPoints();
@@ -413,6 +413,7 @@ void Gui::OnSurfacePointEdited(const JSObject& thisObject, const JSArgs& args) {
 	cout << "PointIndex: " << pointIndex << " CoordIndex: " << coorIndex << " Value: " << value << endl;;
 	s.buildControlStructure();
 	s.updateBezierSurface();
+	s.calcNormals();
 	updateDisplay();
 }
 

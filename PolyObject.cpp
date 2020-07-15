@@ -422,6 +422,10 @@ void PolyObject::clearNormals() {
 	normals.clear();
 }
 
+void PolyObject::clearColors() {
+	colors.clear();
+}
+
 void PolyObject::addStructureColor(glm::vec3 c) {
 	this->structureColors.push_back(c);
 }

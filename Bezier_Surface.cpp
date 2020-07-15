@@ -503,12 +503,17 @@ void Bezier_Surface::updateBezierSurface() {
 		bezierSurface->clearStructure();
 		bezierSurface->clearVertices();
 		bezierSurface->clearNormals();
+		bezierSurface->clearColors();
 	}
 	else {
 		bezierSurface = new PolyObject(program);
 	}
-
-	bezierSurface->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
+	if (dynamic_cast<Bernstein*>(u_curves[0])) {
+		bezierSurface->setColor(PointVector(1.0f, 0.75f, 0.0f, 0.0f));
+	}
+	else if (dynamic_cast<DeCasteljau*>(u_curves[0])) {
+		bezierSurface->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
+	}
 
 	/* Iterating through the curveVertices of each u_curve */
 	for (float i = 0; i < u_curves.size(); i++) {
@@ -661,84 +666,8 @@ void Bezier_Surface::calcTangent() {
 	normal->pushColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 	normal->pushColor(PointVector(1.0f, 0.0f, 1.0f, 0.0f));
 }
-//
-//void Bezier_Surface::calcNormals() {
-//	if (normals != nullptr)
-//		delete normals;
-//	normals = new PolyObject(program);
-//	normals->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
-//
-//	PointVector norm_root;
-//	PointVector norm;
-//	int c = 0;
-//	for (float u = 0; u <= 1.0f; u += 1.0f / t) {
-//		for (float v = 0; v <= 1.0f; v += 1.0f / t) {
-//			norm_root = getPoint(u, v);
-//			norm = getNormal(u, v);
-//
-//			normals->pushVertice(norm_root);
-//			normals->pushVertice(norm_root + (norm * 3));
-//			bezierSurface->pushNormal(norm);
-//			normals->pushColor();
-//			normals->pushColor();
-//			normals->pushIndex(c++);
-//			normals->pushIndex(c++);
-//		}
-//	}
-//}
 
 void Bezier_Surface::calcNormals() {
-	/** if (normals != nullptr)
-		delete normals;
-	normals = new PolyObject(program);
-	normals->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
-
-	vector<GLushort> indices = bezierSurface->getIndices();
-	vector<PointVector> vertices = bezierSurface->getVertices();
-	int k = 0;
-
-	vector<PointVector> verts = bezierSurface->getVertices();
-	vector<GLushort> inds = bezierSurface->getIndices();
-
-	for (int i = 0; i < verts.size(); i++) {
-		for (int j = 0; j < inds.size(); j++) {
-			if (&verts[i] == &verts[inds[j]]) {
-				PointVector ca;
-				PointVector cb;
-				PointVector normal_root;
-
-				if (j % 3 == 0) {
-					ca = verts[inds[j + 1]] - verts[inds[j]];
-					cb = verts[inds[j + 2]] - verts[inds[j]];
-					normal_root = verts[inds[j]];
-				}
-				else if (j % 3 == 1) {
-					ca = verts[inds[j]] - verts[inds[j - 1]];
-					cb = verts[inds[j + 1]] - verts[inds[j - 1]];
-					normal_root = verts[inds[j]];
-				}
-				else if (j % 3 == 2) {
-					ca = verts[inds[j]] - verts[inds[j - 2]];
-					cb = verts[inds[j - 1]] - verts[inds[j - 2]];
-					normal_root = verts[inds[j]];
-				}
-
-				PointVector normal = ca.crossProduct(cb);
-				normal.normalize();
-				bezierSurface->pushNormal(normal);
-
-				normal = normal * 3;
-
-				normals->pushVertice(normal_root);
-				normals->pushVertice(normal_root + normal);
-				normals->pushColor();
-				normals->pushColor();
-				normals->pushIndex(k++);
-				normals->pushIndex(k++);
-			}
-		}
-	} **/
-
 	if (normals != nullptr)
 		delete normals;
 	normals = new PolyObject(program);
@@ -748,9 +677,17 @@ void Bezier_Surface::calcNormals() {
 	int k = 0;
 
 	for (int i = 0; i < vertices.size(); i++) {
+		int anzahl = 0;
+
+		for (int j = 0; j < indices.size(); j++) 
+			if (&vertices[i] == &vertices[indices[j]]) anzahl++;
+
+		PointVector normal;
+		float faktor = 1.0f / (float)anzahl;
+
 		for (int j = 0; j < indices.size(); j++) {
 			if (&vertices[i] == &vertices[indices[j]]) {
-				PointVector normal;
+				PointVector n;
 				PointVector a;
 				PointVector b;
 
@@ -767,19 +704,22 @@ void Bezier_Surface::calcNormals() {
 					b = vertices[indices[j - 2]] - vertices[i];
 				}
 
-				normal = b.crossProduct(a);
-				normal.normalize();
+				n = b.crossProduct(a);
+				n.normalize();
+				normal = normal + faktor * n;
 
-				bezierSurface->pushNormal(normal);
-				PointVector tmp = normal * 3;
-				normals->pushVertice(vertices[indices[j]]);
-				normals->pushVertice(vertices[indices[j]] + tmp);
-				normals->pushColor();
-				normals->pushColor();
-				normals->pushIndex(k++);
-				normals->pushIndex(k++);
 			}
 		}
+
+		bezierSurface->pushNormal(normal);
+		PointVector tmp = normal * 3;
+		normals->pushVertice(vertices[i]);
+		normals->pushVertice(vertices[i] + tmp);
+		normals->pushColor();
+		normals->pushColor();
+		normals->pushIndex(k++);
+		normals->pushIndex(k++);
+
 	}
 }
 

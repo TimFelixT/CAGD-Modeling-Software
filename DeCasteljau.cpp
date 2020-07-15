@@ -138,7 +138,11 @@ void DeCasteljau::calcRationalCurve()
 void DeCasteljau::calcRationalCurve(int step)
 {
 	std::vector<PointVector> controlVertices = obj->getVertices();
-	PointVector p;
+
+	
+
+
+	PointVector p(0.0f, 0.0f, 0.0f, 1);
 
 	curveIndices.clear();
 	curveVertices.clear();

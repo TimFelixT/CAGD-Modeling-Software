@@ -108,6 +108,7 @@ void Bezier_Surface::decreaseTesselatingRate() {
 		t--;
 		buildControlStructure();
 		updateBezierSurface();
+		calcNormals();
 	}
 }
 
@@ -240,21 +241,16 @@ void Bezier_Surface::rotateX()
 	normals->rotateX();
 
 	for (CurveBezier* curve : u_curves) {
-		if (dynamic_cast<Bernstein*>(curve)) {
 			curve->rotateX();
 			curve->getControlStructure()->rotateX();
 			//curve->getDeCasteljauStructure()->rotateX();
 			curve->getDerativeStructure()->rotateX();
-		}
-
 	}
 	for (CurveBezier* curve : v_curves) {
-		if (dynamic_cast<Bernstein*>(curve)) {
 			curve->rotateX();
 			curve->getControlStructure()->rotateX();
 			//curve->getDeCasteljauStructure()->rotateX();
 			curve->getDerativeStructure()->rotateX();
-		}
 	}
 }
 
@@ -623,6 +619,7 @@ void Bezier_Surface::calcTangent() {
 }
 
 void Bezier_Surface::calcNormals() {
+	bezierSurface->clearNormals();
 	if (normals != nullptr)
 		delete normals;
 	normals = new PolyObject(program);

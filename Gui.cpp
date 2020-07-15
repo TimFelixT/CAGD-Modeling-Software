@@ -443,6 +443,7 @@ void Gui::OnSurfaceDegreeIncrease(const JSObject& thisObject, const JSArgs& args
 	} else {
 		s.degree_increase_v();
 	}
+	s.calcNormals();
 	updateDisplay();
 }
 

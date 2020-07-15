@@ -163,6 +163,7 @@ void DeCasteljau::calcRationalCurve(int step)
 		t_end = 1;
 	}
 
+	int c = 0;
 	for (;t_start <= t_end; t_start += 1.0f / (float)step) {
 		p = deCasteljau(controlVertices.size() - 1, 0, t_start, controlVertices);
 		p.xCoor = p.xCoor / p.homoCoor;
@@ -172,6 +173,12 @@ void DeCasteljau::calcRationalCurve(int step)
 
 		curveVertices.push_back(p);
 		curveBuffer.push_back(p.getVec3());
+
+
+		if (t_start + (1.0f / (float)step) > 1 && c < step) {
+			t_start = 1 - (1.0f / (float)step);
+		}
+		c++;
 	}
 
 

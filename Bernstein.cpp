@@ -52,8 +52,8 @@ void Bernstein::bezier_derivative() {
 		d = glm::normalize(d) * 3.0f;
 		d_point = point + d;
 
-		d_obj->pushVertice(PointVector(point, 0));
-		d_obj->pushVertice(PointVector(d_point, 0));
+		d_obj->pushVertice(PointVector(point, 1));
+		d_obj->pushVertice(PointVector(d_point, 1));
 		d_obj->pushColor();
 		d_obj->pushColor();
 
@@ -93,8 +93,8 @@ vector<PointVector> Bernstein::calcDerivative(float steps) {
 		d = glm::normalize(d) * 3.0f;
 		d_point = point + d;
 
-		derivs.push_back(PointVector(point, 0));
-		derivs.push_back(PointVector(d_point, 0));
+		derivs.push_back(PointVector(point, 1));
+		derivs.push_back(PointVector(d_point, 1));
 	}
 	return derivs;
 }
@@ -108,7 +108,7 @@ PointVector Bernstein::calcPoint(vector<PointVector> controlVertices, float t) {
 		point = point + (binomialCoefficiant(n, i) * pow(1 - t, n - i) * pow(t, i)) * controlVertices[i].getVec3();
 	}
 
-	PointVector p = PointVector(point, 0);
+	PointVector p = PointVector(point, 1);
 
 	return p;
 }
@@ -312,6 +312,7 @@ void CurveBezier::degree_increase() {
 			b1.at(i).yCoor = b.at(i - 1).yCoor;
 			b1.at(i).zCoor = b.at(i - 1).zCoor;
 		}
+		b1.at(i).homoCoor = 1;
 	}
 
 	obj->pushIndex(n - 1);

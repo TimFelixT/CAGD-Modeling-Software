@@ -209,7 +209,7 @@ void Gui::OnPointChange(const JSObject& thisObject, const JSArgs& args) {
 }
 void Gui::OnToggleBezier(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->toggleBezierCurve();
-	glutPostRedisplay();
+	updateDisplay();
 }
 void Gui::OnToggleHighlightControlpoints(const JSObject& thisObject, const JSArgs& args) {
 	viewPanel->showPoints();

@@ -503,12 +503,17 @@ void Bezier_Surface::updateBezierSurface() {
 		bezierSurface->clearStructure();
 		bezierSurface->clearVertices();
 		bezierSurface->clearNormals();
+		bezierSurface->clearColors();
 	}
 	else {
 		bezierSurface = new PolyObject(program);
 	}
-
-	bezierSurface->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
+	if (dynamic_cast<Bernstein*>(u_curves[0])) {
+		bezierSurface->setColor(PointVector(1.0f, 0.75f, 0.0f, 0.0f));
+	}
+	else if (dynamic_cast<DeCasteljau*>(u_curves[0])) {
+		bezierSurface->setColor(PointVector(1.0f, 1.0f, 0.0f, 0.0f));
+	}
 
 	/* Iterating through the curveVertices of each u_curve */
 	for (float i = 0; i < u_curves.size(); i++) {

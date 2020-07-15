@@ -56,6 +56,8 @@ public:
 
 	void clearNormals();
 
+	void clearColors();
+
 	void triangulatePolyNet();
 
 	// Drawing functions
